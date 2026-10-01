@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native'
+import { userService } from '../../Services/api'
 
 const Home = () => {
     return (
