@@ -1,10 +1,12 @@
 import { Text, View } from 'react-native'
+import CustomText from '../../Components/Text/CustomText'
+import Container from '../../Components/Container/Container'
 
 const Home = () => {
     return (
-        <View>
-            <Text>Home Screen</Text>
-        </View>
+        <Container>
+            <CustomText style={{fontWeight: 100}}>Home Screen</CustomText>
+        </Container>
     )
 }
 
