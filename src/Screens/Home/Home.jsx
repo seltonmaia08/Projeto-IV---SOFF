@@ -1,6 +1,6 @@
-import { Text, View } from 'react-native'
 import CustomText from '../../Components/Text/CustomText'
 import Container from '../../Components/Container/Container'
+
 
 const Home = () => {
     return (

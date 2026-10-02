@@ -21,8 +21,12 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+<<<<<<< HEAD
       "expo-font",
       "expo-splash-screen"
+=======
+      "expo-sqlite"
+>>>>>>> backend
     ]
   }
 }
