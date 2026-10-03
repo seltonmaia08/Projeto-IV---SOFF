@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/native": "^7.4.1",
     "@react-navigation/native-stack": "^7.19.1",
     "@react-navigation/stack": "^7.11.1",
+    "@supabase/supabase-js": "^2.117.2",
     "expo": "~57.0.25",
+    "expo-sqlite": "~57.0.3",
     "expo-font": "~57.0.4",
     "expo-splash-screen": "~57.0.9",
     "expo-status-bar": "~57.0.1",
@@ -16,6 +19,7 @@
     "react-native": "0.86.3",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
+    "react-native-url-polyfill": "^4.0.0",
     "react-native-web": "^0.21.0"
   },
   "scripts": {
@@ -26,3 +30,4 @@
   },
   "private": true
 }
+
