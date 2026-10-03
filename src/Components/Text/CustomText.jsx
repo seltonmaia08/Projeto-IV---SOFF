@@ -47,4 +47,4 @@ const CustomText = ({ style, ...props }) => {
   );
 }
 
-export default CustomText
+export default CustomText;
