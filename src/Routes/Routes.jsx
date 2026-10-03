@@ -31,10 +31,6 @@ const Routes = () => {
     if (!loaded && !error) return null
 
     return (
-        <Stack.Navigator initialRouteName="Dashboard" screenOptions={{headerShown: false, contentStyle: { backgroundColor: "#313131" }}}>
-            <Stack.Screen name="Home" component={Home}/>
-            <Stack.Screen name="Dashboard" component={Dashboard}/>
-        </Stack.Navigator>
             <Stack.Navigator initialRouteName="Home" screenOptions={{
                 headerTitleAlign: 'center',
                 headerTitleStyle: {
@@ -42,6 +38,7 @@ const Routes = () => {
                     fontSize: 18
                 }
             }}>
+                <Stack.Screen name="Dashboard" component={Dashboard}/>
                 <Stack.Screen name="Home" component={Home} />
             </Stack.Navigator>
     )
