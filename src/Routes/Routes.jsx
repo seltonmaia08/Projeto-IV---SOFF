@@ -5,7 +5,6 @@ import * as SplashScreen from 'expo-splash-screen'
 
 import Home from "../Screens/Home/Home";
 
-import Home from "../Screens/Home_screens/Home";
 import Dashboard from "../Screens/Projects_dashboard/Dashboard";
 SplashScreen.preventAutoHideAsync() // Previne o que a SplashScreen suma antes do carregamento das fonts
 
