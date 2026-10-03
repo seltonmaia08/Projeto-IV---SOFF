@@ -5,9 +5,11 @@ import * as SplashScreen from 'expo-splash-screen'
 
 import Home from "../Screens/Home/Home";
 
+import Home from "../Screens/Home_screens/Home";
+import Dashboard from "../Screens/Projects_dashboard/Dashboard";
 SplashScreen.preventAutoHideAsync() // Previne o que a SplashScreen suma antes do carregamento das fonts
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator();
 
 const Routes = () => {
 
@@ -29,6 +31,10 @@ const Routes = () => {
     if (!loaded && !error) return null
 
     return (
+        <Stack.Navigator initialRouteName="Dashboard" screenOptions={{headerShown: false, contentStyle: { backgroundColor: "#313131" }}}>
+            <Stack.Screen name="Home" component={Home}/>
+            <Stack.Screen name="Dashboard" component={Dashboard}/>
+        </Stack.Navigator>
             <Stack.Navigator initialRouteName="Home" screenOptions={{
                 headerTitleAlign: 'center',
                 headerTitleStyle: {
@@ -41,4 +47,4 @@ const Routes = () => {
     )
 }
 
-export default Routes
+export default Routes;
