@@ -1,7 +1,6 @@
 import CustomText from '../../Components/Text/CustomText'
 import Container from '../../Components/Container/Container'
 
-
 const Home = () => {
     return (
         <Container>
