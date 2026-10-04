@@ -19,15 +19,19 @@ const Dashboard = () => {
 
     const [modalVisivel, setModalVisivel] = useState(false);
     const [projetos, setProjetos] = useState([
-        {id: "", name: "Rosa dos Ventos", produt: "LandoP"},
-        {id: "", name: "Caminhando em Passos Largos", produt: "Osmar Cinema"},
-        {id: "", name: "Quando o Canto Leva o Povo", produt: "Masashi Produções"}
+        {id: "1", name: "Rosa dos Ventos", produt: "LandoP", cod: "01"},
+        {id: "2", name: "Caminhando em Passos Largos", produt: "Osmar Cinema", cod: "02"},
+        {id: "3", name: "Quando o Canto Leva o Povo", produt: "Masashi Produções", cod: "03"}
     ]);
     //DADOS MOCKADOS;
-
     
     const adicionarProjeto = (novoProjeto) => {
         setProjetos( anteriores => [...anteriores, novoProjeto]);
+    }
+
+    const excluirProjeto = (idDoProjeto) => { // excluo a partir do id
+        setProjetos(anteriores => anteriores.filter(cada => cada.id !== idDoProjeto));
+        // coloque na lista de projetos apenas os que não tem ID igual ao ID do projeto a ser apagado;
     }
 
     return (
@@ -41,8 +45,12 @@ const Dashboard = () => {
                 <View style={styles.projetos}>
                     {
                         projetos.map(cada => <Card_projeto
+                            key = {cada.id} // importante para que os outros cards não herdem as últimas alterações
+                            // ao deletar um deles.
+                            id = {cada.id}
                             nome = {cada.name}
                             produtora= {cada.produt}
+                            onExcluir= {excluirProjeto}
                         />)
                     }
                 </View>

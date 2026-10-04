@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 import CustomText from '../src/Components/Text/CustomText';
 import GetOut_button from './GetOut_button';
@@ -34,9 +35,10 @@ const styles = StyleSheet.create({
     botoes: {flexDirection: "row", justifyContent: "space-between"}
 })
 
-const Card_projeto = ({nome, produtora}) => {
+const Card_projeto = ({id, nome, produtora, onExcluir}) => {
 
     const [expandido, setExpandido] = useState(false);
+    const navegacao = useNavigation();
 
     const alternarDropDown = () => {setExpandido(!expandido)}
 
@@ -62,13 +64,20 @@ const Card_projeto = ({nome, produtora}) => {
 
                             <View style={styles.cardSessao}>
                                 <CustomText style={styles.cardLabel}>Criado em: </CustomText>
-                                <CustomText style={styles.cardTexto}>(função de data)</CustomText>
+                                <CustomText style={styles.cardTexto}>(data)</CustomText>
                             </View>
                         </View>
 
                         <View style={styles.botoes}>
-                            <GetOut_button acao = "EXCLUIR"/>
-                            <GetIn_button acao = "ENTRAR"/>
+
+                            <TouchableOpacity activeOpacity = {0.7} onPress={() => onExcluir(id)}>
+                                <GetOut_button acao = "EXCLUIR"/>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity activeOpacity = {0.7} onPress={() => navegacao.navigate("Home")}>
+                                <GetIn_button acao = "ENTRAR"/>
+                            </TouchableOpacity>
+
                         </View>
                     </View>
                 )
