@@ -6,6 +6,7 @@ import Topo_tela from '../../../components/Topo_tela';
 import Card_projeto from '../../../components/Card_projeto';
 import CustomText from '../../Components/Text/CustomText';
 import NewProjetoPopUp from '../../../components/NewProjetoPopUp';
+import ConfirmacaoPopUp from '../../../components/ConfirmacaoPopUp';
 
 const styles = StyleSheet.create({
     escopoTela: {flex: 1},
@@ -39,7 +40,7 @@ const Dashboard = () => {
 
             <Topo_tela/>
             <View style={styles.conteudo}>
-                
+                {/*<ConfirmacaoPopUp/>*/}
                 <CustomText style={styles.titulo}>MEUS PROJETOS</CustomText>
             
                 <View style={styles.projetos}>
