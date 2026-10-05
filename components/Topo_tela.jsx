@@ -1,4 +1,7 @@
+import { CircleUser } from 'lucide-react-native';
+
 import { Text, View, StyleSheet } from 'react-native';
+import CustomText from '../src/Components/Text/CustomText';
 
 const styles = StyleSheet.create({
     escopoTopo: {
@@ -9,7 +12,8 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: "flex-end"
     },
-    texto: {color: "#F0EADE", fontSize: 28, fontWeight: "bold", fontFamily: "Alexandria"},
+    texto: {fontWeight: "bold", fontSize: 24},
+    perfil: {color: "#F0EADE"}
 });
 
 const Topo_tela = () => {
@@ -18,8 +22,8 @@ const Topo_tela = () => {
         <View>
         
             <View style={styles.escopoTopo}>
-                <Text style={styles.texto}>Olá, Usuário!</Text>
-                <Text style={{color: "#F0EADE"}}>(botão de profile)</Text>
+                <CustomText style={styles.texto}>Olá, Usuário!</CustomText>
+                <CircleUser size={45} style={styles.perfil}/>
             </View>
 
         </View>

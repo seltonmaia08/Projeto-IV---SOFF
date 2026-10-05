@@ -3,11 +3,10 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen'
 
+import Dashboard from "../Screens/Projects_dashboard/Dashboard";
 import Home from "../Screens/Home/Home";
 
-import Dashboard from "../Screens/Projects_dashboard/Dashboard";
-SplashScreen.preventAutoHideAsync() // Previne o que a SplashScreen suma antes do carregamento das fonts
-
+SplashScreen.preventAutoHideAsync() // Previne o que a SplashScreen suma antes do carregamento das fontes
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -30,12 +29,13 @@ const Routes = () => {
     if (!loaded && !error) return null
 
     return (
-            <Stack.Navigator initialRouteName="Home" screenOptions={{
+            <Stack.Navigator initialRouteName="Dashboard" screenOptions={{
                 headerTitleAlign: 'center',
                 headerTitleStyle: {
                     fontFamily: 'Alexandria-Bold',
                     fontSize: 18
-                }
+                },
+                headerShown: false
             }}>
                 <Stack.Screen name="Dashboard" component={Dashboard}/>
                 <Stack.Screen name="Home" component={Home} />
