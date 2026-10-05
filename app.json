@@ -22,8 +22,6 @@
     },
     "plugins": [
       "expo-font",
-      "expo-splash-screen"
-      "expo-font",
       "expo-splash-screen",
       "expo-sqlite"
     ]

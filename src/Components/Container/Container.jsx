@@ -3,9 +3,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Container = ({ children, style }) => {
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
             <View style={[
-                { flex: 1, paddingHorizontal: 20, paddingTop: 15, },
+                {
+                    flex: 1,
+                    paddingHorizontal: 20,
+                    paddingTop: 15,
+                },
                 style
             ]}>
                 {children}

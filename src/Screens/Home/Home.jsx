@@ -1,11 +1,12 @@
 import CustomText from '../../Components/Text/CustomText'
 import Container from '../../Components/Container/Container'
+import ScenesList from '../../Components/Scenes List/ScenesList';
 
 
 const Home = () => {
     return (
         <Container>
-            <CustomText style={{fontWeight: 100}}>Home Screen</CustomText>
+            <ScenesList />
         </Container>
     )
 }

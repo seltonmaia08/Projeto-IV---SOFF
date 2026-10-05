@@ -3,7 +3,7 @@ import Topo_tela from '../../../components/Topo_tela';
 
 const styles = StyleSheet.create({
     escopoTela: {flex: 1},
-    textos: {color: "white", fontSize: 14, fontWeight: "bold", fontFamily: "Alexandria"},
+    textos: {color: "white", fontSize: 14, fontWeight: "bold"},
     conteudo: {flex: 1, alignItems: "center", paddingTop: 40, position: "relative"},
     botao_canto: {position: "absolute", bottom: 25, right: 25, color: "#F0EADE"}
 });
