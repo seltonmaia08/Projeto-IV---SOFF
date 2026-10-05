@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
-import CustomText from '../src/Components/Text/CustomText';
+import CustomText from '../Text/CustomText';
 import GetOut_button from './GetOut_button';
 import GetIn_button from './GetIn_button';
 

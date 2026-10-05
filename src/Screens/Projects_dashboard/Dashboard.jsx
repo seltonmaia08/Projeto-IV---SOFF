@@ -2,10 +2,10 @@ import { CirclePlus } from 'lucide-react-native';
 import { useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 
-import Topo_tela from '../../../components/Topo_tela';
-import Card_projeto from '../../../components/Card_projeto';
+import Topo_tela from '../../Components/Projetos_dashboard/Topo_tela';
+import Card_projeto from '../../Components/Projetos_dashboard/Card_projeto';
 import CustomText from '../../Components/Text/CustomText';
-import NewProjetoPopUp from '../../../components/NewProjetoPopUp';
+import NewProjetoPopUp from '../../Components/Projetos_dashboard/NewProjetoPopUp';
 
 const styles = StyleSheet.create({
     escopoTela: {flex: 1},
