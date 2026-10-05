@@ -3,7 +3,10 @@ import Container from '../../Components/Container/Container'
 import ScenesList from '../../Components/Scenes List/ScenesList';
 
 
-const Home = () => {
+const Home = ({ route }) => {
+
+    const { idProject } = route?.params || {}
+    console.log(idProject)
     return (
         <Container>
             <ScenesList />

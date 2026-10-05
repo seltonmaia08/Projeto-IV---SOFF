@@ -1,15 +1,15 @@
 import { BaseServices } from "./BaseServices";
 
-export const callService = BaseServices('call')
-export const continuityService = BaseServices('continuity')
-export const departmentService = BaseServices('department')
-export const notesService = BaseServices('notes')
-export const projectService = BaseServices('project')
-export const projectMemberService = BaseServices('projectMember')
-export const reminderService = BaseServices('reminder')
-export const scenesListService = BaseServices('scenesList')
-export const userService = BaseServices('user')
-export const toDoListService = BaseServices('toDoList')
+export const callService = BaseServices('Call')
+export const continuityService = BaseServices('Continuity')
+export const departmentService = BaseServices('Department')
+export const notesService = BaseServices('Notes')
+export const projectService = BaseServices('Project')
+export const projectMemberService = BaseServices('ProjectMember')
+export const reminderService = BaseServices('Reminder')
+export const scenesListService = BaseServices('ScenesList')
+export const toDoListService = BaseServices('ToDoList')
+export const userService = BaseServices('User')
 
 
 console.log(userService.getAll())
