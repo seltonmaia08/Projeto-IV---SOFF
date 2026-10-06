@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
-import CustomText from '../src/Components/Text/CustomText';
+import CustomText from '../Text/CustomText';
 import GetOut_button from './GetOut_button';
 import GetIn_button from './GetIn_button';
 
@@ -35,18 +35,25 @@ const styles = StyleSheet.create({
     botoes: {flexDirection: "row", justifyContent: "space-between"}
 })
 
-const Card_projeto = ({id, nome, produtora, onExcluir}) => {
+const Card_projeto = ({idProject, projectName, producer, created_at, onExcluir}) => {
 
     const [expandido, setExpandido] = useState(false);
     const navegacao = useNavigation();
 
     const alternarDropDown = () => {setExpandido(!expandido)}
 
+    const date = created_at
+    const formatedDate = new Date(date).toLocaleDateString(
+        'pt-br', 
+        { timeZone: 'UTC'}
+    )
+
+
     return (
         <View style={styles.cardContainer}>
         
             <TouchableOpacity style={styles.cardTopo} onPress={alternarDropDown} activeOpacity={0.5}>
-                <CustomText style={styles.cardTitulo}>{nome}</CustomText>
+                <CustomText style={styles.cardTitulo}>{projectName}</CustomText>
                 {
                     expandido? <ChevronUp size={24} style={styles.setinha}/> : <ChevronDown size={24} style={styles.setinha}/>
                 }
@@ -59,22 +66,22 @@ const Card_projeto = ({id, nome, produtora, onExcluir}) => {
                         <View style={styles.cardInfo}>
                             <View style={styles.cardSessao}>
                                 <CustomText style={styles.cardLabel}>Produtora: </CustomText>
-                                <CustomText style={styles.cardTexto}>{produtora}</CustomText>
+                                <CustomText style={styles.cardTexto}>{producer}</CustomText>
                             </View>
 
                             <View style={styles.cardSessao}>
                                 <CustomText style={styles.cardLabel}>Criado em: </CustomText>
-                                <CustomText style={styles.cardTexto}>(data)</CustomText>
+                                <CustomText style={styles.cardTexto}>{formatedDate}</CustomText>
                             </View>
                         </View>
 
                         <View style={styles.botoes}>
 
-                            <TouchableOpacity activeOpacity = {0.7} onPress={() => onExcluir(id)}>
+                            <TouchableOpacity activeOpacity = {0.7} onPress={() => onExcluir({idProject, projectName})}>
                                 <GetOut_button acao = "EXCLUIR"/>
                             </TouchableOpacity>
 
-                            <TouchableOpacity activeOpacity = {0.7} onPress={() => navegacao.navigate("Home")}>
+                            <TouchableOpacity activeOpacity = {0.7} onPress={() => navegacao.navigate("Home", {idProject})}>
                                 <GetIn_button acao = "ENTRAR"/>
                             </TouchableOpacity>
 

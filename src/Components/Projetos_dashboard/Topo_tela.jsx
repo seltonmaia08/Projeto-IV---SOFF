@@ -1,7 +1,7 @@
 import { CircleUser } from 'lucide-react-native';
 
 import { Text, View, StyleSheet } from 'react-native';
-import CustomText from '../src/Components/Text/CustomText';
+import CustomText from '../Text/CustomText';
 
 const styles = StyleSheet.create({
     escopoTopo: {
