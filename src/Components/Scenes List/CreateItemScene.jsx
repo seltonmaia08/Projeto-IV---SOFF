@@ -1,11 +1,45 @@
-import { Modal, StyleSheet, TextInput, View } from 'react-native'
+import { Alert, Modal, StyleSheet, TextInput, View } from 'react-native'
 import CustomText from '../Text/CustomText'
 import ButtonCancel from '../Buttons/ButtonCancel'
 import ButtonSave from '../Buttons/ButtonSave'
 import { BlurView } from 'expo-blur'
+import { useState } from 'react'
 
-const CreateItemList = ({ setIsActive }) => {
+import { scenesListService } from '../../Services/api'
+
+const CreateItemList = ({ setIsActive, refetch, idProject }) => {
+    const [scene, setScene] = useState(0)
+    const [plan, setPlan] = useState('')
+    const [detail, setDetail] = useState('')
+    const [note, setNote] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const createScene = async () => {
+        try {
+            setLoading(true)
+            const newScene = await scenesListService.create({
+                sceneNumber: scene,
+                scenePlan: plan,
+                sceneDetails: detail,
+                sceneNote: note,
+                idProject: idProject
+            })
+            refetch()
+
+        } catch (error) {
+            console.error('Erro ao criar cena:', error)
+            Alert.alert('Erro', 'Não foi possível criar a cena. Tente novamente.')
+        } finally {
+            setLoading(false)
+        }
+
+
+        setIsActive(false)
+    }
+
+
     return (
+
         <Modal
             transparent={true}
             animationType='fade'
@@ -18,11 +52,17 @@ const CreateItemList = ({ setIsActive }) => {
                             style={styles.input_one}
                             placeholder='Cena'
                             placeholderTextColor={'#5F5F5F'}
+                            keyboardType='number-pad'
+                            value={scene}
+                            onChangeText={setScene}
                         />
                         <TextInput
                             style={styles.input_one}
                             placeholder='plano'
                             placeholderTextColor={'#5F5F5F'}
+                            keyboardType='default'
+                            value={plan}
+                            onChangeText={setPlan}
                         />
                     </View>
                     <View>
@@ -30,6 +70,9 @@ const CreateItemList = ({ setIsActive }) => {
                             style={styles.input_two}
                             placeholder='Ex: EXT. Fazenda - DIA'
                             placeholderTextColor={'#5F5F5F'}
+                            keyboardType='default'
+                            value={detail}
+                            onChangeText={setDetail}
                         />
                         <CustomText style={styles.caption}>Coloque EXT/INT e DIA/TARDE/NOITE no título.</CustomText>
                     </View>
@@ -37,10 +80,13 @@ const CreateItemList = ({ setIsActive }) => {
                         style={styles.input_three}
                         placeholder='Faça uma anotação'
                         placeholderTextColor={'#5F5F5F'}
+                        keyboardType='default'
+                        value={note}
+                        onChangeText={setNote}
                     />
                     <View style={styles.buttons}>
                         <ButtonCancel onPress={() => setIsActive(false)} />
-                        <ButtonSave onPress={() => console.log('Ação salva...')} />
+                        <ButtonSave onPress={createScene} />
                     </View>
                 </View>
             </BlurView>

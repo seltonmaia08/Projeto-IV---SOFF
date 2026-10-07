@@ -3,15 +3,26 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
 
+import { scenesListService } from '../../Services/api'
+
 const data = [
     { label: 'Pendente', value: '1' },
     { label: 'Em andamento', value: '2' },
     { label: 'Concluído', value: '3' },
 ];
 
-const StatusSceneDrop = () => {
-    const [value, setValue] = useState(data[0].value)
+const StatusSceneDrop = ({ id, status, setStatus }) => {
+    const [value, setValue] = useState(status ?? data[0].value)
     const [isFocus, setIsFocus] = useState(false)
+    
+    const updateStatus = async (newValue) => {
+        try {
+            await scenesListService.update(id, { sceneStatus: newValue }, 'idScenes')
+            if (setStatus) setStatus(newValue)
+        } catch (error) {
+            console.error('Erro ao atualizar status:', error)
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -38,6 +49,7 @@ const StatusSceneDrop = () => {
                 onChange={item => {
                     setValue(item.value);
                     setIsFocus(false);
+                    updateStatus(item.value)
                 }}
             />
         </View>

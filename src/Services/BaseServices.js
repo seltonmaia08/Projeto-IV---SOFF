@@ -37,11 +37,12 @@ export const BaseServices = (tableName) => ({
     },
 
     // Atualizar os dados em uma tabela
-    async update(id, updates) {
+    async update(id, updates, idColumn = null) {
+        const colId = idColumn ?? ('id' + tableName)
         const { data, error } = await supabase
             .from(tableName)
             .update(updates)
-            .eq('id', id)
+            .eq(colId, id)
             .select()
 
         if (error) throw error
@@ -59,5 +60,16 @@ export const BaseServices = (tableName) => ({
 
         if (error) throw error
         return true
-    }
+    },
+
+    async getAllColumn(columnName, value, options = {orderBy: 'created_at', ascending: false}) {
+        const { data, error } = await supabase
+            .from(tableName)
+            .select('')
+            .eq(columnName, value)
+            .order(options.orderBy, {ascending: options.ascending})
+
+            if(error) throw error
+            return data
+    },
 })

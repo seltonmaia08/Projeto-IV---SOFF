@@ -1,11 +1,12 @@
 import CustomText from '../../Components/Text/CustomText'
 import Container from '../../Components/Container/Container'
 import ScenesList from '../../Components/Scenes List/ScenesList';
+import { useProjectContext } from '../../Context/ProjectContext';
 
 
-const Home = ({ route }) => {
+const Home = () => {
 
-    const { idProject } = route?.params || {}
+    const { idProject, projectName } = useProjectContext()
     console.log(idProject)
     return (
         <Container>

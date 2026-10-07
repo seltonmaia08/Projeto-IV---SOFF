@@ -3,24 +3,25 @@ import CustomText from '../Text/CustomText'
 import StatusSceneDrop from './StatusSceneDrop'
 
 const ListComponent = ({ item }) => {
+    
     return (
         <View style={styles.compList}>
             <View style={styles.detailsScene}>
                 <CustomText style={styles.sceneNum}>
-                   { item.scene }
+                   { item.sceneNumber }
                 </CustomText>
                 <CustomText style={styles.scenePlan}>
-                    { item.plan }
+                    { item.scenePlan }
                 </CustomText>
             </View>
             <View style={styles.detailsScene}>
                 <CustomText style={styles.titleScene}>
-                    { item.title }
+                    { item.sceneDetails }
                 </CustomText>
                 <CustomText style={styles.subtitleScene}>
-                    { item.subtitle }
+                    { item.sceneNote }
                 </CustomText>
-                <StatusSceneDrop />
+                <StatusSceneDrop id={item.idScenes} status={item.sceneStatus}/>
             </View>
         </View>
     )
