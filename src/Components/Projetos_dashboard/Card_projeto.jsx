@@ -77,7 +77,7 @@ const Card_projeto = ({idProject, projectName, producer, created_at, onExcluir})
 
                         <View style={styles.botoes}>
 
-                            <TouchableOpacity activeOpacity = {0.7} onPress={() => onExcluir(idProject)}>
+                            <TouchableOpacity activeOpacity = {0.7} onPress={() => onExcluir({idProject, projectName})}>
                                 <GetOut_button acao = "EXCLUIR"/>
                             </TouchableOpacity>
 
