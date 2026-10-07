@@ -7,6 +7,8 @@ import Card_projeto from '../../Components/Projetos_dashboard/Card_projeto';
 import CustomText from '../../Components/Text/CustomText';
 import ConfirmacaoPopUp from '../../Components/Projetos_dashboard/ConfirmacaoPopUp';
 import NewProjetoPopUp from '../../Components/Projetos_dashboard/NewProjetoPopUp';
+import Anotacoes from '../../Components/Anotacoes/Anotacoes';
+import AnotacoesPopUp from '../../Components/Anotacoes/AnotacoesPopUp';
 
 //import's backend
 import { useProject } from '../../Hook/useProjects';
@@ -61,7 +63,8 @@ const Dashboard = () => {
 
             <Topo_tela/>
             <View style={styles.conteudo}>
-
+                {/*<Anotacoes/>
+                <AnotacoesPopUp/>*/}
                 <CustomText style={styles.titulo}>MEUS PROJETOS</CustomText>
 
                 {loading && <ActivityIndicator size="large" color="#EF5625" />}
