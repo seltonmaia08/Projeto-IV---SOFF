@@ -4,7 +4,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen'
 
 import Dashboard from "../Screens/Projects_dashboard/Dashboard";
-import Home from "../Screens/Home/Home";
+import ProjectStack from "./projectStack";
 
 SplashScreen.preventAutoHideAsync() // Previne o que a SplashScreen suma antes do carregamento das fontes
 const Stack = createNativeStackNavigator();
@@ -38,7 +38,7 @@ const Routes = () => {
                 headerShown: false
             }}>
                 <Stack.Screen name="Dashboard" component={Dashboard}/>
-                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="ProjectStack" component={ProjectStack} />
             </Stack.Navigator>
     )
 }

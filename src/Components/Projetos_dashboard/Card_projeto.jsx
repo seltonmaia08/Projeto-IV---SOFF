@@ -81,7 +81,7 @@ const Card_projeto = ({idProject, projectName, producer, created_at, onExcluir})
                                 <GetOut_button acao = "EXCLUIR"/>
                             </TouchableOpacity>
 
-                            <TouchableOpacity activeOpacity = {0.7} onPress={() => navegacao.navigate("Home", {idProject})}>
+                            <TouchableOpacity activeOpacity = {0.7} onPress={() => navegacao.navigate("ProjectStack", {idProject: idProject, projectName: projectName})}>
                                 <GetIn_button acao = "ENTRAR"/>
                             </TouchableOpacity>
 

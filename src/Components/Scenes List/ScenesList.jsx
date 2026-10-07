@@ -1,39 +1,51 @@
-import { FlatList, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
+import { useEffect, useState } from 'react'
+
 import BackgroundGradient from '../BackgroundGradient/BackgroundGradient'
 import ListComponent from './ListComponent'
 import CustomText from '../Text/CustomText'
 import AddSceneList from '../Buttons/AddSceneList'
 import GerarPDF from '../Buttons/GerarPDF'
 import CreateItemList from './CreateItemScene'
-import { useState } from 'react'
+
+import { useProjectContext } from '../../Context/ProjectContext'
+import { useScenes } from '../../Hook/useScenes'
 
 const ScenesList = () => {
     const [isActive, setIsActive] = useState(false)
-    console.log(isActive)
+
+    const { idProject } = useProjectContext()
+    const { scenes, loading, refetch } = useScenes(idProject)
+    console.log(idProject)
 
     const verifyStateActive = () => {
-        console.log(isActive)
-        if(!isActive){
-            setIsActive(true)
-        } else setIsActive(false)
+        setIsActive(!isActive)
     }
 
-    const dadosDeTeste = [
-        { id: '1', scene: '19', plan: 'Plano 4', title: 'Fazenda - EXT - DIA', subtitle: 'Precisa dos animais' },
-        { id: '2', scene: '20', plan: 'Plano 1', title: 'Casa - INT - NOITE', subtitle: 'Luz apagada' }
-    ]
+    useEffect(() => {
+        refetch()
+    },[idProject])
 
     return (
         <View style={styles.container}>
             <CustomText style={styles.label}>Lista de Cenas</CustomText>
             {/* <BackgroundGradient> */}
             <View style={styles.card}>
-                <FlatList
-                    style={{ width: '100%' }}
-                    data={dadosDeTeste}
-                    renderItem={({ item }) => <ListComponent item={item} />}
-                    keyExtractor={(item) => item.id}
-                />
+                
+                {
+                    loading ? (
+                        <ActivityIndicator size={'large'} color={'#EF5625'} />
+                    ) : (
+                        <FlatList
+                            style={{ width: '100%' }}
+                            data={scenes}
+                            renderItem={({ item }) => <ListComponent item={item} />}
+                            keyExtractor={(item) => item.idScene}
+                        />
+                    )
+
+                }
+
                 <AddSceneList 
                     onPress={verifyStateActive}
                     onChange={setIsActive}
@@ -42,7 +54,7 @@ const ScenesList = () => {
             </View>
             {
 
-                isActive === true && <CreateItemList setIsActive={setIsActive}/>
+                isActive && <CreateItemList setIsActive={setIsActive} refetch={refetch} idProject={idProject}/>
 
             }
             {/* </BackgroundGradient> */}
