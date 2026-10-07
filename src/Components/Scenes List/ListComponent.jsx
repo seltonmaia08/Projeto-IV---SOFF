@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         gap: 20,
-        marginBottom: 10
     },
     detailsScene: {
         display: 'flex',

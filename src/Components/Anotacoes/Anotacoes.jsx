@@ -16,10 +16,10 @@ function Anotacoes() {
 }
 
 const styles = StyleSheet.create({
-    geral: {gap: 10},
+    geral: {flex: 1, gap: 10},
     titulo: {fontSize: 18},
     escopo: {
-        width: 320,
+        width: '100%',
         borderRadius: 15, 
         borderColor: "#EF5625", 
         borderWidth: 2, 

@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   botaoFlutuante: {
     position: "absolute",
     right: 20,
-    bottom: 90,
+    bottom: 60,
     width: 64,
     height: 64,
     borderRadius: 32,
@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 6,
+    zIndex: 1,
   },
   overlay: {
     flex: 1,
@@ -210,6 +211,7 @@ const styles = StyleSheet.create({
     height: 54,
     backgroundColor: "#EF5625",
     borderRadius: 15,
+    zIndex: 10
   },
   botaoDesativado: {
     opacity: 0.5,
