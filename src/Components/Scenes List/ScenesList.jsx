@@ -66,7 +66,8 @@ export default ScenesList
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
+        marginBottom: 10
     },
     card: {
         width: '100%',
