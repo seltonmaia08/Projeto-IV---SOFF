@@ -70,7 +70,7 @@ const ScenesList = () => {
           />
         )}
 
-        <AddSceneList onPress={verifyStateActive} onChange={setIsActive} />
+        <AddSceneList title={"ADICIONAR CENA"} onPress={verifyStateActive} onChange={setIsActive} />
         <GerarPDF
           onPress={aoTocarGerarPdf}
           desativado={semCenas}

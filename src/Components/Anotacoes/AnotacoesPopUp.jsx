@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, Modal, Text } from 'react-native';
 import { useState, useEffect } from 'react';
 import { BlurView } from 'expo-blur';
 import CustomText from '../Text/CustomText';
@@ -7,13 +7,11 @@ import GetOut_button from '../Projetos_dashboard/GetOut_button';
 
 function AnotacoesPopUp({visivel, textoInicial, aoFechar, aoSalvar}) {
 
+    const [titulo, setTitulo] = useState("");
     const [anotacoes, setAnotacoes] = useState(textoInicial);
 
     useEffect(
-        () => {
-            
-            if(visivel){setAnotacoes(textoInicial)}
-
+        () => {if(visivel){setAnotacoes(textoInicial)}
         }, [visivel, textoInicial]
     )
 
@@ -25,13 +23,23 @@ function AnotacoesPopUp({visivel, textoInicial, aoFechar, aoSalvar}) {
                     
                     <View style={styles.escopo}>
                         
-                        <View style={styles.campoTexto}>
-                            <TextInput
-                                style={styles.texto}
-                                value={anotacoes}
-                                onChangeText={setAnotacoes} 
-                                multiline={true}
-                            ></TextInput>
+                        <View style={styles.card}>
+                            <CustomText>Título da nota</CustomText>
+                            <View style={styles.campoTitulo}>
+                                <TextInput value={titulo} onChangeText={setTitulo} style={styles.texto}></TextInput>
+                            </View>
+                        </View>
+
+                        <View style={styles.card}>
+                            <CustomText>Anotações</CustomText>
+                            <View style={styles.campoTexto}>
+                                <TextInput
+                                    style={styles.texto}
+                                    value={anotacoes}
+                                    onChangeText={setAnotacoes} 
+                                    multiline={true}
+                                ></TextInput>
+                            </View>
                         </View>
 
                         <View style={styles.botoes}>
@@ -39,6 +47,7 @@ function AnotacoesPopUp({visivel, textoInicial, aoFechar, aoSalvar}) {
                             <TouchableOpacity activeOpacity={0.5} onPress={aoFechar}>
                                 <GetOut_button acao="CANCELAR"/>
                             </TouchableOpacity>
+
                             <TouchableOpacity activeOpacity={0.5} onPress={() => aoSalvar(anotacoes)}>
                                 <GetIn_button acao="SALVAR"/>
                             </TouchableOpacity>
@@ -57,14 +66,14 @@ const styles = StyleSheet.create({
     escopo: {
         width: 320,
         borderRadius: 15, 
-        borderColor: "#EF5625", 
         backgroundColor: "#313131",
-        borderWidth: 2, 
         overflow: "hidden",
         padding: 10,
         gap: 20
     },
-    campoTexto: {backgroundColor: "#F0EADE", height: 400, borderRadius: 15, padding: 20},
+    card: {gap: 10},
+    campoTitulo: {backgroundColor: "#F0EADE", height: 50, borderRadius: 15, padding: 10, justifyContent: "center"},
+    campoTexto: {backgroundColor: "#F0EADE", height: 200, borderRadius: 15, padding: 10},
     texto: {
         fontSize: 14,
         color: "#313131",

@@ -3,13 +3,15 @@ import CustomText from "../Text/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
 import { Plus } from "lucide-react-native";
 
-const AddSceneList = ({ onPress }) => {
+const AddSceneList = ({ title, onPress }) => {
     return (
         <TouchableOpacity 
             onPress={onPress}
-            style={styles.button}>
+            style={styles.button}
+            activeOpacity={0.5}
+        >
             <Plus size={16} color={'#313131'} />
-            <CustomText style={styles.textButton}>Adicionar Cena</CustomText>
+            <CustomText style={styles.textButton}>{title}</CustomText>
         </TouchableOpacity >
     )
 }
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 58,
         borderRadius: 15,
-        backgroundColor: '#F0EADE',
+        backgroundColor: '#DAD0B7',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
