@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import CustomText from '../Text/CustomText';
 import GetOut_button from './GetOut_button';
-import GetIn_button from './GetIn_button';
+import GetInGreen_button from './GetInGreen_button';
 
 const styles = StyleSheet.create({
     cardContainer: {
@@ -82,7 +82,7 @@ const Card_projeto = ({idProject, projectName, producer, created_at, onExcluir})
                             </TouchableOpacity>
 
                             <TouchableOpacity activeOpacity = {0.7} onPress={() => navegacao.navigate("ProjectStack", {idProject: idProject, projectName: projectName})}>
-                                <GetIn_button acao = "ENTRAR"/>
+                                <GetInGreen_button acao = "ENTRAR"/>
                             </TouchableOpacity>
 
                         </View>

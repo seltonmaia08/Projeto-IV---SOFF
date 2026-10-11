@@ -5,7 +5,7 @@ import { ActivityIndicator, Text, View, StyleSheet, TouchableOpacity } from 'rea
 import Topo_tela from '../../Components/Projetos_dashboard/Topo_tela';
 import Card_projeto from '../../Components/Projetos_dashboard/Card_projeto';
 import CustomText from '../../Components/Text/CustomText';
-import ConfirmacaoPopUp from '../../Components/Projetos_dashboard/ConfirmacaoPopUp';
+import ConfirmacaoPopUp from '../../Components/ConfirmPopUp/ConfirmacaoPopUp';
 import NewProjetoPopUp from '../../Components/Projetos_dashboard/NewProjetoPopUp';
 
 //import's backend
@@ -102,7 +102,7 @@ const Dashboard = () => {
                     visivel = {confirmacaoVisivel}
                     aoCancelar={cancelarExclusao}
                     aoExecutar={excluirProjeto}
-                    nome={projetoParaExcluir?.projectName}
+                    mensagem={`o projeto "${projetoParaExcluir?.projectName}"`}
                 />
                 
             </View>

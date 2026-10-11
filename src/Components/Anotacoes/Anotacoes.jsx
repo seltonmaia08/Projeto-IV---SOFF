@@ -4,16 +4,35 @@ import { useState } from 'react';
 import CustomText from '../Text/CustomText';
 import AnotacoesPopUp from './AnotacoesPopUp';
 import AddSceneList from '../Buttons/AddSceneList';
+import LerAnotacao from './LerAnotacao';
 
 function Anotacoes() {
 
+    const [listaAnotacoes, setListaAnotacoes] = useState([]);
     const [anotacoesVisivel, setAnotacoesVisivel] = useState(false);
-    const [textoAnotacao, setTextoAnotacao] = useState("");
+    const [anotacaoSelecionada, setAnotacaoSelecionada] = useState(null);
 
     const handleFechar = () => {setAnotacoesVisivel(false)}
-    const handleSalvar = (novoTexto) => {
-        setTextoAnotacao(novoTexto);
+    const handleSalvar = (title, newNote) => {
+        setListaAnotacoes([...listaAnotacoes, {titulo: title, anotacao: newNote}]);
         setAnotacoesVisivel(false);
+    }
+
+    const handleApagarAnotacao = (title) => {
+        setListaAnotacoes(anteriores => anteriores.filter(item => item.titulo !== title));
+        setAnotacaoSelecionada(null);
+    }
+
+    const atualizarNota = (oldTitle, newTitle, newNote) => {
+        setListaAnotacoes(anteriores => 
+            anteriores.map(cada => { // preencho minha lista retornando todos os antigos valores com map;
+                if(cada.titulo === oldTitle){ return {titulo: newTitle, anotacao: newNote}} 
+                // porém, ao achar o título antigo da anotação que eu quero alterar, eu
+                // retorno ela com os novos valores
+                return cada; // e se não achar, eu retorno simplesmente o que já era antes.
+            })  
+        )
+        setAnotacaoSelecionada(null);
     }
 
     return(
@@ -24,36 +43,39 @@ function Anotacoes() {
             <View style={styles.escopo}>
                 
                 <View style={styles.cards}>
-                    <View style={styles.card}>
-                        <View style={styles.conteudo}>
-                            <CustomText style={styles.subtitulos}>Anotação 1</CustomText>
-                            <CustomText style={styles.texto}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio labore sunt eveniet quibusdam debitis quae amet reprehenderit explicabo, aut deserunt eius excepturi dolorum at veritatis velit iusto maiores. Veniam, dolore.</CustomText>    
-                        </View>
-                    </View>
-                    <View style={styles.card}>
-                        <View style={styles.conteudo}>
-                            <CustomText style={styles.subtitulos}>Anotação 1</CustomText>
-                            <CustomText style={styles.texto}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio labore sunt eveniet quibusdam debitis quae amet reprehenderit explicabo, aut deserunt eius excepturi dolorum at veritatis velit iusto maiores. Veniam, dolore.</CustomText>    
-                        </View>
-                    </View>
-                    <View style={styles.card}>
-                        <View style={styles.conteudo}>
-                            <CustomText style={styles.subtitulos}>Anotação 1</CustomText>
-                            <CustomText style={styles.texto}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio labore sunt eveniet quibusdam debitis quae amet reprehenderit explicabo, aut deserunt eius excepturi dolorum at veritatis velit iusto maiores. Veniam, dolore.</CustomText>    
-                        </View>
-                    </View>
+                    
+                    {
+                        listaAnotacoes.map((cada, index) => {
+                            return(
+                                <TouchableOpacity onPress={() => setAnotacaoSelecionada(cada)} key={index} activeOpacity={0.8}>
+                                    <View style={styles.card}>
+                                        <View style={styles.conteudo}>
+                                            <CustomText style={styles.subtitulos}>{cada.titulo}</CustomText>
+                                            <CustomText style={styles.texto}>{cada.anotacao}</CustomText>    
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                    
                 </View>
-
                 <AddSceneList title={"ADICIONAR ANOTAÇÃO"} onPress={() => setAnotacoesVisivel(true)}/>
-
-
             </View>
             <AnotacoesPopUp
                 visivel = {anotacoesVisivel}
-                textoInicial = {textoAnotacao}
                 aoFechar = {handleFechar}
                 aoSalvar= {handleSalvar}
             />
+            <LerAnotacao
+                visivel = {anotacaoSelecionada != null}
+                title = {anotacaoSelecionada?.titulo}
+                note = {anotacaoSelecionada?.anotacao}
+                aoFechar = {() => setAnotacaoSelecionada(null)}
+                aoExcluir = {handleApagarAnotacao}
+                aoSalvar = {atualizarNota}
+            />
+            
         </View>
     )
 }
