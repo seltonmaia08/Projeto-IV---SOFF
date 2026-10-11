@@ -1,27 +1,37 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import CustomText from '../Text/CustomText'
 import StatusSceneDrop from './StatusSceneDrop'
+import { ClosedCaption, X } from 'lucide-react-native'
 
-const ListComponent = ({ item }) => {
-    
+const ListComponent = ({ item, deleteScene }) => {
+
     return (
         <View style={styles.compList}>
             <View style={styles.detailsScene}>
                 <CustomText style={styles.sceneNum}>
-                   { item.sceneNumber }
+                    {item.sceneNumber}
                 </CustomText>
                 <CustomText style={styles.scenePlan}>
-                    { item.scenePlan }
+                    {item.scenePlan}
                 </CustomText>
             </View>
             <View style={styles.detailsScene}>
-                <CustomText style={styles.titleScene}>
-                    { item.sceneDetails }
+                <View style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-around'}}>
+                    <CustomText style={styles.titleScene}>
+                        {item.sceneDetails}
+                    </CustomText>
+                    <TouchableOpacity
+                        onPress={() => deleteScene(item.idScenes)}
+                        >
+                        <X size={24} color={'#313131'} />
+                    </TouchableOpacity>
+                </View>
+                <CustomText
+                    style={styles.subtitleScene}
+                    >
+                    {item.sceneNote}
                 </CustomText>
-                <CustomText style={styles.subtitleScene}>
-                    { item.sceneNote }
-                </CustomText>
-                <StatusSceneDrop id={item.idScenes} status={item.sceneStatus}/>
+                <StatusSceneDrop id={item.idScenes} status={item.sceneStatus} />
             </View>
         </View>
     )
@@ -31,12 +41,12 @@ export default ListComponent
 
 const styles = StyleSheet.create({
     compList: {
-        width: '100%',
-        height: 97,
+        flex: 1,
+        height: 'auto',
         display: 'flex',
         alignItems: 'flex-start',
         flexDirection: 'row',
-        backgroundColor: '#F0EADE',
+        backgroundColor: '#DAD0B7',
         borderRadius: 15,
         paddingVertical: 10,
         paddingHorizontal: 10,
@@ -62,14 +72,19 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center'
     },
     scenePlan: {
+        width: '100%',
         color: '#313131',
         fontSize: 16,
+        textAlign: 'center',
+        paddingTop: 5
     },
-     titleScene: {
+    titleScene: {
+        flex: 1,
         color: '#313131',
         fontSize: 16,
     },
     subtitleScene: {
+        width: 330,
         color: '#313131',
         fontSize: 12,
         fontWeight: '100',

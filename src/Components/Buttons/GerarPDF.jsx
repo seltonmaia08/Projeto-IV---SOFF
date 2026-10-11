@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 58,
     borderRadius: 15,
-    backgroundColor: "#F0EADE",
+    borderWidth: 2,
+    borderColor: '#DAD0B7',
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
@@ -33,16 +34,16 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   textButton: {
-    color: "#313131",
+    color: "#DAD0B7",
     fontSize: 14,
     textTransform: "uppercase",
     letterSpacing: 2,
     fontWeight: "bold",
   },
   buttonDesativado: {
-    backgroundColor: "#5F5F5F",
+    borderColor: "#5F5F5F",
   },
   textDesativado: {
-    color: "#F0EADE",
+    color: "#5F5F5F",
   },
 });

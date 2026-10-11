@@ -17,14 +17,19 @@ import CreateItemList from "./CreateItemScene";
 import { useProjectContext } from "../../Context/ProjectContext";
 import { useScenes } from "../../Hook/useScenes";
 import { gerarPdfCenas } from "../../Utils/gerarPdfCenas";
+import { scenesListService } from "../../Services/api";
+import ConfirmacaoPopUp from "../Projetos_dashboard/ConfirmacaoPopUp";
 
 const ScenesList = () => {
   const [isActive, setIsActive] = useState(false);
   const [gerandoPdf, setGerandoPdf] = useState(false);
-
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [sceneToDelete, setSceneToDelete] = useState(null); 
+  
   const { idProject, projectName } = useProjectContext();
   const { scenes, loading, refetch } = useScenes(idProject);
-  console.log(idProject);
+  
+
 
   const semCenas = scenes.length === 0;
   const verifyStateActive = () => {
@@ -50,6 +55,31 @@ const ScenesList = () => {
     }
   };
 
+  // Renderiza um popup de confirmação de deleção
+  const handleDelete = (id) => {
+    setSceneToDelete(id);
+    setIsModalVisible(true);
+  };
+
+  const confirmarDelecao = async () => {
+    if (!sceneToDelete) return;
+
+    try {
+      await scenesListService.delete(sceneToDelete, 'idScenes');
+      refetch();
+    } catch (err) {
+      console.log("Erro ao deletar cena:", err);
+    } finally {
+      setIsModalVisible(false);
+      setSceneToDelete(null);
+    }
+  };
+
+  const cancelarDelecao = () => {
+    setIsModalVisible(false);
+    setSceneToDelete(null);
+  };
+
   useEffect(() => {
     refetch();
   }, [idProject]);
@@ -63,10 +93,10 @@ const ScenesList = () => {
           <ActivityIndicator size={"large"} color={"#EF5625"} />
         ) : (
           <FlatList
-            style={{ width: "100%" }}
+            style={{ flex: 1 }}
             data={scenes}
-            renderItem={({ item }) => <ListComponent item={item} />}
-            keyExtractor={(item) => item.idScene}
+            renderItem={({ item }) => <ListComponent item={item} deleteScene={() => handleDelete(item.idScenes)} />}
+            keyExtractor={(item) => item.idScenes}
           />
         )}
 
@@ -84,6 +114,17 @@ const ScenesList = () => {
           idProject={idProject}
         />
       )}
+
+      {
+
+        isModalVisible && <ConfirmacaoPopUp 
+                        visivel={true}
+                        aoCancelar={cancelarDelecao}
+                        aoExecutar={confirmarDelecao}  
+                        nome={'esta cena'}
+                      />
+
+      }
       {/* </BackgroundGradient> */}
     </View>
   );
@@ -99,8 +140,6 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     backgroundColor: "#313131",
-    borderColor: "#EF5625",
-    borderWidth: 2,
     borderRadius: 15,
     padding: 10,
   },

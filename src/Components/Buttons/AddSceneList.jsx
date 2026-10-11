@@ -21,13 +21,14 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 58,
         borderRadius: 15,
-        backgroundColor: '#F0EADE',
+        backgroundColor: '#DAD0B7',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         gap: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: 30
     },
     textButton: {
         color: '#313131',

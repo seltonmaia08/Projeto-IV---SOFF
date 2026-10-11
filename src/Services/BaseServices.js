@@ -50,8 +50,8 @@ export const BaseServices = (tableName) => ({
     },
 
     // Deletar dados em uma tabela
-    async delete(id) {
-        const colId = 'id' + tableName
+    async delete(id, idColumn = null) {
+       const colId = idColumn ?? ('id' + tableName)
         console.log(colId + ': ' + id)
         const { data, error } = await supabase
             .from(tableName)

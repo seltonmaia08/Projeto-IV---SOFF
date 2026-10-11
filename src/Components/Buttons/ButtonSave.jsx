@@ -1,13 +1,15 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import CustomText from "../Text/CustomText";
 
-const ButtonSave = ({ onPress }) => {
+const ButtonSave = ({ onPress, loading }) => {
+
     return (
         <TouchableOpacity
+            disabled={loading}
             style={styles.buttonSave}
             onPress={onPress}
         >
-            <CustomText style={styles.text}>Adicionar</CustomText>
+            <CustomText style={styles.text}>{loading ? 'Adicionando' : 'Adicionar'}</CustomText>
         </TouchableOpacity>
     )
 }

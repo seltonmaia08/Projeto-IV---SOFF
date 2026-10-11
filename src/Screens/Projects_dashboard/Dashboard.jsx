@@ -89,7 +89,7 @@ const Dashboard = () => {
                 </View>
 
                 <TouchableOpacity style={styles.botao_plus} activeOpacity={0.5} onPress={() => setModalVisivel(true)}>
-                    <CirclePlus size={50}/>
+                    <CirclePlus style={{marginBottom: 30, marginRight: 20}} size={50} color={'#F0EADE'}/>
                 </TouchableOpacity>
 
                 <NewProjetoPopUp 
