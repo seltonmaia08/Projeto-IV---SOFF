@@ -2,8 +2,8 @@ import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 import CustomText from '../Text/CustomText';
-import GetIn_button from './GetIn_button';
-import GetOut_button from './GetOut_button';
+import GetIn_button from '../Projetos_dashboard/GetIn_button';
+import GetOut_button from '../Projetos_dashboard/GetOut_button';
 
 const styles = StyleSheet.create({
     overlay: {
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     botoes: {flexDirection: "row", gap: 30}
 })
 
-const ConfirmacaoPopUp = ({visivel, aoCancelar, aoExecutar, nome}) => {
+const ConfirmacaoPopUp = ({visivel, aoCancelar, aoExecutar, mensagem}) => {
 
 
     return(
@@ -41,7 +41,7 @@ const ConfirmacaoPopUp = ({visivel, aoCancelar, aoExecutar, nome}) => {
 
                 <View style={styles.escopo}>
 
-                    <CustomText style={styles.alerta}>Você realmente deseja <CustomText style={styles.laranja}>excluir</CustomText> o projeto "{nome}"?</CustomText>
+                    <CustomText style={styles.alerta}>Você realmente deseja <CustomText style={styles.laranja}>excluir</CustomText> {mensagem}?</CustomText>
 
                     <View style={styles.botoes}>
 

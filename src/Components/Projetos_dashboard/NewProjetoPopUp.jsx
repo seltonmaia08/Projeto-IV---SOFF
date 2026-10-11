@@ -144,8 +144,6 @@ const styles = StyleSheet.create({
     popUp: {
         width: 312,
         backgroundColor: "#313131",
-        borderWidth: 3,
-        borderColor: "#EF5625",
         borderRadius: 15,
         padding: 20,
         gap: 40
