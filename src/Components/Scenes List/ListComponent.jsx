@@ -2,12 +2,24 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import CustomText from '../Text/CustomText'
 import StatusSceneDrop from './StatusSceneDrop'
 import { ClosedCaption, X } from 'lucide-react-native'
+import { useState } from 'react'
 
 const ListComponent = ({ item, deleteScene }) => {
+    const [status, setStatus] = useState(item.sceneStatus)
+
+    const getBorderColor = () => {
+        if (status === '2') return '#DA9304';
+        if (status === '3') return '#1B8F65';
+        return '#242424'; 
+    };
 
     return (
-        <View style={styles.compList}>
-            <View style={styles.detailsScene}>
+        <View style={[
+            styles.compList,
+            { borderColor: getBorderColor() }
+        ]}>
+        
+            <View style={styles.leftColumn}>
                 <CustomText style={styles.sceneNum}>
                     {item.sceneNumber}
                 </CustomText>
@@ -15,23 +27,27 @@ const ListComponent = ({ item, deleteScene }) => {
                     {item.scenePlan}
                 </CustomText>
             </View>
-            <View style={styles.detailsScene}>
-                <View style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-around'}}>
-                    <CustomText style={styles.titleScene}>
+
+            <View style={styles.rightColumn}>
+                <View style={styles.headerRow}>
+                    <CustomText style={styles.titleScene} numberOfLines={2}>
                         {item.sceneDetails}
                     </CustomText>
                     <TouchableOpacity
                         onPress={() => deleteScene(item.idScenes)}
-                        >
-                        <X size={24} color={'#313131'} />
+                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                        <X size={20} color={'#313131'} />
                     </TouchableOpacity>
                 </View>
-                <CustomText
-                    style={styles.subtitleScene}
-                    >
+
+                <CustomText style={styles.subtitleScene}>
                     {item.sceneNote}
                 </CustomText>
-                <StatusSceneDrop id={item.idScenes} status={item.sceneStatus} />
+
+                <View style={styles.dropContainer}>
+                    <StatusSceneDrop id={item.idScenes} status={item.sceneStatus} setStatus={setStatus}/>
+                </View>
             </View>
         </View>
     )
@@ -41,55 +57,65 @@ export default ListComponent
 
 const styles = StyleSheet.create({
     compList: {
-        flex: 1,
-        height: 'auto',
-        display: 'flex',
-        alignItems: 'flex-start',
+        width: '100%',
         flexDirection: 'row',
         backgroundColor: '#DAD0B7',
         borderRadius: 15,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        gap: 20,
-        marginBottom: 10
+        paddingVertical: 12,
+        paddingHorizontal: 12,
+        gap: 12,
+        marginBottom: 12,
+        borderLeftWidth: 10,
     },
-    detailsScene: {
-        display: 'flex',
-        justifyContent: 'center',
+    leftColumn: {
+        width: 60,
+        alignItems: 'center',
+    },
+    rightColumn: {
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
+    headerRow: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'flex-start',
+        marginBottom: 4,
     },
     sceneNum: {
         width: 58,
         height: 50,
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: '800',
         backgroundColor: '#313131',
-        borderRadius: 15,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        borderRadius: 12,
         textAlign: 'center',
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        lineHeight: 50,
     },
     scenePlan: {
         width: '100%',
         color: '#313131',
-        fontSize: 16,
+        fontSize: 14,
         textAlign: 'center',
-        paddingTop: 5
+        marginTop: 4,
     },
     titleScene: {
         flex: 1,
         color: '#313131',
-        fontSize: 16,
+        fontSize: 15,
+        fontWeight: '700',
+        marginRight: 8,
     },
     subtitleScene: {
-        width: 330,
-        color: '#313131',
+        width: '100%',
+        color: '#555555',
         fontSize: 12,
-        fontWeight: '100',
-        letterSpacing: 2
+        fontWeight: '400',
+        marginBottom: 8,
     },
-
-
+    dropContainer: {
+        width: '100%',
+        marginTop: 4,
+    }
 })

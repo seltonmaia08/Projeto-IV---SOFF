@@ -20,6 +20,7 @@ const Home = () => {
         <ScrollView
           contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}
         >
           <StatusFilmagem />
           <ScenesList />

@@ -4,6 +4,12 @@ import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 
 import Routes from './src/Routes/Routes'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { LogBox } from 'react-native';
+
+// Ignora o aviso específico de VirtualizedList aninhado
+LogBox.ignoreLogs([
+    'VirtualizedLists should never be nested inside plain ScrollViews'
+]);
 
 export default function App() {
 

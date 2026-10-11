@@ -7,6 +7,7 @@ export const useScenes = (idProject) => {
     const [error, setError] = useState(null)
 
     const fetchScenes = async () => {
+
         if(!idProject) return 
 
         try {

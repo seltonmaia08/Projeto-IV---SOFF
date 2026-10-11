@@ -18,17 +18,17 @@ import { useProjectContext } from "../../Context/ProjectContext";
 import { useScenes } from "../../Hook/useScenes";
 import { gerarPdfCenas } from "../../Utils/gerarPdfCenas";
 import { scenesListService } from "../../Services/api";
-import ConfirmacaoPopUp from "../Projetos_dashboard/ConfirmacaoPopUp";
+import ConfirmacaoPopUp from "../ConfirmPopUp/ConfirmacaoPopUp";
 
 const ScenesList = () => {
   const [isActive, setIsActive] = useState(false);
   const [gerandoPdf, setGerandoPdf] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [sceneToDelete, setSceneToDelete] = useState(null); 
-  
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sceneToDelete, setSceneToDelete] = useState(null);
+
   const { idProject, projectName } = useProjectContext();
   const { scenes, loading, refetch } = useScenes(idProject);
-  
+
 
 
   const semCenas = scenes.length === 0;
@@ -90,15 +90,31 @@ const ScenesList = () => {
       {/* <BackgroundGradient> */}
       <View style={styles.card}>
         {loading ? (
-          <ActivityIndicator size={"large"} color={"#EF5625"} />
-        ) : (
+          <View style={[styles.card, {justifyContent: 'center', alignItems: 'center', gap: 10}]}>
+            <ActivityIndicator size={"large"} color={"#EF5625"} />
+            <CustomText>Carregando...</CustomText>
+          </View>
+        ) :
+        
+      //   scenes.map((item) => <ListComponent
+      //                           key={item.idScenes}
+      //                           item={item}
+      //                           deleteScene={() => handleDelete(item.idScenes)}
+      //                           />
+      // )
+        (
           <FlatList
-            style={{ flex: 1 }}
+            style={{ width: '100%', maxHeight: 400, borderRadius: 15 }}
             data={scenes}
             renderItem={({ item }) => <ListComponent item={item} deleteScene={() => handleDelete(item.idScenes)} />}
             keyExtractor={(item) => item.idScenes}
+            scrollEnabled={true}
+            showsVerticalScrollIndicator={true}
+            persistentScrollbar={true}
+            nestedScrollEnabled={true}
           />
-        )}
+        )
+        }
 
         <AddSceneList title={"ADICIONAR CENA"} onPress={verifyStateActive} onChange={setIsActive} />
         <GerarPDF
@@ -117,12 +133,12 @@ const ScenesList = () => {
 
       {
 
-        isModalVisible && <ConfirmacaoPopUp 
-                        visivel={true}
-                        aoCancelar={cancelarDelecao}
-                        aoExecutar={confirmarDelecao}  
-                        nome={'esta cena'}
-                      />
+        isModalVisible && <ConfirmacaoPopUp
+          visivel={true}
+          aoCancelar={cancelarDelecao}
+          aoExecutar={confirmarDelecao}
+          mensagem={'esta cena?'}
+        />
 
       }
       {/* </BackgroundGradient> */}
@@ -134,11 +150,12 @@ export default ScenesList;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     marginBottom: 10,
   },
   card: {
     width: "100%",
+    maxHeight: 450,
     backgroundColor: "#313131",
     borderRadius: 15,
     padding: 10,

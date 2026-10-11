@@ -30,11 +30,9 @@ const StatusSceneDrop = ({ id, status, setStatus }) => {
                 style={[
                     styles.dropdown,
                     isFocus && { borderColor: '#28D593' },
-                    value === '2' && styles.statusEmAndamento,
-                    value === '3' && styles.statusConcluido
                 ]}
                 placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={[styles.selectedTextStyle, value === '2' && { color: '#313131' }, value === '3' && { color: '#313131' }]}
+                selectedTextStyle={styles.selectedTextStyle}
                 data={data}
                 labelField="label"
                 valueField="value"
@@ -43,9 +41,9 @@ const StatusSceneDrop = ({ id, status, setStatus }) => {
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
                 containerStyle={{ backgroundColor: '#313131', borderRadius: 15, borderWidth: 0, overflow: 'hidden' }}
-                itemTextStyle={{ color: '#F0EADE' }}
+                itemTextStyle={{ color: '#DAD0B7' }}
                 activeColor="#555555"
-                iconColor={value === '2' || value === '3' ? '#313131' : '#F0EADE'}
+                iconColor={'#DAD0B7'}
                 onChange={item => {
                     setValue(item.value);
                     setIsFocus(false);
@@ -73,22 +71,15 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 14,
         marginBottom: 8,
-        color: '#F0EADE',
+        color: '#DAD0B7',
     },
     placeholderStyle: {
         fontSize: 16,
-        color: '#F0EADE',
+        color: '#DAD0B7',
     },
     selectedTextStyle: {
         fontSize: 16,
-        color: '#F0EADE',
+        color: '#DAD0B7',
         fontWeight: '500'
-    },
-
-    statusEmAndamento: {
-        backgroundColor: '#EF5625'
-    },
-    statusConcluido: {
-        backgroundColor: '#28D593',
-    }
+    },  
 });
