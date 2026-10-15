@@ -4,7 +4,7 @@ import { Alert, Text, View, StyleSheet, TextInput, Modal, TouchableOpacity } fro
 import { BlurView } from "expo-blur"
 import * as Clipboard from 'expo-clipboard';
 
-import GetIn_button from './GetIn_button';
+import GetInGreen_button from './GetInGreen_button';
 import GetOut_button from './GetOut_button';
 
 // import's backend
@@ -123,7 +123,7 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity activeOpacity={0.5} onPress={handleCriar}>
-                            <GetIn_button acao="CRIAR" />
+                            <GetInGreen_button acao="CRIAR" />
                         </TouchableOpacity>
 
                     </View>

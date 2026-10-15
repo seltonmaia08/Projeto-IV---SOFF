@@ -75,20 +75,19 @@ function Anotacoes() {
                 aoExcluir = {handleApagarAnotacao}
                 aoSalvar = {atualizarNota}
             />
-            
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    geral: {flex: 1, gap: 10},
+    geral: {flex: 1, gap: 10, marginTop: 20},
     titulo: {fontSize: 18},
     escopo: {
         width: '100%',
         borderRadius: 15, 
         overflow: "hidden",
         padding: 10,
-        gap: 50
+        backgroundColor: "#313131"
     },
     cards: {gap: 10},
     card: {
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 15,
     },
-    conteudo: {height: 55, overflow: "hidden", gap: 5},
+    conteudo: {maxHeight: 55, overflow: "hidden", gap: 5},
     subtitulos: {fontSize: 16, color: "#313131"},
     texto: {fontSize: 12, color: "#313131", textAlign: "justify", letterSpacing: 1.15}
 });

@@ -4,7 +4,7 @@ import { BlurView } from 'expo-blur';
 import { X } from 'lucide-react-native';
 
 import CustomText from '../Text/CustomText';
-import GetIn_button from '../Projetos_dashboard/GetIn_button';
+import GetInGreen_button from '../Projetos_dashboard/GetInGreen_button';
 import GetOut_button from '../Projetos_dashboard/GetOut_button';
 import ConfirmacaoPopUp from "../ConfirmPopUp/ConfirmacaoPopUp"
 
@@ -70,7 +70,7 @@ function LerAnotacao({visivel, title, note, aoFechar, aoExcluir, aoSalvar}) {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity activeOpacity={0.5} onPress={enviarNovaNota}>
-                                    <GetIn_button acao="SALVAR"/>
+                                    <GetInGreen_button acao="SALVAR"/>
                                 </TouchableOpacity>
                                 
                             </View>
