@@ -10,6 +10,3 @@ export const reminderService = BaseServices('Reminder')
 export const scenesListService = BaseServices('ScenesList')
 export const toDoListService = BaseServices('ToDoList')
 export const userService = BaseServices('User')
-
-
-console.log(userService.getAll())

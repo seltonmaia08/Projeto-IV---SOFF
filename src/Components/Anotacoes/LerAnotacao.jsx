@@ -11,8 +11,8 @@ import ConfirmacaoPopUp from "../ConfirmPopUp/ConfirmacaoPopUp"
 function LerAnotacao({visivel, title, note, aoFechar, aoExcluir, aoSalvar}) {
 
     const [titulo, setTitulo] = useState(title);
-    const tituloAntigo = title;
 
+    
     const [anotacoes, setAnotacoes] = useState(note);
     const [aviso, setAviso] = useState(false);
 
@@ -30,7 +30,8 @@ function LerAnotacao({visivel, title, note, aoFechar, aoExcluir, aoSalvar}) {
     }
 
     const enviarNovaNota = () => {
-        aoSalvar(tituloAntigo, titulo, anotacoes);
+        aoSalvar(titulo, anotacoes);
+        aoFechar();
     }
 
     return(
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     card: {gap: 10},
     superior: {flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end"},
     x: {padding: 1},
-    campoTitulo: {backgroundColor: "#DAD0B7", height: 50, borderRadius: 15, padding: 10, justifyContent: "center"},
+    campoTitulo: {backgroundColor: "#DAD0B7", height: 50, borderRadius: 15, paddingHorizontal: 10, justifyContent: "center"},
     campoTexto: {backgroundColor: "#DAD0B7", height: 200, borderRadius: 15, padding: 10, fontSize: 12},
     texto: {
         fontSize: 14,

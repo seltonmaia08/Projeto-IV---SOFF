@@ -65,7 +65,7 @@ export const BaseServices = (tableName) => ({
     async getAllColumn(columnName, value, options = {orderBy: 'created_at', ascending: false}) {
         const { data, error } = await supabase
             .from(tableName)
-            .select('')
+            .select('*')
             .eq(columnName, value)
             .order(options.orderBy, {ascending: options.ascending})
 
