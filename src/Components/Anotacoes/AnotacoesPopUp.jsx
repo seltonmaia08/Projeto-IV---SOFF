@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         gap: 10
     },
     card: {gap: 10},
-    campoTitulo: {backgroundColor: "#F0EADE", height: 50, borderRadius: 15, padding: 10, justifyContent: "center"},
+    campoTitulo: {backgroundColor: "#F0EADE", height: 50, borderRadius: 15, paddingHorizontal: 10, justifyContent: "center"},
     campoTexto: {backgroundColor: "#F0EADE", height: 200, borderRadius: 15, padding: 10, fontSize: 12},
     texto: {
         fontSize: 14,

@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-end"
     },
     texto: {fontWeight: "bold", fontSize: 24},
-    perfil: {color: "#F0EADE"}
+    perfil: {color: "#DAD0B7"}
 });
 
 const Topo_tela = () => {

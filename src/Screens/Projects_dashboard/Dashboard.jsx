@@ -15,10 +15,10 @@ import { projectService } from '../../Services/api';
 
 const styles = StyleSheet.create({
     escopoTela: {flex: 1},
-    titulo: {color: "white", fontSize: 14, fontWeight: "bold", marginBottom: 30},
+    titulo: {color: "#DAD0B7", fontSize: 14, fontWeight: "bold", marginBottom: 30},
     conteudo: {flex: 1, alignItems: "center", paddingTop: 40, position: "relative"},
     projetos: {gap: 10},
-    botao_plus: {position: "absolute", bottom: 25, right: 25, color: "#F0EADE"},
+    botao_plus: {position: "absolute", bottom: 25, right: 0, color: "#DAD0B7"},
 });
 
 

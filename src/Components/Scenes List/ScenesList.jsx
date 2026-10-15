@@ -94,8 +94,11 @@ const ScenesList = () => {
             <ActivityIndicator size={"large"} color={"#EF5625"} />
             <CustomText>Carregando...</CustomText>
           </View>
-        ) :
-        
+        ) : 
+
+        semCenas ?
+        (<CustomText style={{ textAlign: 'center', margin: 10}}>Sem cenas no momento.</CustomText>)
+        :
       //   scenes.map((item) => <ListComponent
       //                           key={item.idScenes}
       //                           item={item}
@@ -116,13 +119,13 @@ const ScenesList = () => {
         )
         }
 
+      </View>
         <AddSceneList title={"ADICIONAR CENA"} onPress={verifyStateActive} onChange={setIsActive} />
         <GerarPDF
           onPress={aoTocarGerarPdf}
           desativado={semCenas}
           carregando={gerandoPdf}
         />
-      </View>
       {isActive && (
         <CreateItemList
           setIsActive={setIsActive}

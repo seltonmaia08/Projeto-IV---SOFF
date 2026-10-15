@@ -1,104 +1,141 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 
 import CustomText from '../Text/CustomText';
 import AnotacoesPopUp from './AnotacoesPopUp';
 import AddSceneList from '../Buttons/AddSceneList';
 import LerAnotacao from './LerAnotacao';
+import { useNotes } from '../../Hook/useNotes';
+import { useProjectContext } from '../../Context/ProjectContext';
+import { notesService } from '../../Services/api';
 
 function Anotacoes() {
 
-    const [listaAnotacoes, setListaAnotacoes] = useState([]);
     const [anotacoesVisivel, setAnotacoesVisivel] = useState(false);
     const [anotacaoSelecionada, setAnotacaoSelecionada] = useState(null);
 
-    const handleFechar = () => {setAnotacoesVisivel(false)}
-    const handleSalvar = (title, newNote) => {
-        setListaAnotacoes([...listaAnotacoes, {titulo: title, anotacao: newNote}]);
-        setAnotacoesVisivel(false);
+    const { idProject, projectName } = useProjectContext()
+    const { notes, loading, refetch } = useNotes(idProject)
+
+    const handleFechar = () => { setAnotacoesVisivel(false) }
+    const handleSalvar = async (title, newNote) => {
+        if(!title || !newNote) return
+        try {
+            await notesService.create({
+                noteTitle: title,
+                noteText: newNote,
+                idProject: idProject
+            })
+
+            refetch()
+            setAnotacoesVisivel(false)
+        } catch (error) {
+            console.error('Erro ao salvar anotações no banco: ', error);
+        }
     }
 
-    const handleApagarAnotacao = (title) => {
-        setListaAnotacoes(anteriores => anteriores.filter(item => item.titulo !== title));
-        setAnotacaoSelecionada(null);
+    const handleApagarAnotacao = async () => {
+        if(!anotacaoSelecionada?.idNotes) return
+        
+        try {
+            await notesService.delete(anotacaoSelecionada.idNotes)
+
+            refetch()
+            setAnotacaoSelecionada(null);
+        } catch (error) {
+            console.error('Erro ao apagar anotação no banco: ', error)
+        }
     }
 
-    const atualizarNota = (oldTitle, newTitle, newNote) => {
-        setListaAnotacoes(anteriores => 
-            anteriores.map(cada => { // preencho minha lista retornando todos os antigos valores com map;
-                if(cada.titulo === oldTitle){ return {titulo: newTitle, anotacao: newNote}} 
-                // porém, ao achar o título antigo da anotação que eu quero alterar, eu
-                // retorno ela com os novos valores
-                return cada; // e se não achar, eu retorno simplesmente o que já era antes.
-            })  
-        )
-        setAnotacaoSelecionada(null);
+    const atualizarNota = async (newTitle, newNote) => {
+        if (!anotacaoSelecionada?.idNotes) return
+
+        try {
+            await notesService.update(anotacaoSelecionada.idNotes, {
+                noteTitle: newTitle,
+                noteText: newNote
+            }, 'idNotes')
+
+            refetch()
+            setAnotacaoSelecionada(null);
+        } catch (error) {
+            console.error('Erro ao atualizar anotação no banco: ', error)
+        }
     }
 
-    return(
+    return (
         <View style={styles.geral}>
 
             <CustomText style={styles.titulo}>Anotações Gerais</CustomText>
 
             <View style={styles.escopo}>
-                
+
                 <View style={styles.cards}>
-                    
-                    {
-                        listaAnotacoes.map((cada, index) => {
-                            return(
-                                <TouchableOpacity onPress={() => setAnotacaoSelecionada(cada)} key={index} activeOpacity={0.8}>
-                                    <View style={styles.card}>
-                                        <View style={styles.conteudo}>
-                                            <CustomText style={styles.subtitulos}>{cada.titulo}</CustomText>
-                                            <CustomText style={styles.texto}>{cada.anotacao}</CustomText>    
+
+                    {loading ? (
+                        <View style={[styles.card, { justifyContent: 'center', alignItems: 'center', gap: 10 }]}>
+                            <ActivityIndicator size={"large"} color={"#EF5625"} />
+                            <CustomText>Carregando...</CustomText>
+                        </View>
+                    ) :
+
+                        notes.length === 0 ?
+                            (<CustomText style={{ textAlign: 'center', margin: 10}}>Sem anotações no momento.</CustomText>)
+                            :
+                            notes.map((cada, index) => {
+                                return (
+                                    <TouchableOpacity onPress={() => setAnotacaoSelecionada(cada)} key={index} activeOpacity={0.8}>
+                                        <View style={styles.card}>
+                                            <View style={styles.conteudo}>
+                                                <CustomText style={styles.subtitulos}>{cada.noteTitle}</CustomText>
+                                                <CustomText style={styles.texto}>{cada.noteText}</CustomText>
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        })
+                                    </TouchableOpacity>
+                                )
+                            })
                     }
-                    
+
                 </View>
-                <AddSceneList title={"ADICIONAR ANOTAÇÃO"} onPress={() => setAnotacoesVisivel(true)}/>
+                <AddSceneList title={"ADICIONAR ANOTAÇÃO"} onPress={() => setAnotacoesVisivel(true)} />
             </View>
             <AnotacoesPopUp
-                visivel = {anotacoesVisivel}
-                aoFechar = {handleFechar}
-                aoSalvar= {handleSalvar}
+                visivel={anotacoesVisivel}
+                aoFechar={handleFechar}
+                aoSalvar={handleSalvar}
             />
             <LerAnotacao
-                visivel = {anotacaoSelecionada != null}
-                title = {anotacaoSelecionada?.titulo}
-                note = {anotacaoSelecionada?.anotacao}
-                aoFechar = {() => setAnotacaoSelecionada(null)}
-                aoExcluir = {handleApagarAnotacao}
-                aoSalvar = {atualizarNota}
+                visivel={anotacaoSelecionada != null}
+                title={anotacaoSelecionada?.noteTitle}
+                note={anotacaoSelecionada?.noteText}
+                aoFechar={() => setAnotacaoSelecionada(null)}
+                aoExcluir={handleApagarAnotacao}
+                aoSalvar={atualizarNota}
             />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    geral: {flex: 1, gap: 10, marginTop: 20},
-    titulo: {fontSize: 18},
+    geral: { flex: 1, gap: 10 },
+    titulo: { fontSize: 18 },
     escopo: {
         width: '100%',
-        borderRadius: 15, 
+        borderRadius: 15,
         overflow: "hidden",
-        padding: 10,
-        backgroundColor: "#313131"
+        backgroundColor: "#313131",
+        padding: 10
     },
-    cards: {gap: 10},
+    cards: { gap: 10, marginVertical: 10 },
     card: {
         backgroundColor: "#DAD0B7",
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 15,
     },
-    conteudo: {maxHeight: 55, overflow: "hidden", gap: 5},
-    subtitulos: {fontSize: 16, color: "#313131"},
-    texto: {fontSize: 12, color: "#313131", textAlign: "justify", letterSpacing: 1.15}
+    conteudo: { maxHeight: 57, overflow: "hidden", gap: 5 },
+    subtitulos: { fontSize: 16, color: "#242424" },
+    texto: { fontSize: 12, color: "#313131", textAlign: "justify", letterSpacing: 1.15 }
 });
 
 export default Anotacoes;

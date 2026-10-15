@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 
 import CustomText from "../Text/CustomText";
 import ConfirmPopUp from "../ConfirmPopUp/ConfirmPopUp";
+import { useProjectContext } from "../../Context/ProjectContext"
+import { projectService } from "../../Services/api";
+import { supabase } from "../../Utils/Supabase";
 
 const LISTA_STATUS = [
   {
@@ -31,14 +34,54 @@ const LISTA_STATUS = [
 ];
 
 const StatusFilmagem = () => {
-  const [statusId, setStatusId] = useState("liberado");
+  const [statusId, setStatusId] = useState('liberado');
   const [menuAberto, setMenuAberto] = useState(false);
 
   const [statusPendente, setStatusPendente] = useState(null);
 
-  const statusAtual = LISTA_STATUS.find((item) => item.id === statusId);
+  const statusAtual = LISTA_STATUS.find((item) => item.id === statusId) || LISTA_STATUS[2]
 
   const alternarMenu = () => setMenuAberto(!menuAberto);
+
+  const { idProject } = useProjectContext()
+
+  useEffect(() => {
+    const carregarDados = async () => {
+    if(!idProject) return
+
+    try{
+      const dados = await projectService.getAllColumn('idProject', idProject)
+      if(dados && dados[0]?.status){
+        setStatusId(dados[0].status)
+      }
+    } catch (err){
+      console.log("Erro ao buscar status do set: ", err)
+    }
+  }
+  carregarDados()
+
+  const canal = supabase
+    .channel(`status-projeto-${idProject}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'Project',
+        filter: `idProject=eq.${idProject}`
+      },
+      (playload) => {
+        if(playload.new && playload.new.status){
+          setStatusId(playload.new.status)
+        }
+      }
+    )
+    .subscribe()
+
+    return () => {
+      supabase.removeChannel(canal)
+    }
+  },[idProject])
 
   const escolherStatus = (itemEscolhido) => {
     setMenuAberto(false);
@@ -47,9 +90,17 @@ const StatusFilmagem = () => {
     setStatusPendente(itemEscolhido);
   };
 
-  const confirmarMudanca = () => {
+  const confirmarMudanca = async () => {
+    const novoStatus = statusPendente.id
+
     setStatusId(statusPendente.id);
     setStatusPendente(null);
+
+    try {
+      await projectService.update(idProject, { status: novoStatus })
+    } catch (error) {
+      console.log("Erro ao salvar status no banco: ", error)
+    }
   };
 
   const cancelarMudanca = () => setStatusPendente(null);
