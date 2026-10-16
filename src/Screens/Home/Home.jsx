@@ -7,6 +7,7 @@ import { useProjectContext } from '../../Context/ProjectContext';
 
 import StatusFilmagem from "../../Components/StatusFilmagem/StatusFilmagem";
 import ChamarAlguem from "../../Components/ChamarAlguem/ChamarAlguem";
+import MenuNavegacao from '../../Components/MenuNavegacao/MenuNavegacao';
 
 const Home = () => {
 

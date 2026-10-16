@@ -3,6 +3,7 @@ import { ProjectContext } from "../Context/ProjectContext";
 import { useRoute } from "@react-navigation/native";
 
 import Home from "../Screens/Home/Home";
+import ProjectTabs from "./projectTabs";
 
 const Stack = createStackNavigator()
 
@@ -12,8 +13,8 @@ const ProjectStack = () => {
 
     return (
         <ProjectContext.Provider value={{ idProject, projectName }}>
-            <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Home" component={Home} />
+            <Stack.Navigator initialRouteName="ProjectTabs" screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="ProjectTabs" component={ProjectTabs}/>
             </Stack.Navigator>
         </ProjectContext.Provider>
     )
