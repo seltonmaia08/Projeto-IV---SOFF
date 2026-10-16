@@ -2,7 +2,7 @@ import { View, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-nati
 import { useEffect, useState } from 'react';
 import { BlurView } from 'expo-blur';
 import CustomText from '../Text/CustomText';
-import GetIn_button from '../Projetos_dashboard/GetIn_button';
+import GetInGreen_button from '../Projetos_dashboard/GetInGreen_button';
 import GetOut_button from '../Projetos_dashboard/GetOut_button';
 
 function AnotacoesPopUp({visivel, aoFechar, aoSalvar}) {
@@ -49,7 +49,7 @@ function AnotacoesPopUp({visivel, aoFechar, aoSalvar}) {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity activeOpacity={0.5} onPress={() => aoSalvar(titulo, anotacoes)}>
-                                    <GetIn_button acao="SALVAR"/>
+                                    <GetInGreen_button acao="SALVAR"/>
                                 </TouchableOpacity>
                                 
                             </View>

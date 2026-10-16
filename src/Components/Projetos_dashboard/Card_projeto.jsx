@@ -10,7 +10,7 @@ import GetInGreen_button from './GetInGreen_button';
 const styles = StyleSheet.create({
     cardContainer: {
         width: 310,
-        backgroundColor: "#5F5F5F",
+        backgroundColor: "#313131",
         borderRadius: 15,
         overflow: "hidden"
     },
@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         paddingHorizontal: 20
     },
-    cardTitulo: {color: "white", fontSize: 16},
-    setinha: {color: "white"},
+    cardTitulo: {color: "#DAD0B7", fontSize: 16},
+    setinha: {color: "#DAD0B7"},
     cardInfo: {marginBottom: 20},
     cardConteudo: {
-        backgroundColor: "#F0EADE",
+        backgroundColor: "#DAD0B7",
         padding: 20,
         gap: 5
     },

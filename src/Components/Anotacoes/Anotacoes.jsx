@@ -80,7 +80,7 @@ function Anotacoes() {
                     ) :
 
                         notes.length === 0 ?
-                            (<CustomText style={{ textAlign: 'center', margin: 10}}>Ops! sem anotações, adicione uma agora mesmo</CustomText>)
+                            (<CustomText style={{ textAlign: 'center', margin: 10}}>Sem anotações no momento.</CustomText>)
                             :
                             notes.map((cada, index) => {
                                 return (
@@ -112,7 +112,6 @@ function Anotacoes() {
                 aoExcluir={handleApagarAnotacao}
                 aoSalvar={atualizarNota}
             />
-
         </View>
     )
 }
@@ -123,17 +122,19 @@ const styles = StyleSheet.create({
     escopo: {
         width: '100%',
         borderRadius: 15,
-        overflow: "hidden"
+        overflow: "hidden",
+        backgroundColor: "#313131",
+        padding: 10
     },
-    cards: { gap: 10, marginBottom: 30 },
+    cards: { gap: 10, marginVertical: 10 },
     card: {
         backgroundColor: "#DAD0B7",
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 15,
     },
-    conteudo: { height: 'auto', overflow: "hidden", gap: 5 },
-    subtitulos: { fontSize: 16, color: "#313131" },
+    conteudo: { maxHeight: 57, overflow: "hidden", gap: 5 },
+    subtitulos: { fontSize: 16, color: "#242424" },
     texto: { fontSize: 12, color: "#313131", textAlign: "justify", letterSpacing: 1.15 }
 });
 

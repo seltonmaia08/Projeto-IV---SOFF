@@ -97,7 +97,7 @@ const ScenesList = () => {
         ) : 
 
         semCenas ?
-        (<CustomText style={{ textAlign: 'center', margin: 10}}>Ops! sem cenas, adicione uma agora mesmo</CustomText>)
+        (<CustomText style={{ textAlign: 'center', margin: 10}}>Sem cenas no momento.</CustomText>)
         :
       //   scenes.map((item) => <ListComponent
       //                           key={item.idScenes}
