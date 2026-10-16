@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { ChevronDown, ChevronUp } from "lucide-react-native";
+import {
+  ChevronDown,
+  ChevronUp,
+  Radio,
+  CircleCheck,
+  Pause,
+} from "lucide-react-native";
 
 import CustomText from "../Text/CustomText";
 import ConfirmPopUp from "../ConfirmPopUp/ConfirmPopUp";
-import { useProjectContext } from "../../Context/ProjectContext"
+import { useProjectContext } from "../../Context/ProjectContext";
 import { projectService } from "../../Services/api";
 import { supabase } from "../../Utils/Supabase";
 
@@ -14,74 +20,76 @@ const LISTA_STATUS = [
     id: "gravando",
     nome: "Gravando",
     frase: "Silêncio no set",
-    cores: ["#EF5625", "#893115"],
-    corBorda: "#EF5625",
+    cores: ["#DA9304", "#723F04"],
+    Icone: Radio,
   },
   {
     id: "intervalo",
     nome: "Intervalo",
     frase: "Atenção",
     cores: ["#6B675F", "#313131"],
-    corBorda: "#F0EADE",
+    Icone: Pause,
   },
   {
     id: "liberado",
     nome: "Liberado",
     frase: "Set em preparo",
     cores: ["#1B8F65", "#1B4D3A"],
-    corBorda: "#28D593",
+    Icone: CircleCheck,
   },
 ];
 
 const StatusFilmagem = () => {
-  const [statusId, setStatusId] = useState('liberado');
+  const [statusId, setStatusId] = useState("liberado");
   const [menuAberto, setMenuAberto] = useState(false);
 
   const [statusPendente, setStatusPendente] = useState(null);
 
-  const statusAtual = LISTA_STATUS.find((item) => item.id === statusId) || LISTA_STATUS[2]
+  const statusAtual =
+    LISTA_STATUS.find((item) => item.id === statusId) || LISTA_STATUS[2];
 
+  const Icone = statusAtual.Icone;
   const alternarMenu = () => setMenuAberto(!menuAberto);
 
-  const { idProject } = useProjectContext()
+  const { idProject } = useProjectContext();
 
   useEffect(() => {
     const carregarDados = async () => {
-    if(!idProject) return
+      if (!idProject) return;
 
-    try{
-      const dados = await projectService.getAllColumn('idProject', idProject)
-      if(dados && dados[0]?.status){
-        setStatusId(dados[0].status)
-      }
-    } catch (err){
-      console.log("Erro ao buscar status do set: ", err)
-    }
-  }
-  carregarDados()
-
-  const canal = supabase
-    .channel(`status-projeto-${idProject}`)
-    .on(
-      'postgres_changes',
-      {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'Project',
-        filter: `idProject=eq.${idProject}`
-      },
-      (playload) => {
-        if(playload.new && playload.new.status){
-          setStatusId(playload.new.status)
+      try {
+        const dados = await projectService.getAllColumn("idProject", idProject);
+        if (dados && dados[0]?.status) {
+          setStatusId(dados[0].status);
         }
+      } catch (err) {
+        console.log("Erro ao buscar status do set: ", err);
       }
-    )
-    .subscribe()
+    };
+    carregarDados();
+
+    const canal = supabase
+      .channel(`status-projeto-${idProject}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "Project",
+          filter: `idProject=eq.${idProject}`,
+        },
+        (playload) => {
+          if (playload.new && playload.new.status) {
+            setStatusId(playload.new.status);
+          }
+        },
+      )
+      .subscribe();
 
     return () => {
-      supabase.removeChannel(canal)
-    }
-  },[idProject])
+      supabase.removeChannel(canal);
+    };
+  }, [idProject]);
 
   const escolherStatus = (itemEscolhido) => {
     setMenuAberto(false);
@@ -91,22 +99,22 @@ const StatusFilmagem = () => {
   };
 
   const confirmarMudanca = async () => {
-    const novoStatus = statusPendente.id
+    const novoStatus = statusPendente.id;
 
     setStatusId(statusPendente.id);
     setStatusPendente(null);
 
     try {
-      await projectService.update(idProject, { status: novoStatus })
+      await projectService.update(idProject, { status: novoStatus });
     } catch (error) {
-      console.log("Erro ao salvar status no banco: ", error)
+      console.log("Erro ao salvar status no banco: ", error);
     }
   };
 
   const cancelarMudanca = () => setStatusPendente(null);
 
   return (
-    <View style={[styles.card, { borderColor: statusAtual.corBorda }]}>
+    <View style={styles.card}>
       <TouchableOpacity activeOpacity={0.8} onPress={alternarMenu}>
         <LinearGradient
           colors={statusAtual.cores}
@@ -114,16 +122,20 @@ const StatusFilmagem = () => {
           end={{ x: 1, y: 0.5 }}
           style={styles.topo}
         >
-          <View style={styles.linhaTitulo}>
-            <CustomText style={styles.titulo}>{statusAtual.nome}</CustomText>
-            {menuAberto ? (
-              <ChevronUp size={22} color="#F0EADE" />
-            ) : (
-              <ChevronDown size={22} color="#F0EADE" />
-            )}
+          <View>
+            <View style={styles.linhaTitulo}>
+              <CustomText style={styles.titulo}>{statusAtual.nome}</CustomText>
+              {menuAberto ? (
+                <ChevronUp size={22} color="#F0EADE" />
+              ) : (
+                <ChevronDown size={22} color="#F0EADE" />
+              )}
+            </View>
+
+            <CustomText style={styles.frase}>{statusAtual.frase}</CustomText>
           </View>
 
-          <CustomText style={styles.frase}>{statusAtual.frase}</CustomText>
+          <Icone size={48} color="#F0EADE" strokeWidth={2} />
         </LinearGradient>
       </TouchableOpacity>
 
@@ -158,15 +170,16 @@ export default StatusFilmagem;
 const styles = StyleSheet.create({
   card: {
     width: "100%",
-    borderWidth: 1.5,
-    borderRadius: 15,
-    overflow: "hidden",
     marginBottom: 15,
-    backgroundColor: "#313131",
   },
   topo: {
     paddingHorizontal: 20,
     paddingVertical: 14,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderRadius: 15,
+    overflow: "hidden",
   },
   linhaTitulo: {
     flexDirection: "row",
@@ -185,6 +198,9 @@ const styles = StyleSheet.create({
   menu: {
     backgroundColor: "#313131",
     paddingHorizontal: 20,
+    marginTop: 6,
+    borderRadius: 15,
+    overflow: "hidden",
   },
   opcao: {
     paddingVertical: 12,
