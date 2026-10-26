@@ -29,6 +29,7 @@ const getFontFamilyByWeight = (fontWeight) => {
 const CustomText = ({ style, ...props }) => {
   const { colors } = useTheme()
 
+
   // Converte arrays de estilo em um objeto simples para ler o fontWeight
   const flattenedStyle = style ? StyleSheet.flatten(style) : {};
   const resolvedFontFamily = getFontFamilyByWeight(flattenedStyle.fontWeight);

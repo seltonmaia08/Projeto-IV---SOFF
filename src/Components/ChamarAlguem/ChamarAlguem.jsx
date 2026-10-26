@@ -60,8 +60,6 @@ const ChamarAlguem = () => {
         onRequestClose={fecharPopUp}
       >
         <BlurView style={styles.overlay} intensity={40} tint="dark">
-          <Pressable style={StyleSheet.absoluteFill} onPress={fecharPopUp} />
-
           <View style={styles.popUp}>
             <Dropdown
               style={styles.dropdown}

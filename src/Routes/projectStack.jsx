@@ -1,11 +1,11 @@
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ProjectContext } from "../Context/ProjectContext";
 import { useRoute } from "@react-navigation/native";
 
 import Home from "../Screens/Home/Home";
 import ProjectTabs from "./projectTabs";
 
-const Stack = createStackNavigator()
+const Stack = createNativeStackNavigator()
 
 const ProjectStack = () => {
   const { params } = useRoute();
