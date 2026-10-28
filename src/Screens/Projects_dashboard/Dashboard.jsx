@@ -1,6 +1,6 @@
 import { CirclePlus } from 'lucide-react-native';
 import { useState } from 'react'
-import { ActivityIndicator, Text, View, StyleSheet, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, View, StyleSheet, TouchableOpacity } from 'react-native'
 
 import Topo_tela from '../../Components/Projetos_dashboard/Topo_tela';
 import Card_projeto from '../../Components/Projetos_dashboard/Card_projeto';
@@ -77,7 +77,7 @@ const Dashboard = () => {
                         <CustomText>Comece criando um novo projeto!</CustomText>
                         :
                         projects.map(cada => <Card_projeto
-                                             // ao deletar um deles.
+                            // ao deletar um deles.
                             key = {cada.idProject} // importante para que os outros cards não herdem as últimas alterações
                             idProject = {cada.idProject}
                             projectName = {cada.projectName}

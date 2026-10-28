@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         alignItems: "center"
     },
-    textButton: {fontSize: 14, color: "#F0EADE", fontWeight: "bold"}
+    textButton: {fontSize: 14, color: "#DAD0B7", fontWeight: "bold"}
 });
 
 const GetInGreen_button = ({acao}) => {
