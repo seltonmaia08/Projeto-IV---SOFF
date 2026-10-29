@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#EF5625",
+    backgroundColor: "#DA9304",
     justifyContent: "center",
     alignItems: "center",
     elevation: 6,
@@ -207,9 +207,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     height: 54,
-    backgroundColor: "#EF5625",
+    backgroundColor: "#DA9304",
     borderRadius: 15,
-    zIndex: 10
+    zIndex: 10,
   },
   botaoDesativado: {
     opacity: 0.5,
