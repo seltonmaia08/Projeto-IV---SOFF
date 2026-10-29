@@ -10,6 +10,7 @@ import ConfirmacaoPopUp from '../../Components/ConfirmPopUp/ConfirmacaoPopUp';
 import Membros from './Membros';
 import Top from '../TopAba/Top';
 import EditNamePopUp from './EditNamePopUp';
+import LinksPopUp from './LinksPopUp';
 import { projectService } from '../../Services/api';
 import { useProject } from '../../Hook/useProjects';
 
@@ -23,6 +24,7 @@ function Details() {
     const [nomeProjeto, setNomeProjeto] = useState(projectName);
     const [nomeProdutora, setNomeProdutora] = useState("LandoP"); // preciso pegar isso de fora!
     const [excluirPopUp, setExcluirPopUp] = useState(false);
+    const [links, setLinks] = useState(false);
     const { projects, loading, error, refetch } = useProject()
 
     const mudarInfosProjeto = (novoNome, novaProdutora) => {
@@ -78,7 +80,7 @@ function Details() {
 
                 <View style={styles.outrosCampos}>
 
-                    <TouchableOpacity style={styles.campoMembros} activeOpacity={0.7}>
+                    <TouchableOpacity style={styles.campoMembros} activeOpacity={0.7} onPress={() => setLinks(true)}>
                         <View>
                             <CustomText style={styles.tituloMembros}>Acessar Links</CustomText>
                         </View>
@@ -115,6 +117,10 @@ function Details() {
                     produt={nomeProdutora}
                     aoFechar={() => setEditVisivel(false)}
                     aoSalvar={mudarInfosProjeto}
+                />
+                <LinksPopUp
+                    visivel = {links}
+                    aoFechar = {() => setLinks(false)}
                 />
                 <Membros
                     visivel={membrosVisivel}

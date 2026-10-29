@@ -7,32 +7,25 @@ import * as Clipboard from 'expo-clipboard';
 import Top from '../TopAba/Top';
 import CustomText from '../../Components/Text/CustomText';
 import MembrosModel from './MembrosModel';
+import CargosPopUp from './CargosPopUp';
 
 
 function Membros ({visivel, aoFechar}) {
 
     const codigo = "sempre234"; // tem que trazer o código criado antes pra cá
-    const cargosProjeto = [
-        "Diretor Geral", 
-        "Diretor de Produção",
-        "Diretor de Fotografia",
-        "Diretor de Arte",
-        "Assistente", 
-        "Continuísta",
-        "Produtor de Locação",
-        "Operador de Câmera",
-        "Foquista",
-        "Figurinista",
-        "Ténico de Som",
-        "Microfonista"
-    ]; // mockados
     const [copiado, setCopiado] = useState(false);
+    const [cargoProprietario, setCargoProprietario] = useState("Continuista");
+    const [cargosVisivel, setCargosVisivel] = useState(false);
 
     const copiarCodigo = async () => {
 
         await Clipboard.setStringAsync(codigo);
         setCopiado(true);
         setTimeout(() => {setCopiado(false)}, 2000);
+    }
+
+    function mudarCargoProprietario(novoCargo) {
+        setCargoProprietario(novoCargo);
     }
 
     return (
@@ -53,8 +46,8 @@ function Membros ({visivel, aoFechar}) {
                                 <View style={styles.perfilInfos}>
                                     <CustomText style={styles.perfilNome}>John Kelvy</CustomText>
                                     <CustomText style={styles.perfilEmail}>johnkelvy@gmail.com</CustomText>
-                                    <TouchableOpacity activeOpacity={0.7} style={styles.perfilTagProprietario}>
-                                        <CustomText style={styles.perfilEmail}>Continuidade</CustomText>
+                                    <TouchableOpacity onPress={() => setCargosVisivel(true)} activeOpacity={0.7} style={styles.perfilTagProprietario}>
+                                        <CustomText style={styles.perfilEmail}>{cargoProprietario}</CustomText>
                                         <ChevronDown style={styles.setinha}/>
                                     </TouchableOpacity>
                                 </View>
@@ -68,21 +61,18 @@ function Membros ({visivel, aoFechar}) {
 
                         <CustomText style={styles.secaoParticipantes}>Participantes</CustomText>
                         <MembrosModel
-                            cargos = {cargosProjeto}
                             imagem = "https://i.pinimg.com/736x/84/a5/47/84a547cf4efb03f576a355841df48a8d.jpg"
                             nome = "Samuel Moreno"
                             email = "samueu@gmail.com"
                             cargo = "Direção de Áudio"
                         />
                         <MembrosModel
-                            cargos = {cargosProjeto}
                             imagem = "https://i.pinimg.com/736x/d8/3d/f7/d83df721227cbaf144039f83998f938e.jpg"
                             nome = "Selton Maia"
                             email = "selton88@gmail.com"
                             cargo = "Direção de vídeo"
                         />
                         <MembrosModel
-                            cargos = {cargosProjeto}
                             imagem = "https://i.pinimg.com/736x/9a/26/42/9a2642c927b378820e83f5dd735c01ea.jpg"
                             nome = "Clenda Uchoa"
                             email = "clendinha@gmail.com"
@@ -93,9 +83,15 @@ function Membros ({visivel, aoFechar}) {
                     <TouchableOpacity style={styles.botaoConvidar} activeOpacity={0.5} onPress={copiarCodigo}>
                         <CustomText style={styles.textoBotao}>Convidar Via Link</CustomText>
                         {
-                            copiado ? (<Check style={{ color: "#4CAF50" }} />) : (<Copy style={{ color: "#F0EADE" }} />)
+                            copiado ? (<Check style={{ color: "#1B8F65" }} />) : (<Copy style={{ color: "#F0EADE" }} />)
                         }
                     </TouchableOpacity>
+
+                    <CargosPopUp
+                        visivel = {cargosVisivel}
+                        aoFechar = {() => setCargosVisivel(false)}
+                        aoSelecionar = {mudarCargoProprietario}
+                    />
                     
                 </View>
             </View>
