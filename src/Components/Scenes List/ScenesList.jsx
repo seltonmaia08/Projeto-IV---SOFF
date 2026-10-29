@@ -119,13 +119,13 @@ const ScenesList = () => {
         )
         }
 
-      </View>
         <AddSceneList title={"ADICIONAR CENA"} onPress={verifyStateActive} onChange={setIsActive} />
         <GerarPDF
           onPress={aoTocarGerarPdf}
           desativado={semCenas}
           carregando={gerandoPdf}
         />
+      </View>
       {isActive && (
         <CreateItemList
           setIsActive={setIsActive}

@@ -141,10 +141,8 @@ export default ViewNotificacao
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        padding: 20,
+       width: '100%',
+       height: '100%    '
     },
     menuUp: {
         backgroundColor: "#313131",
@@ -152,8 +150,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         gap: 10,
         position: 'absolute',
-        bottom: 100,
-        right: 50,
+        bottom: 20,
+        right: 0,
         borderRadius: 20
         // borderColor: '#EF5625',
         // borderWidth: 2

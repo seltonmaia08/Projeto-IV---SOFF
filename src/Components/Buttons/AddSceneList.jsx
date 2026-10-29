@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 10,
         marginBottom: 10,
+        marginTop: 15
     },
     textButton: {
         color: '#313131',
