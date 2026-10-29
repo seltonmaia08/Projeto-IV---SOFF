@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
     },
     card: {gap: 10},
     superior: {flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end"},
-    x: {padding: 1},
     campoName: {backgroundColor: "#DAD0B7", height: 50, borderRadius: 15, paddingHorizontal: 10, justifyContent: "center"},
     texto: {
         fontSize: 14,
