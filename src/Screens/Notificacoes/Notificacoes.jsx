@@ -7,6 +7,7 @@ import CustomText from '../../Components/Text/CustomText'
 import { useState } from "react";
 import ViewNotificacao from "../../Components/Notificacao/ViewNotification";
 import ChamadoRecebido from "../../Components/ChamadoRecebido/ChamadoRecebido";
+import Top from "../TopAba/Top";
 const Notificacao = () => {
 
     const [isActiveNotification, setIsActiveNotification] = useState(true)
@@ -15,6 +16,7 @@ const Notificacao = () => {
     return (
 
         <View style={styles.container}>
+            <Top abaName={'Notificações'} voltar={false}/>
             <View style={styles.tabButtons}>
                 <TouchableOpacity style={[
                     styles.btnTabs,
@@ -41,7 +43,7 @@ const Notificacao = () => {
                 </TouchableOpacity>
             </View>
 
-            <View style={{flex: 1, padding: 20}}>
+            <View style={{flex: 1, padding: 20, alignItems: 'center'}}>
                     {
                         isActiveNotification
                         &&
@@ -63,8 +65,6 @@ export default Notificacao
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
     },
     tabButtons: {
         width: '100%',

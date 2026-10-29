@@ -21,6 +21,7 @@ import ConfirmacaoPopUp from "../../Components/ConfirmPopUp/ConfirmacaoPopUp";
 import { continuityService } from "../../Services/api";
 import { gerarPdfContinuidade } from "../../Utils/gerarPdfContinuidade";
 import GerarPDF from "../../Components/Buttons/GerarPDF";
+import Top from "../TopAba/Top";
 
 const Continuidade = () => {
   const [isActive, setIsActive] = useState(false);
@@ -92,87 +93,91 @@ const Continuidade = () => {
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <View
-          style={[
-            styles.card,
-            { justifyContent: "center", alignItems: "center", gap: 10 },
-          ]}
-        >
-          <ActivityIndicator size={"large"} color={"#EF5625"} />
-          <CustomText>Carregando...</CustomText>
-        </View>
-      ) : SemNotas ? (
-        <CustomText style={{ textAlign: "center", margin: 10 }}>
-          Sem cenas no momento.
-        </CustomText>
-      ) : (
-        <FlatList
-          style={{ width: "100%", minHeight: 40, borderRadius: 15 }}
-          data={continuity}
-          renderItem={({ item }) => (
-            <RenderItemContinuity
-              item={item}
-              onPress={() => setSelectedNote(item)}
-              deleteContinuity={() => handleDelete(item.idContinuity)}
-            />
-          )}
-          keyExtractor={(item) => item.idContinuity}
-          scrollEnabled={false}
-        />
-      )}
-      {isActive ? (
-        <View style={styles.menuUp}>
-          <TouchableOpacity
-            onPress={() => {
-              setIsActive(false);
-              setCreateNote(true);
-            }}
-            style={styles.buttonAddNota}
-          >
-            <CustomText style={{ color: "#242424" }}>Add nota</CustomText>
-          </TouchableOpacity>
-          <GerarPDF
-            onPress={aoTocarGerarPdf}
-            desativado={SemNotas}
-            carregando={gerandoPdf}
-          />
-        </View>
-      ) : (
-        <></>
-      )}
+      <Top abaName={'Continuidade'} voltar={false} />
+      <View style={{padding: 20, flex: 1}}>
 
-      {createNote || selectedNote !== null ? (
-        <Modal
-          visible={createNote || selectedNote !== null}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={fecharModal}
-        >
-          <BlurView style={styles.overlay} intensity={40} tint="dark">
-            <CardAddNote
-              closeNote={fecharModal}
-              refetch={refetch}
-              idProject={idProject}
-              idContinuity={selectedNote?.idContinuity}
-              titleContinuity={selectedNote ? selectedNote.continuityTitle : ""}
-              textContinuity={selectedNote ? selectedNote.continuityText : ""}
-              continuityImages={selectedNote?.continuityImages || []}
+        {loading ? (
+          <View
+            style={[
+              styles.card,
+              { justifyContent: "center", alignItems: "center", gap: 10 },
+            ]}
+          >
+            <ActivityIndicator size={"large"} color={"#EF5625"} />
+            <CustomText>Carregando...</CustomText>
+          </View>
+        ) : SemNotas ? (
+          <CustomText style={{ textAlign: "center", margin: 10 }}>
+            Sem cenas no momento.
+          </CustomText>
+        ) : (
+          <FlatList
+            style={{ width: "100%", minHeight: 40, borderRadius: 15 }}
+            data={continuity}
+            renderItem={({ item }) => (
+              <RenderItemContinuity
+                item={item}
+                onPress={() => setSelectedNote(item)}
+                deleteContinuity={() => handleDelete(item.idContinuity)}
+              />
+            )}
+            keyExtractor={(item) => item.idContinuity}
+            scrollEnabled={false}
+          />
+        )}
+        {isActive ? (
+          <View style={styles.menuUp}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsActive(false);
+                setCreateNote(true);
+              }}
+              style={styles.buttonAddNota}
+            >
+              <CustomText style={{ color: "#242424" }}>Add nota</CustomText>
+            </TouchableOpacity>
+            <GerarPDF
+              onPress={aoTocarGerarPdf}
+              desativado={SemNotas}
+              carregando={gerandoPdf}
             />
-          </BlurView>
-        </Modal>
-      ) : (
-        <></>
-      )}
-      {isModalVisible && (
-        <ConfirmacaoPopUp
-          visivel={true}
-          aoCancelar={cancelarDelecao}
-          aoExecutar={confirmarDelecao}
-          mensagem={"esta nota de continuidade?"}
-        />
-      )}
-      <ButtonAdd isActive={isActive} onPress={toggleModal} />
+          </View>
+        ) : (
+          <></>
+        )}
+
+        {createNote || selectedNote !== null ? (
+          <Modal
+            visible={createNote || selectedNote !== null}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={fecharModal}
+          >
+            <BlurView style={styles.overlay} intensity={40} tint="dark">
+              <CardAddNote
+                closeNote={fecharModal}
+                refetch={refetch}
+                idProject={idProject}
+                idContinuity={selectedNote?.idContinuity}
+                titleContinuity={selectedNote ? selectedNote.continuityTitle : ""}
+                textContinuity={selectedNote ? selectedNote.continuityText : ""}
+                continuityImages={selectedNote?.continuityImages || []}
+              />
+            </BlurView>
+          </Modal>
+        ) : (
+          <></>
+        )}
+        {isModalVisible && (
+          <ConfirmacaoPopUp
+            visivel={true}
+            aoCancelar={cancelarDelecao}
+            aoExecutar={confirmarDelecao}
+            mensagem={"esta nota de continuidade?"}
+          />
+        )}
+        <ButtonAdd isActive={isActive} onPress={toggleModal} />
+      </View>
     </View>
   );
 };
@@ -182,9 +187,6 @@ export default Continuidade;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    padding: 20,
   },
   menuUp: {
     backgroundColor: "#313131",

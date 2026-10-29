@@ -154,8 +154,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 100,
         right: 50,
-        borderColor: '#EF5625',
-        borderWidth: 2
+        borderRadius: 20
+        // borderColor: '#EF5625',
+        // borderWidth: 2
     },
     buttonAddNota: {
         height: 58,

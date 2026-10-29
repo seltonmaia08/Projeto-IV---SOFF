@@ -126,23 +126,24 @@ function Details() {
 }
 
 const styles = StyleSheet.create({
-    escopo: { backgroundColor: "#242424", flex: 1 },
-    conteudoTela: { padding: 20, gap: 30, width: "100%", height: "100%" },
+    escopo: { backgroundColor: "#242424", flex: 1},
+    conteudoTela: { padding: 20, gap: 30, width: "100%", height: "100%", alignItems: 'center'},
     campoProjeto: {
         backgroundColor: "#313131",
         padding: 20,
         borderRadius: 15,
-        gap: 10
+        gap: 10,
+        width: '100%'
     },
     campoProjetoItens: { gap: 10 },
     nomeProjeto: { fontSize: 14 },
     campoTexto: { borderBottomColor: "#EF5625", borderBottomWidth: 2 },
     nomeProjetoTexto: { fontSize: 16, marginLeft: 10, marginBottom: 10 },
-    outrosCampos: { gap: 10 },
+    outrosCampos: { gap: 10, width: '100%' },
     campoMembros: { backgroundColor: "#313131", padding: 20, borderRadius: 15 },
     tituloMembros: { fontSize: 16 },
     textoMembros: { fontSize: 14 },
-    areaBotoes: { position: "absolute", bottom: 120, width: "89%", alignItems: "center", gap: 10 },
+    areaBotoes: { position: "absolute", bottom: 120, width: "89%", alignItems: "center", gap: 10, },
     botaoVoltar: { width: "100%", padding: 15, backgroundColor: "#313131", borderRadius: 15 },
     textoBotao: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
     botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#EF5625", borderRadius: 15 }
