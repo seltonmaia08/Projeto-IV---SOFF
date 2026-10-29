@@ -1,9 +1,12 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../Screens/Home/Home";
 import EmBreve from "../Screens/EmBreve/EmBreve";
+
 import Continuidade from "../Screens/Continuidade/Continuidade";
+import Details from "../Screens/Details/Details";
 import MenuNavegacao from "../Components/MenuNavegacao/MenuNavegacao";
 import Notificacao from "../Screens/Notificacoes/Notificacoes";
+import Membros from "../Screens/Details/Membros";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +20,8 @@ const ProjectTabs = () => {
         headerTitleAlign: 'center',
         headerStyle: {
           backgroundColor: '#313131'
-        }
+        },
+        headerShown: false
        }}
     >
       <Tab.Screen name="Detalhes" component={EmBreve} />

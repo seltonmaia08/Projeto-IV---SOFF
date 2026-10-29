@@ -7,33 +7,6 @@ import CustomText from '../Text/CustomText';
 import GetOut_button from './GetOut_button';
 import GetInGreen_button from './GetInGreen_button';
 
-const styles = StyleSheet.create({
-    cardContainer: {
-        width: 310,
-        backgroundColor: "#313131",
-        borderRadius: 15,
-        overflow: "hidden"
-    },
-    cardTopo: {
-        height: 50,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: 20
-    },
-    cardTitulo: {color: "#DAD0B7", fontSize: 16},
-    setinha: {color: "#DAD0B7"},
-    cardInfo: {marginBottom: 20},
-    cardConteudo: {
-        backgroundColor: "#DAD0B7",
-        padding: 20,
-        gap: 5
-    },
-    cardSessao: {flexDirection: "row"},
-    cardLabel: {fontWeight: "bold", fontSize: 16, color: "#313131"},
-    cardTexto: {fontSize: 16, color: "#313131"},
-    botoes: {flexDirection: "row", justifyContent: "space-between"}
-})
 
 const Card_projeto = ({idProject, projectName, producer, created_at, onExcluir}) => {
 
@@ -81,7 +54,7 @@ const Card_projeto = ({idProject, projectName, producer, created_at, onExcluir})
                                 <GetOut_button acao = "EXCLUIR"/>
                             </TouchableOpacity>
 
-                            <TouchableOpacity activeOpacity = {0.7} onPress={() => navegacao.navigate("ProjectStack", {idProject: idProject, projectName: projectName})}>
+                            <TouchableOpacity activeOpacity = {0.7} onPress={() => {navegacao.navigate("ProjectStack", {idProject: idProject, projectName: projectName})}}>
                                 <GetInGreen_button acao = "ENTRAR"/>
                             </TouchableOpacity>
 
@@ -93,5 +66,33 @@ const Card_projeto = ({idProject, projectName, producer, created_at, onExcluir})
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    cardContainer: {
+        width: 310,
+        backgroundColor: "#313131",
+        borderRadius: 15,
+        overflow: "hidden"
+    },
+    cardTopo: {
+        height: 50,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingHorizontal: 20
+    },
+    cardTitulo: {color: "#DAD0B7", fontSize: 16},
+    setinha: {color: "#DAD0B7"},
+    cardInfo: {marginBottom: 20},
+    cardConteudo: {
+        backgroundColor: "#DAD0B7",
+        padding: 20,
+        gap: 5
+    },
+    cardSessao: {flexDirection: "row"},
+    cardLabel: {fontWeight: "bold", fontSize: 16, color: "#313131"},
+    cardTexto: {fontSize: 16, color: "#313131"},
+    botoes: {flexDirection: "row", justifyContent: "space-between"}
+});
 
 export default Card_projeto;

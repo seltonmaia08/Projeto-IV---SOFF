@@ -11,7 +11,6 @@ import GetOut_button from './GetOut_button';
 import { projectService } from '../../Services/api';
 
 
-
 const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
 
     const [projectName, setProjectName] = useState();

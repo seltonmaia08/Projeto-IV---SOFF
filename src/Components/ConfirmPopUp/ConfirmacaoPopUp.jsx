@@ -5,28 +5,6 @@ import CustomText from '../Text/CustomText';
 import GetIn_button from '../Projetos_dashboard/GetIn_button';
 import GetOut_button from '../Projetos_dashboard/GetOut_button';
 
-const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: "rgba(0, 0, 0, 0.6)", // preto com 60% de opacidade,
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    escopo: {
-        width: 300, 
-        backgroundColor: "#F0EADE",
-        padding: 20, 
-        alignItems: "center",
-        borderRadius: 15,
-        borderTopWidth: 15,
-        borderTopColor: "#EF5625",
-        gap: 20
-    },
-    alerta: {fontSize: 14, color: "#313131", textAlign: "center"},
-    laranja: {color: "#EF5625"},
-    botoes: {flexDirection: "row", gap: 30}
-})
-
 const ConfirmacaoPopUp = ({visivel, aoCancelar, aoExecutar, mensagem}) => {
 
 
@@ -61,5 +39,27 @@ const ConfirmacaoPopUp = ({visivel, aoCancelar, aoExecutar, mensagem}) => {
         </Modal>
     )
 }
+
+const styles = StyleSheet.create({
+    overlay: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.6)", // preto com 60% de opacidade,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    escopo: {
+        width: 300, 
+        backgroundColor: "#DAD0B7",
+        padding: 20, 
+        alignItems: "center",
+        borderRadius: 15,
+        borderTopWidth: 15,
+        borderTopColor: "#EF5625",
+        gap: 20
+    },
+    alerta: {fontSize: 14, color: "#313131", textAlign: "center"},
+    laranja: {color: "#EF5625"},
+    botoes: {flexDirection: "row", gap: 30}
+})
 
 export default ConfirmacaoPopUp;
