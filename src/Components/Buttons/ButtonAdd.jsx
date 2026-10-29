@@ -1,9 +1,7 @@
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { Plus, X } from "lucide-react-native";
-import { useState } from "react";
 
 const ButtonAdd = ({ onPress, isActive }) => {
-
 
     return (
         <View style={styles.containerButton}>
@@ -36,6 +34,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 8,
+        zIndex: 99
     },
     buttonAdd: {
         width: 64,

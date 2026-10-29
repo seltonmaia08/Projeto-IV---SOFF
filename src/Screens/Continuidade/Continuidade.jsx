@@ -89,7 +89,7 @@ const Continuidade = () => {
         <View style={styles.container}>
             {
                 loading ? (
-                    <View style={[styles.card, { justifyContent: 'center', alignItems: 'center', gap: 10 }]}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                         <ActivityIndicator size={"large"} color={"#EF5625"} />
                         <CustomText>Carregando...</CustomText>
                     </View>
@@ -132,31 +132,31 @@ const Continuidade = () => {
                     (<></>)
             }
 
-            {
-                createNote || selectedNote !== null ?
-                    (
-                        <Modal
-                            visible={createNote || selectedNote !== null}
-                            transparent={true}
-                            animationType="fade"
-                            onRequestClose={fecharModal}
-                        >
-                            <BlurView style={styles.overlay} intensity={40} tint="dark">
-                                <CardAddNote
-                                    closeNote={fecharModal}
-                                    refetch={refetch}
-                                    idProject={idProject}
-                                    idContinuity={selectedNote?.idContinuity}
-                                    titleContinuity={selectedNote ? selectedNote.continuityTitle : ''}
-                                    textContinuity={selectedNote ? selectedNote.continuityText : ''}
-                                    continuityImages={selectedNote?.continuityImages || []}
-                                />
-                            </BlurView>
-                        </Modal>
-                    )
-                    :
-                    <></>
-            }
+                {
+                    createNote || selectedNote !== null ?
+                        (
+                            <Modal
+                                visible={createNote || selectedNote !== null}
+                                transparent={true}
+                                animationType="fade"
+                                onRequestClose={fecharModal}
+                            >
+                                <BlurView style={styles.overlay} intensity={40} tint="dark">
+                                    <CardAddNote
+                                        closeNote={fecharModal}
+                                        refetch={refetch}
+                                        idProject={idProject}
+                                        idContinuity={selectedNote?.idContinuity}
+                                        titleContinuity={selectedNote ? selectedNote.continuityTitle : ''}
+                                        textContinuity={selectedNote ? selectedNote.continuityText : ''}
+                                        continuityImages={selectedNote?.continuityImages || []}
+                                    />
+                                </BlurView>
+                            </Modal>
+                        )
+                        :
+                        <></>
+                }
             {
 
                 isModalVisible && <ConfirmacaoPopUp

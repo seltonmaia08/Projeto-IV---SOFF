@@ -5,18 +5,26 @@ import { useRoute } from "@react-navigation/native";
 import Home from "../Screens/Home/Home";
 import ProjectTabs from "./projectTabs";
 
+import NotificationWatcher from "../Components/Alerta/Alerta";
+
+
 const Stack = createNativeStackNavigator()
 
 const ProjectStack = () => {
-  const { params } = useRoute();
-  const { idProject, projectName } = params;
+    const { params } = useRoute();
+    const { idProject, projectName } = params;
+
 
     return (
-        <ProjectContext.Provider value={{ idProject, projectName }}>
-            <Stack.Navigator initialRouteName="ProjectTabs" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="ProjectTabs" component={ProjectTabs}/>
-            </Stack.Navigator>
-        </ProjectContext.Provider>
+        <>
+            <NotificationWatcher idProject={idProject} />
+
+            <ProjectContext.Provider value={{ idProject, projectName }}>
+                <Stack.Navigator initialRouteName="ProjectTabs" screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="ProjectTabs" component={ProjectTabs} />
+                </Stack.Navigator>
+            </ProjectContext.Provider>
+        </>
     )
 }
 

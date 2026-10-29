@@ -3,6 +3,7 @@ import Home from "../Screens/Home/Home";
 import EmBreve from "../Screens/EmBreve/EmBreve";
 import Continuidade from "../Screens/Continuidade/Continuidade";
 import MenuNavegacao from "../Components/MenuNavegacao/MenuNavegacao";
+import Notificacao from "../Screens/Notificacoes/Notificacoes";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,7 +21,7 @@ const ProjectTabs = () => {
        }}
     >
       <Tab.Screen name="Detalhes" component={EmBreve} />
-      <Tab.Screen name="Notificacoes" component={EmBreve} />
+      <Tab.Screen name="Notificacoes" component={Notificacao} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Continuidade" component={Continuidade} />
       <Tab.Screen name="Departamentos" component={EmBreve} />

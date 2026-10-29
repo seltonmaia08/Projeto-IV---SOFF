@@ -18,7 +18,7 @@ export default ButtonSave
 
 const styles = StyleSheet.create({
     buttonSave: {
-        width: 140,
+        width: '48.5%',
         height: 54,
         display: 'flex',
         justifyContent: 'center',
