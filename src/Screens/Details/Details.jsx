@@ -10,43 +10,55 @@ import ConfirmacaoPopUp from '../../Components/ConfirmPopUp/ConfirmacaoPopUp';
 import Membros from './Membros';
 import Top from '../TopAba/Top';
 import EditNamePopUp from './EditNamePopUp';
+import { projectService } from '../../Services/api';
+import { useProject } from '../../Hook/useProjects';
 
-function Details () {
+function Details() {
 
     const navigation = useNavigation();
-    const { projectName } = useContext(ProjectContext);  
+    const { idProject, projectName } = useContext(ProjectContext);
 
     const [editVisivel, setEditVisivel] = useState(false);
     const [membrosVisivel, setMembrosVisivel] = useState(false);
     const [nomeProjeto, setNomeProjeto] = useState(projectName);
     const [nomeProdutora, setNomeProdutora] = useState("LandoP"); // preciso pegar isso de fora!
     const [excluirPopUp, setExcluirPopUp] = useState(false);
+    const { projects, loading, error, refetch } = useProject()
 
     const mudarInfosProjeto = (novoNome, novaProdutora) => {
         setNomeProjeto(novoNome);
         setNomeProdutora(novaProdutora);
     }
 
-    const excluirProjeto = () => {
-        setExcluirPopUp(false);
-        navigation.navigate("Dashboard");
+    const excluirProjeto = async () => {
+        try {
+            await projectService.delete(idProject);
+            navigation.navigate('Dashboard')
+            setExcluirPopUp(false)
+            refetch();
+        } catch (err) {
+            console.error("Erro ao excluir o projeto:", err);
+        } finally {
+            setConfirmacaoVisivel(false);
+            setTimeout(() => { setProjetoParaExcluir(null) }, 300);
+        }
     }
 
     return (
         <View style={styles.escopo}>
-            
-            <Top abaName="Detalhes do Projeto" voltar={false}/>
+
+            <Top abaName="Detalhes do Projeto" voltar={false} />
 
             <View style={styles.conteudoTela}>
-                <View style={styles.campoProjeto}>   
+                <View style={styles.campoProjeto}>
 
                     <View style={styles.campoProjetoItens}>
-                        
-                        <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+
+                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                             <CustomText style={styles.nomeProjeto}>Nome do Projeto</CustomText>
 
                             <TouchableOpacity activeOpacity={0.7} onPress={() => setEditVisivel(true)}>
-                                <Pencil style={{color: "#DAD0B7", size: 5}}/>
+                                <Pencil style={{ color: "#DAD0B7", size: 5 }} />
                             </TouchableOpacity>
                         </View>
 
@@ -68,16 +80,16 @@ function Details () {
 
                     <TouchableOpacity style={styles.campoMembros} activeOpacity={0.7}>
                         <View>
-                            <CustomText style={styles.tituloMembros}>Acessar Links</CustomText>                            
+                            <CustomText style={styles.tituloMembros}>Acessar Links</CustomText>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.campoMembros} activeOpacity={0.7} onPress={() => setMembrosVisivel(true)}> 
+                    <TouchableOpacity style={styles.campoMembros} activeOpacity={0.7} onPress={() => setMembrosVisivel(true)}>
                         <View>
                             <CustomText style={styles.tituloMembros}>Acessar Membros</CustomText>
                         </View>
                     </TouchableOpacity>
-                    
+
                 </View>
 
                 <View style={styles.areaBotoes}>
@@ -95,7 +107,7 @@ function Details () {
                     visivel={excluirPopUp}
                     aoCancelar={() => setExcluirPopUp(false)}
                     aoExecutar={excluirProjeto}
-                    mensagem= {`o projeto "${nomeProjeto}"`}
+                    mensagem={`o projeto "${nomeProjeto}"`}
                 />
                 <EditNamePopUp
                     visivel={editVisivel}
@@ -105,8 +117,8 @@ function Details () {
                     aoSalvar={mudarInfosProjeto}
                 />
                 <Membros
-                    visivel = {membrosVisivel}
-                    aoFechar= {() => setMembrosVisivel(false)}
+                    visivel={membrosVisivel}
+                    aoFechar={() => setMembrosVisivel(false)}
                 />
             </View>
         </View>
@@ -114,26 +126,26 @@ function Details () {
 }
 
 const styles = StyleSheet.create({
-    escopo: {backgroundColor: "#242424", flex: 1},
-    conteudoTela: {padding: 20, gap: 30, width: "100%", height: "100%"},
+    escopo: { backgroundColor: "#242424", flex: 1 },
+    conteudoTela: { padding: 20, gap: 30, width: "100%", height: "100%" },
     campoProjeto: {
-        backgroundColor: "#313131", 
-        padding: 20, 
+        backgroundColor: "#313131",
+        padding: 20,
         borderRadius: 15,
         gap: 10
     },
-    campoProjetoItens: {gap: 10},
-    nomeProjeto: {fontSize: 14},
-    campoTexto: {borderBottomColor: "#EF5625", borderBottomWidth: 2},
-    nomeProjetoTexto: {fontSize: 16, marginLeft: 10, marginBottom: 10},
-    outrosCampos: {gap: 10},
-    campoMembros: {backgroundColor: "#313131", padding: 20, borderRadius: 15},
-    tituloMembros: {fontSize: 16},
-    textoMembros: {fontSize: 14},
-    areaBotoes: {position: "absolute", bottom: 120, width: "89%", alignItems: "center", gap: 10},
-    botaoVoltar: {width: "100%", padding: 15, backgroundColor: "#313131", borderRadius: 15},
-    textoBotao: {fontSize: 16, fontWeight: "bold", textAlign: "center"},
-    botaoExcluir: {width: "100%", padding: 15, backgroundColor: "#EF5625", borderRadius: 15}
+    campoProjetoItens: { gap: 10 },
+    nomeProjeto: { fontSize: 14 },
+    campoTexto: { borderBottomColor: "#EF5625", borderBottomWidth: 2 },
+    nomeProjetoTexto: { fontSize: 16, marginLeft: 10, marginBottom: 10 },
+    outrosCampos: { gap: 10 },
+    campoMembros: { backgroundColor: "#313131", padding: 20, borderRadius: 15 },
+    tituloMembros: { fontSize: 16 },
+    textoMembros: { fontSize: 14 },
+    areaBotoes: { position: "absolute", bottom: 120, width: "89%", alignItems: "center", gap: 10 },
+    botaoVoltar: { width: "100%", padding: 15, backgroundColor: "#313131", borderRadius: 15 },
+    textoBotao: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
+    botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#EF5625", borderRadius: 15 }
 })
 
 export default Details;

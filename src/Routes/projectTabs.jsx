@@ -24,7 +24,7 @@ const ProjectTabs = () => {
         headerShown: false
        }}
     >
-      <Tab.Screen name="Detalhes" component={EmBreve} />
+      <Tab.Screen name="Detalhes" component={Details} />
       <Tab.Screen name="Notificacoes" component={Notificacao} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Continuidade" component={Continuidade} />
