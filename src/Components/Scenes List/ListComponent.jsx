@@ -6,19 +6,22 @@ import { useState } from 'react'
 
 const ListComponent = ({ item, deleteScene }) => {
     const [status, setStatus] = useState(item.sceneStatus)
+    const [isActive, setIsActive] = useState(false)
 
     const getBorderColor = () => {
         if (status === '2') return '#DA9304';
         if (status === '3') return '#1B8F65';
-        return '#242424'; 
+        return '#242424';
     };
 
     return (
-        <View style={[
+        <TouchableOpacity style={[
             styles.compList,
             { borderColor: getBorderColor() }
-        ]}>
-        
+        ]}
+            onPress={() => setIsActive((prev) => !prev)}
+        >
+
             <View style={styles.leftColumn}>
                 <CustomText style={styles.sceneNum}>
                     {item.sceneNumber}
@@ -41,15 +44,20 @@ const ListComponent = ({ item, deleteScene }) => {
                     </TouchableOpacity>
                 </View>
 
-                <CustomText style={styles.subtitleScene}>
-                    {item.sceneNote}
-                </CustomText>
+                {
+                    isActive &&
+                    <CustomText
+                        style={styles.subtitleScene}
+                    >
+                        {item.sceneNote}
+                    </CustomText>
+                }
 
                 <View style={styles.dropContainer}>
-                    <StatusSceneDrop id={item.idScenes} status={item.sceneStatus} setStatus={setStatus}/>
+                    <StatusSceneDrop id={item.idScenes} status={item.sceneStatus} setStatus={setStatus} />
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
@@ -58,6 +66,7 @@ export default ListComponent
 const styles = StyleSheet.create({
     compList: {
         width: '100%',
+        height: 'auto',
         flexDirection: 'row',
         backgroundColor: '#DAD0B7',
         borderRadius: 15,

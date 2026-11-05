@@ -34,13 +34,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 8,
+        zIndex: 99
     },
     buttonAdd: {
         width: 64,
         height: 64,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "#EF5625",
+        backgroundColor: "#DA9304",
         borderRadius: 100,
         zIndex: 10,
     }

@@ -13,11 +13,11 @@ import CustomText from "../Text/CustomText";
 
 // fator: qquants vezes a largura da tela o círculo tem.
 const ANEIS = [
-  { fator: 2.6, cor: "#2E2623" },
-  { fator: 2.1, cor: "#5C2C1B" },
-  { fator: 1.65, cor: "#8F3D1F" },
-  { fator: 1.25, cor: "#C14A22" },
-  { fator: 0.95, cor: "#EF5625" },
+  { fator: 2.6, cor: "#2E2A22" },
+  { fator: 2.1, cor: "#564420" },
+  { fator: 1.65, cor: "#825F17" },
+  { fator: 1.25, cor: "#AE790D" },
+  { fator: 0.95, cor: "#DA9304" },
 ];
 
 const ChamadoRecebido = ({ visivel, remetente, mensagem, aoFechar }) => {

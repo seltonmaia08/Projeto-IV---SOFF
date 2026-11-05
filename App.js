@@ -5,6 +5,9 @@ import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import Routes from './src/Routes/Routes'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LogBox } from 'react-native';
+import { reminderService } from './src/Services/api';
+import { useNotification } from './src/Hook/useNotification';
+import { useProject } from './src/Hook/useProjects';
 
 // Ignora o aviso específico de VirtualizedList aninhado
 LogBox.ignoreLogs([

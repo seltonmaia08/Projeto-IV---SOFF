@@ -107,7 +107,7 @@ const ScenesList = () => {
       // )
         (
           <FlatList
-            style={{ width: '100%', maxHeight: 400, borderRadius: 15 }}
+            style={{ width: '100%', maxHeight: 400, minHeight: 60, borderRadius: 15 }}
             data={scenes}
             renderItem={({ item }) => <ListComponent item={item} deleteScene={() => handleDelete(item.idScenes)} />}
             keyExtractor={(item) => item.idScenes}

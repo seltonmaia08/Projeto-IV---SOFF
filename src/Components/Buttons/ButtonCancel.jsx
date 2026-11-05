@@ -17,7 +17,7 @@ export default ButtonCancel
 // Ajustar o estilo desse botão
 const styles = StyleSheet.create({
     buttonCancel: {
-        width: 140,
+        width: '48.5%',
         height: 54,
         display: 'flex',
         justifyContent: 'center',
