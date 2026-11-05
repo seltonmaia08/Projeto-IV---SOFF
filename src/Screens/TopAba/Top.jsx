@@ -8,7 +8,6 @@ function Top({abaName, voltar, voltarOn}) {
 
     return(
         <View>
-            
             <View style={styles.topAba}>
                 {
                     voltar?

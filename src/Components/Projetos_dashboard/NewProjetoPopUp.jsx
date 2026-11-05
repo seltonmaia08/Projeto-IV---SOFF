@@ -6,6 +6,7 @@ import * as Clipboard from 'expo-clipboard';
 
 import GetInGreen_button from './GetInGreen_button';
 import GetOut_button from './GetOut_button';
+import CustomText from '../Text/CustomText';
 
 // import's backend
 import { projectService } from '../../Services/api';
@@ -86,29 +87,29 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
         >
             <BlurView style={styles.overlay} intensity={40} tint='dark'>
                 <View style={styles.popUp}>
-                    <Text style={styles.criar}>Criar Projeto</Text>
+                    <CustomText style={styles.criar}>Criar Projeto</CustomText>
 
                     <View style={styles.dados}>
                         <View style={styles.campo}>
-                            <Text style={styles.labels}>Nome: </Text>
+                            <CustomText style={styles.labels}>Nome: </CustomText>
                             <TextInput value={projectName} onChangeText={setProjectName} style={styles.inputs} />
                         </View>
                         <View style={styles.campo}>
-                            <Text style={styles.labels}>Produtora: </Text>
+                            <CustomText style={styles.labels}>Produtora: </CustomText>
                             <TextInput value={producer} onChangeText={setProducer} style={styles.inputs} />
                         </View>
                     </View>
 
                     <View style={styles.areaLink}>
 
-                        <Text style={styles.linkAviso}>Copie o código abaixo e envie para os seus colaboradores de projeto!</Text>
+                        <CustomText style={styles.linkAviso}>Copie o código abaixo e envie para os seus colaboradores de projeto!</CustomText>
 
                         <View style={styles.copiarCodigo}>
-                            <Text style={styles.codigo}>{(codRandom)}</Text>
+                            <CustomText style={styles.codigo}>{(codRandom)}</CustomText>
 
                             <TouchableOpacity activeOpacity={0.5} onPress={copiarParaClipboard}>
                                 {
-                                    copiado ? (<Check style={{ color: "#4CAF50" }} />) : (<Copy style={{ color: "#F0EADE" }} />)
+                                    copiado ? (<Check style={{ color: "#4CAF50" }} />) : (<Copy style={{ color: "#DAD0B7" }} />)
                                 }
                             </TouchableOpacity>
                         </View>
@@ -147,20 +148,20 @@ const styles = StyleSheet.create({
         padding: 20,
         gap: 40
     },
-    criar: { fontWeight: "bold", fontSize: 18, color: "#F0EADE" },
+    criar: { fontWeight: "bold", fontSize: 18, color: "#DAD0B7" },
     dados: { gap: 10 },
     campo: { flexDirection: "row", gap: 10 },
-    labels: { fontSize: 16, color: "#F0EADE" },
+    labels: { fontSize: 16, color: "#DAD0B7" },
     inputs: {
         flex: 1,
         fontSize: 16,
-        color: "#F0EADE",
+        color: "#DAD0B7",
         borderBottomColor: "#EF5625",
         borderBottomWidth: 1,
         outlineStyle: "none"
     },
     areaLink: { alignSelf: "center", gap: 15 },
-    linkAviso: { fontSize: 12, color: "#F0EADE", letterSpacing: 1.15, textAlign: "center" },
+    linkAviso: { fontSize: 12, color: "#DAD0B7", letterSpacing: 1.15, textAlign: "center" },
     copiarCodigo: { flexDirection: "row", gap: 10, alignSelf: "center" },
     codigo: {
         fontSize: 12,

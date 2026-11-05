@@ -191,13 +191,11 @@ const styles = StyleSheet.create({
   menuUp: {
     backgroundColor: "#313131",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     gap: 10,
     position: "absolute",
-    bottom: 100,
-    right: 50,
-    borderColor: "#EF5625",
-    borderWidth: 2,
+    bottom: 20,
+    right: 0,
   },
   buttonAddNota: {
     height: 58,
