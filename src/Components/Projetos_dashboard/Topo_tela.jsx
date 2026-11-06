@@ -16,13 +16,13 @@ const styles = StyleSheet.create({
     perfil: {color: "#DAD0B7"}
 });
 
-const Topo_tela = () => {
+const Topo_tela = ({ username }) => {
 
     return (
         <View>
         
             <View style={styles.escopoTopo}>
-                <CustomText style={styles.texto}>Olá, Usuário!</CustomText>
+                <CustomText style={styles.texto}>Olá, {username}!</CustomText>
                 <CircleUser size={45} style={styles.perfil}/>
             </View>
 

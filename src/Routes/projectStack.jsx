@@ -11,9 +11,9 @@ import NotificationWatcher from "../Components/Alerta/Alerta";
 const Stack = createNativeStackNavigator()
 
 const ProjectStack = () => {
-    const { params } = useRoute();
-    const { idProject, projectName } = params;
-
+    const { params = {} } = useRoute();
+    const idProject = params?.idProject;
+    const projectName = params?.projectName;
 
     return (
         <>

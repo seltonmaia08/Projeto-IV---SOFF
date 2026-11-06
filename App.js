@@ -8,10 +8,11 @@ import { LogBox } from 'react-native';
 import { reminderService } from './src/Services/api';
 import { useNotification } from './src/Hook/useNotification';
 import { useProject } from './src/Hook/useProjects';
+import { AuthProvider } from './src/Context/AuthContext';
 
 // Ignora o aviso específico de VirtualizedList aninhado
 LogBox.ignoreLogs([
-    'VirtualizedLists should never be nested inside plain ScrollViews'
+  'VirtualizedLists should never be nested inside plain ScrollViews'
 ]);
 
 export default function App() {
@@ -27,9 +28,11 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer theme={myDarkTheme}>
-        <Routes />
-      </NavigationContainer>
+      <AuthProvider>
+        <NavigationContainer theme={myDarkTheme}>
+          <Routes />
+        </NavigationContainer>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

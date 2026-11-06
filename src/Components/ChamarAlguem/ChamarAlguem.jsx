@@ -45,7 +45,7 @@ const ChamarAlguem = () => {
   };
 
   return (
-    <>
+    <View style={{padding: 20}}>
       <TouchableOpacity
         style={styles.botaoFlutuante}
         activeOpacity={0.8}
@@ -124,7 +124,7 @@ const ChamarAlguem = () => {
         mensagem={mensagem}
         aoFechar={fecharChamadoRecebido}
       />
-    </>
+    </View>
   );
 };
 
@@ -133,8 +133,8 @@ export default ChamarAlguem;
 const styles = StyleSheet.create({
   botaoFlutuante: {
     position: "absolute",
-    right: 0,
-    bottom: 20,
+    right: 10,
+    bottom: 8,
     width: 64,
     height: 64,
     borderRadius: 32,

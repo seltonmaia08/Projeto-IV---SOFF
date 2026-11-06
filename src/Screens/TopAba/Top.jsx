@@ -28,11 +28,13 @@ function Top({abaName, voltar, voltarOn}) {
 const styles = StyleSheet.create({
     topAba: {
         backgroundColor: "#313131",
-        height: 105, 
-        padding: 20,
+        height: 120, 
+        paddingHorizontal: 20,
+        paddingTop: 60,
         flexDirection: "row",
         gap: 10,
-        alignItems: "flex-end"
+        justifyContent: 'flex-start',
+        alignItems: "center"
     },
     tituloAba: {fontSize: 18, fontWeight: "bold", color: "#DAD0B7"},
     setinha: {color: "#DAD0B7"}

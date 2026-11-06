@@ -52,7 +52,7 @@ const NotificationWatcher = ({ idProject }) => {
 
         const intervalo = setInterval(() => {
             checarLembretesPendentes();
-        }, 50000);
+        }, 1000);
 
         return () => clearInterval(intervalo);
     }, [idProject]);
