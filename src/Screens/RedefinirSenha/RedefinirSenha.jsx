@@ -59,7 +59,7 @@ const RedefinirSenha = () => {
   }
   return (
     <View style={styles.container}>
-      <Top abaName="Recuperar Senha" voltar={true}/>
+      <Top abaName="Recuperar Senha" voltar={true} voltarOn={() => navigation.getParent()?.goBack() || navigation.navigate("Login")}/>
       <View style={styles.content}>
         {step === 1 ? (
           <>

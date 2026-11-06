@@ -148,7 +148,7 @@ const Register = () => {
                                     E-mail
                                 </CustomText>
                                 <TextInput
-                                    style={styles.input}
+                                    style={isValid ? styles.input : styles.inputError}
                                     keyboardType='email-address'
                                     placeholder='exemplo@email.com'
                                     value={email}
