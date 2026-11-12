@@ -142,7 +142,7 @@ export default ViewNotificacao
 const styles = StyleSheet.create({
     container: {
        width: '100%',
-       height: '100%    '
+       height: '100%'
     },
     menuUp: {
         backgroundColor: "#313131",
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         gap: 10,
         position: 'absolute',
-        bottom: 20,
-        right: 0,
+        bottom: 100,
+        right: 50,
         borderRadius: 20
         // borderColor: '#EF5625',
         // borderWidth: 2

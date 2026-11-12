@@ -9,31 +9,34 @@ import StatusFilmagem from "../../Components/StatusFilmagem/StatusFilmagem";
 import ChamarAlguem from "../../Components/ChamarAlguem/ChamarAlguem";
 import MenuNavegacao from '../../Components/MenuNavegacao/MenuNavegacao';
 import Top from '../TopAba/Top';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
 
   const { idProject, projectName } = useProjectContext();
-
+  const navigation = useNavigation()
   return (
-    <Container>
-      {/* View envolve tudo para que o position: absolute do botão
+    <>
+      <Top abaName={"Inicio"} voltar={true} voltarOn={() => navigation.getParent()?.goBack() || navigation.navigate("Dashboard")} />
+      <Container>
+        {/* View envolve tudo para que o position: absolute do botão
           seja relativo à tela, não ao conteúdo rolável */}
-      <View style={{ flex: 1 }}>
-  
-        <ScrollView
-          contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
-          showsVerticalScrollIndicator={false}
-          nestedScrollEnabled={true}
-        >  
-          <StatusFilmagem />
-          <ScenesList />
-          <Anotacoes />
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+          >
+            <StatusFilmagem />
+            <ScenesList />
+            <Anotacoes />
+          </ScrollView>
 
-        {/* Fora do ScrollView → fica fixo na tela */}
-        <ChamarAlguem />
-      </View>
-    </Container>
+          {/* Fora do ScrollView → fica fixo na tela */}
+          <ChamarAlguem />
+        </View>
+      </Container>
+    </>
   );
 };
 

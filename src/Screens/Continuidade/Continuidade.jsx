@@ -94,7 +94,7 @@ const Continuidade = () => {
   return (
     <View style={styles.container}>
       <Top abaName={'Continuidade'} voltar={false} />
-      <View style={{padding: 20, flex: 1}}>
+      <View style={{ padding: 20, flex: 1 }}>
 
         {loading ? (
           <View
@@ -186,7 +186,8 @@ export default Continuidade;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '100%',
+    height: '100%'
   },
   menuUp: {
     backgroundColor: "#313131",
@@ -194,8 +195,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     gap: 10,
     position: "absolute",
-    bottom: 20,
-    right: 0,
+    bottom: 100,
+    right: 50,
   },
   buttonAddNota: {
     height: 58,

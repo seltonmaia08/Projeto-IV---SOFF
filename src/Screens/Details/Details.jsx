@@ -96,7 +96,7 @@ function Details() {
 
                 <View style={styles.areaBotoes}>
 
-                    <TouchableOpacity style={styles.botaoVoltar} activeOpacity={0.5} onPress={() => navigation.navigate("Dashboard")}>
+                    <TouchableOpacity style={styles.botaoVoltar} activeOpacity={0.5} onPress={() => navigation.getParent()?.goBack() || navigation.navigate("Dashboard")}>
                         <CustomText style={styles.textoBotao}>Voltar ao Dashboard</CustomText>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.botaoExcluir} activeOpacity={0.5} onPress={() => setExcluirPopUp(true)}>

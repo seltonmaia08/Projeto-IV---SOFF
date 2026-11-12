@@ -11,6 +11,8 @@ import NewProjetoPopUp from '../../Components/Projetos_dashboard/NewProjetoPopUp
 //import's backend
 import { useProject } from '../../Hook/useProjects';
 import { projectService } from '../../Services/api';
+import { useAuth } from '../../Context/AuthContext';
+import LogOut from '../../Components/Buttons/ButtonLogout';
 
 
 const styles = StyleSheet.create({
@@ -27,6 +29,7 @@ const Dashboard = () => {
     const [confirmacaoVisivel, setConfirmacaoVisivel] = useState(false);
     const [projetoParaExcluir, setProjetoParaExcluir] = useState(null);
     const { projects, loading, error, refetch } = useProject()
+    const { user } = useAuth()
     
     const adicionarProjeto = (novoProjeto) => {
         refetch()
@@ -59,7 +62,7 @@ const Dashboard = () => {
     return (
         <View style={styles.escopoTela}>
 
-            <Topo_tela/>
+            <Topo_tela username={user?.user_metadata?.userName || "Usuário"}/>
             <View style={styles.conteudo}>
 
                 <CustomText style={styles.titulo}>MEUS PROJETOS</CustomText>
@@ -72,7 +75,7 @@ const Dashboard = () => {
 
                     {
 
-                        projects.length === 0
+                        (!Array.isArray(projects) || projects.length === 0)
                         ?
                         <CustomText>Comece criando um novo projeto!</CustomText>
                         :
@@ -105,8 +108,8 @@ const Dashboard = () => {
                     mensagem={`o projeto "${projetoParaExcluir?.projectName}"`}
                 />
                 
+                    <LogOut/>
             </View>
-
         </View>
     )
 }
