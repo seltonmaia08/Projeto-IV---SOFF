@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Pencil } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -38,11 +38,11 @@ function Details() {
     const excluirProjeto = async () => {
         try {
             await projectService.delete(idProject);
-            navigation.navigate('Dashboard');
             setExcluirPopUp(false);
-            refetch();
+            navigation.navigate('Dashboard');
         } catch (err) {
             console.error("Erro ao excluir o projeto:", err);
+            Alert.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
         }
     };
 
