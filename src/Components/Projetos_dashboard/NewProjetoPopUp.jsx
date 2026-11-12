@@ -1,18 +1,20 @@
 import { Copy, Check } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import { Alert, Text, View, StyleSheet, TextInput, Modal, TouchableOpacity } from 'react-native';
-import { BlurView } from "expo-blur"
+import { BlurView } from "expo-blur";
 import * as Clipboard from 'expo-clipboard';
 
 import GetInGreen_button from './GetInGreen_button';
 import GetOut_button from './GetOut_button';
 
 // import's backend
-import { projectService } from '../../Services/api';
+import { projectService, projectMemberService } from '../../Services/api';
+import { useAuth } from '../../Context/AuthContext';
 
 
 const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
 
+    const { user } = useAuth();
     const [projectName, setProjectName] = useState();
     const [producer, setProducer] = useState();
     const [codRandom, setCodRandom] = useState();
@@ -20,7 +22,6 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(
-
         () => {
             if (visivel) {
                 setCodRandom(gerarAleatório());
@@ -34,55 +35,67 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
         let resultado = "";
         for (let i = 0; i < 8; i++) {
             resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-            //charAt precisa de um índice, que eu vou sortear.
         }
         return resultado;
-    }
+    };
 
     const copiarParaClipboard = async () => {
-
         if (codRandom) {
             await Clipboard.setStringAsync(codRandom);
             setCopiado(true);
-
-            setTimeout(() => { setCopiado(false) }, 2000); // 
+            setTimeout(() => { setCopiado(false); }, 2000);
         }
-    }
+    };
 
     const handleCriar = async () => {
-        if (!projectName || !producer) return
+        if (!projectName || !producer) return;
 
         try {
-            setLoading(true)
+            setLoading(true);
+            // 1. Cria o projeto incluindo o idUser do criador
             const novoProjeto = await projectService.create({
                 projectName: projectName,
                 producer: producer,
-                linkInvitation: codRandom
-            })
-            aoCriarProjeto(novoProjeto)
-        } catch (error) {
-            console.error('Erro ao criar projeto:', error)
-            Alert.alert('Erro', 'Não foi possível criar o projeto. Tente novamente.')
-        } finally {
-            setLoading(false)
-        }
-        
+                linkInvitation: codRandom,
+                idUser: user?.id
+            });
 
-        handleCancelar()
-    }
+            // 2. Adiciona o criador como membro do projeto com cargo "Proprietário"
+            if (novoProjeto?.idProject && user?.id) {
+                try {
+                    await projectMemberService.create({
+                        idProject: novoProjeto.idProject,
+                        idUser: user.id,
+                        cargo: "Proprietário"
+                    });
+                } catch (memberErr) {
+                    console.warn('Aviso ao registrar criador em ProjectMember:', memberErr);
+                }
+            }
+
+            aoCriarProjeto(novoProjeto);
+        } catch (error) {
+            console.error('Erro ao criar projeto:', error);
+            Alert.alert('Erro', 'Não foi possível criar o projeto. Tente novamente.');
+        } finally {
+            setLoading(false);
+        }
+
+        handleCancelar();
+    };
 
     const handleCancelar = () => {
         setProjectName("");
         setProducer("");
         aoFechar();
-    }
+    };
 
     return (
         <Modal
             visible={visivel}
             transparent={true}
-            animationType='fade' // animação suave na hora de aparecer
-            onRequestClose={aoFechar} // onRequestClose é pra se o usuário apertar na setinha de voltar do celular
+            animationType='fade'
+            onRequestClose={aoFechar}
         >
             <BlurView style={styles.overlay} intensity={40} tint='dark'>
                 <View style={styles.popUp}>
@@ -100,7 +113,6 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
                     </View>
 
                     <View style={styles.areaLink}>
-
                         <Text style={styles.linkAviso}>Copie o código abaixo e envie para os seus colaboradores de projeto!</Text>
 
                         <View style={styles.copiarCodigo}>
@@ -112,11 +124,9 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
                                 }
                             </TouchableOpacity>
                         </View>
-
                     </View>
 
                     <View style={styles.botoes}>
-
                         <TouchableOpacity activeOpacity={0.5} onPress={handleCancelar}>
                             <GetOut_button acao="CANCELAR" />
                         </TouchableOpacity>
@@ -124,19 +134,17 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
                         <TouchableOpacity activeOpacity={0.5} onPress={handleCriar}>
                             <GetInGreen_button acao="CRIAR" />
                         </TouchableOpacity>
-
                     </View>
                 </View>
             </BlurView>
         </Modal>
-
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: "rgba(0, 0, 0, 0.6)", // preto com 60% de opacidade,
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
         justifyContent: "center",
         alignItems: "center"
     },

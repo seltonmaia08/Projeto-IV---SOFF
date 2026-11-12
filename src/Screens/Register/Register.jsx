@@ -1,14 +1,12 @@
 import {
-    Image,
     TextInput,
     View,
     StyleSheet,
     TouchableOpacity,
     Platform,
     KeyboardAvoidingView,
-    TouchableWithoutFeedback,
     ScrollView,
-    Keyboard
+    ActivityIndicator
 } from 'react-native'
 import CustomText from '../../Components/Text/CustomText'
 import { useState } from 'react'
@@ -66,215 +64,233 @@ const Register = () => {
             return
         }
         try {
+            setLoading(true);
+            setError(false);
+            setMessage('');
+            const fullName = `${name} ${lastname}`.trim();
+
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
                     data: {
-                        userName: `${name} ${lastname}`.trim()
+                        userName: fullName,
+                        full_name: fullName,
+                        name: fullName,
+                        nome: fullName
                     }
                 }
             })
 
-           if (error) {
-            setError(true);
-            if (error.message.includes('already registered') || error.status === 422) {
-                setMessage('Este e-mail já está cadastrado. Faça login ou use outro e-mail.');
-            } else {
-                setMessage(error.message || 'Ocorreu um erro ao criar a conta.');
+            if (error) {
+                setError(true);
+                if (error.message.includes('already registered') || error.status === 422) {
+                    setMessage('Este e-mail já está cadastrado. Faça login ou use outro e-mail.');
+                } else if (error.message.includes('Database error saving new user')) {
+                    setMessage('Erro no banco de dados ao salvar usuário. A Trigger da tabela profiles no Supabase falhou.');
+                } else {
+                    setMessage(error.message || 'Ocorreu um erro ao criar a conta.');
+                }
+                return;
             }
-            return;
-        }
-        
-        if (data?.user?.identities && data.user.identities.length === 0) {
-            setError(true);
-            setMessage('Este e-mail já está cadastrado. Faça login ou recupere sua senha.');
-            return;
-        }
+
+            if (data?.user?.identities && data.user.identities.length === 0) {
+                setError(true);
+                setMessage('Este e-mail já está cadastrado. Faça login ou recupere sua senha.');
+                return;
+            }
         } catch (error) {
             console.log("Erro na autenticação do usuário: ", error)
+            setError(true);
+            setMessage('Ocorreu um erro ao criar a conta.');
+        } finally {
+            setLoading(false);
         }
-
-
     }
 
     return (
         <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ width: '100%'}}>
-            <Top abaName={"Cadastro"} voltar={true} voltarOn={() => navigation.navigate('Login')}/>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ScrollView contentContainerStyle={styles.innerContainer}>
-                    <View style={styles.container}>
-                        {
-                            error &&
-                            <View style={styles.error}>
-                                <CustomText>{message}</CustomText>
-                            </View>
-                        }
-                        <View style={styles.logo}>
-                            <Logo width={164} height={48} />
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={styles.keyboardContainer}>
+            <Top abaName={"Cadastro"} voltar={true} voltarOn={() => navigation.navigate('Login')} />
+            <ScrollView
+                style={styles.scrollView}
+                contentContainerStyle={styles.innerContainer}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                alwaysBounceVertical={true}
+                bounces={true}
+            >
+                <View style={styles.container}>
+                    {
+                        error &&
+                        <View style={styles.error}>
+                            <CustomText>{message}</CustomText>
                         </View>
-                        <View style={styles.cardRegister}>
-                            <View style={styles.items}>
-                                <CustomText style={styles.label}>
-                                    Nome
-                                </CustomText>
-                                <TextInput
-                                    style={styles.input}
-                                    keyboardType='default'
-                                    placeholder='José'
-                                    value={name}
-                                    onChangeText={setName}
-                                    autoCorrect={false}
-
-                                />
-                            </View>
-                            <View style={styles.items}>
-                                <CustomText style={styles.label}>
-                                    Sobrenome
-                                </CustomText>
-                                <TextInput
-                                    style={styles.input}
-                                    keyboardType='default'
-                                    placeholder='Silva'
-                                    value={lastname}
-                                    onChangeText={setLastname}
-                                    autoCorrect={false}
-                                />
-                            </View>
-                            <View style={styles.items}>
-                                <CustomText style={styles.label}>
-                                    E-mail
-                                </CustomText>
-                                <TextInput
-                                    style={isValid ? styles.input : styles.inputError}
-                                    keyboardType='email-address'
-                                    placeholder='exemplo@email.com'
-                                    value={email}
-                                    onChangeText={validEmail}
-                                    autoCapitalize='none'
-                                    autoCorrect={false}
-                                />
-                            </View>
-                            <View style={styles.items}>
-                                <CustomText style={styles.label}>
-                                    Senha
-                                </CustomText>
-                                <View style={{ justifyContent: 'space-around', alignItems: 'center' }}>
-
-                                    <TextInput
-                                        style={styles.input}
-                                        keyboardType='default'
-                                        secureTextEntry={visible}
-                                        value={password}
-                                        onChangeText={setPassword}
-                                    />
-                                    {
-                                        visible ?
-                                            <TouchableOpacity
-                                                style={styles.btnEye}
-                                                onPress={() => setVisible(false)}
-                                            >
-                                                <EyeClosed size={24} color={'#313131'} />
-                                            </TouchableOpacity>
-                                            :
-                                            <TouchableOpacity
-                                                style={styles.btnEye}
-                                                onPress={() => setVisible(true)}
-                                            >
-                                                <Eye size={24} color={'#313131'} />
-                                            </TouchableOpacity>
-                                    }
-                                </View>
-                                <CustomText style={[styles.label, { fontSize: 11 }]}>
-                                    Min: 6 digitos
-                                </CustomText>
-                            </View>
-                            <View style={styles.items}>
-                                <CustomText style={styles.label}>
-                                    Confirmar Senha
-                                </CustomText>
-                                <View style={{ justifyContent: 'space-around', alignItems: 'center' }}>
-
-                                    <TextInput
-                                        style={confirPass.length > 0 && !senhasIguais ? styles.inputError : styles.input}
-                                        keyboardType='default'
-                                        secureTextEntry={visible}
-                                        value={confirPass}
-                                        onChangeText={setConfirPass}
-                                    />
-                                    {
-                                        visible ?
-                                            <TouchableOpacity
-                                                style={styles.btnEye}
-                                                onPress={() => setVisible(false)}
-                                            >
-                                                <EyeClosed size={24} color={'#313131'} />
-                                            </TouchableOpacity>
-                                            :
-                                            <TouchableOpacity
-                                                style={styles.btnEye}
-                                                onPress={() => setVisible(true)}
-                                            >
-                                                <Eye size={24} color={'#313131'} />
-                                            </TouchableOpacity>
-                                    }
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.area1}>
-                            <TouchableOpacity style={
-                                !formularioValido ? styles.btnRegisterDisabled : styles.btnRegister
-                            } onPress={register}
-                                disabled={!formularioValido}
-                            >
-                                {loading ? (
-                                    <ActivityIndicator size="large" color="#DAD0B7" />
-                                ) : (
-                                    <CustomText style={styles.textBtnRegister}>Cadastrar e Entrar</CustomText>
-                                )}
-                            </TouchableOpacity>
-                        </View>
-
+                    }
+                    <View style={styles.logo}>
+                        <Logo width={164} height={48} />
                     </View>
-                </ScrollView>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView >
+                    <View style={styles.cardRegister}>
+                        <View style={styles.items}>
+                            <CustomText style={styles.label}>
+                                Nome
+                            </CustomText>
+                            <TextInput
+                                style={styles.input}
+                                keyboardType='default'
+                                placeholder='José'
+                                value={name}
+                                onChangeText={setName}
+                                autoCorrect={false}
+                            />
+                        </View>
+                        <View style={styles.items}>
+                            <CustomText style={styles.label}>
+                                Sobrenome
+                            </CustomText>
+                            <TextInput
+                                style={styles.input}
+                                keyboardType='default'
+                                placeholder='Silva'
+                                value={lastname}
+                                onChangeText={setLastname}
+                                autoCorrect={false}
+                            />
+                        </View>
+                        <View style={styles.items}>
+                            <CustomText style={styles.label}>
+                                E-mail
+                            </CustomText>
+                            <TextInput
+                                style={isValid ? styles.input : styles.inputError}
+                                keyboardType='email-address'
+                                placeholder='exemplo@email.com'
+                                value={email}
+                                onChangeText={validEmail}
+                                autoCapitalize='none'
+                                autoCorrect={false}
+                            />
+                        </View>
+                        <View style={styles.items}>
+                            <CustomText style={styles.label}>
+                                Senha
+                            </CustomText>
+                            <View style={{ justifyContent: 'space-around', alignItems: 'center' }}>
+                                <TextInput
+                                    style={styles.input}
+                                    keyboardType='default'
+                                    secureTextEntry={visible}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                />
+                                {
+                                    visible ?
+                                        <TouchableOpacity
+                                            style={styles.btnEye}
+                                            onPress={() => setVisible(false)}
+                                        >
+                                            <EyeClosed size={24} color={'#313131'} />
+                                        </TouchableOpacity>
+                                        :
+                                        <TouchableOpacity
+                                            style={styles.btnEye}
+                                            onPress={() => setVisible(true)}
+                                        >
+                                            <Eye size={24} color={'#313131'} />
+                                        </TouchableOpacity>
+                                }
+                            </View>
+                            <CustomText style={[styles.label, { fontSize: 11 }]}>
+                                Min: 6 digitos
+                            </CustomText>
+                        </View>
+                        <View style={styles.items}>
+                            <CustomText style={styles.label}>
+                                Confirmar Senha
+                            </CustomText>
+                            <View style={{ justifyContent: 'space-around', alignItems: 'center' }}>
+                                <TextInput
+                                    style={confirPass.length > 0 && !senhasIguais ? styles.inputError : styles.input}
+                                    keyboardType='default'
+                                    secureTextEntry={visible}
+                                    value={confirPass}
+                                    onChangeText={setConfirPass}
+                                />
+                                {
+                                    visible ?
+                                        <TouchableOpacity
+                                            style={styles.btnEye}
+                                            onPress={() => setVisible(false)}
+                                        >
+                                            <EyeClosed size={24} color={'#313131'} />
+                                        </TouchableOpacity>
+                                        :
+                                        <TouchableOpacity
+                                            style={styles.btnEye}
+                                            onPress={() => setVisible(true)}
+                                        >
+                                            <Eye size={24} color={'#313131'} />
+                                        </TouchableOpacity>
+                                }
+                            </View>
+                        </View>
+                    </View>
+                    <View style={styles.area1}>
+                        <TouchableOpacity style={
+                            !formularioValido ? styles.btnRegisterDisabled : styles.btnRegister
+                        } onPress={register}
+                            disabled={!formularioValido}
+                        >
+                            {loading ? (
+                                <ActivityIndicator size="large" color="#DAD0B7" />
+                            ) : (
+                                <CustomText style={styles.textBtnRegister}>Cadastrar e Entrar</CustomText>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 }
 
 export default Register
 
 const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        padding: 20,
-        paddingTop: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 50
+    keyboardContainer: {
+        flex: 1,
+        backgroundColor: '#242424'
+    },
+    scrollView: {
+        flex: 1,
+        width: '100%'
     },
     innerContainer: {
         flexGrow: 1,
+        paddingBottom: 60
+    },
+    container: {
+        width: '100%',
+        padding: 20,
+        paddingTop: 30,
+        alignItems: 'center',
         justifyContent: 'center',
-        padding: 24,
+        gap: 30
     },
     logo: {
-        marginTop: 20,
-        marginBottom: 50
+        marginTop: 10,
+        marginBottom: 20
     },
     cardRegister: {
         width: '80%',
         height: 'auto',
         gap: 20,
-        padding: 10,
-
+        padding: 10
     },
     items: {
         gap: 10
     },
-
     input: {
         height: 50,
         width: '100%',
@@ -305,22 +321,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '60%',
         height: 50,
-        backgroundColor: '#5F5F5F',
+        backgroundColor: '#5F5F5F'
     },
     textBtnRegister: {
-        textTransform: 'uppercase',
+        textTransform: 'uppercase'
     },
     btnEye: {
         position: 'absolute',
         width: 26,
         height: 26,
         right: 20
-
     },
     area1: {
         width: '100%',
         alignItems: 'center',
-        gap: 50
+        gap: 30,
+        marginTop: 10
     },
     error: {
         width: '80%',
@@ -330,8 +346,6 @@ const styles = StyleSheet.create({
         borderLeftWidth: 10,
         borderRadius: 15,
         backgroundColor: '#ef582540',
-        position: 'absolute',
-        top: 150
-
+        marginBottom: 10
     }
-})
+});
