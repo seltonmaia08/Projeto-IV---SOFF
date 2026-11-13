@@ -23,6 +23,11 @@ const NovoDepartamento = ({ visivel, aoFechar, aoCriarDepart }) => {
 
     const handleCriar = () => {
 
+        aoCriarDepart({nome: departamento, membros: [membrosSelecionados]});
+        setDepartamento("");
+        setMembrosSelecionados([]);
+        setListaOn(false);
+        aoFechar();
     }
 
     const toggleMembro = (nome) => {
@@ -55,7 +60,7 @@ const NovoDepartamento = ({ visivel, aoFechar, aoCriarDepart }) => {
 
                             <View>
                                 <TouchableOpacity activeOpacity={0.7} onPress={() => setListaOn(!listaOn)}>
-                                    <View style={styles.dropDown}>
+                                    <View style={[styles.dropDown, listaOn && styles.dropDownAberto]}>
                                         <CustomText style={styles.textoDrop}>
                                             {
                                                 membrosSelecionados.length > 0 ?
@@ -104,11 +109,11 @@ const NovoDepartamento = ({ visivel, aoFechar, aoCriarDepart }) => {
 
                     <View style={styles.botoes}>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={aoFechar}>
+                        <TouchableOpacity activeOpacity={0.5} onPress={handleCancelar}>
                             <GetOut_button acao="CANCELAR" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.5}>
+                        <TouchableOpacity activeOpacity={0.5} onPress={handleCriar}>
                             <GetInGreen_button acao="CRIAR" />
                         </TouchableOpacity>
 
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
     },
     criar: { fontWeight: "bold", fontSize: 18, color: "#DAD0B7" },
     dados: { gap: 30 },
-    campo: { gap: 10 },
+    campo: { gap: 10, zIndex: 999, position: "relative" },
     labels: { fontSize: 16, color: "#DAD0B7" },
     dropDown: {
         backgroundColor: "#DAD0B7",
@@ -145,6 +150,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         padding: 10,
         borderRadius: 15
+    },
+    dropDownAberto: {
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        borderBottomColor: "#c3c3c3",
+        borderBottomWidth: 1
     },
     textoDrop: {color: "#383838"},
     setinhaDrop: {color: "#383838"},
@@ -162,7 +173,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: "#DAD0B7",
         borderBottomRightRadius: 15,
-        borderBottomLeftRadius: 15
+        borderBottomLeftRadius: 15,
+        position: "absolute",
+        top: "100%",
+        width: "100%",
+        elevation: 99,
+        zIndex: 9999
     },
     itemMembro: {
         flexDirection: "row",
@@ -173,7 +189,7 @@ const styles = StyleSheet.create({
     },
     textoMembro: {color: "#383838"},
     textoMembroSelecionado: {fontWeight: "bold"},
-    botoes: { flexDirection: "row", justifyContent: "space-between" }
+    botoes: { flexDirection: "row", justifyContent: "space-between", zIndex: -1 }
 });
 
 export default NovoDepartamento;

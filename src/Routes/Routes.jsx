@@ -10,6 +10,7 @@ import { useAuth } from "../Context/AuthContext";
 import { ActivityIndicator, View } from "react-native";
 import Register from "../Screens/Register/Register";
 import RedefinirSenha from "../Screens/RedefinirSenha/RedefinirSenha";
+import Perfil from "../Screens/Perfil/Perfil";
 
 SplashScreen.preventAutoHideAsync() // Previne o que a SplashScreen suma antes do carregamento das fontes
 const Stack = createNativeStackNavigator();
@@ -56,6 +57,7 @@ const Routes = () => {
                     <>
                         <Stack.Screen name="Dashboard" component={Dashboard} />
                         <Stack.Screen name="ProjectStack" component={ProjectStack} />
+                        <Stack.Screen name="Perfil" component={Perfil} />
                     </>
                     :
                     <>

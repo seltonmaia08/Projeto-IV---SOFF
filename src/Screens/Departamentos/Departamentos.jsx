@@ -9,33 +9,36 @@ import NovoDepartamento from './NovoDepartamento';
 const Departamentos = () => {
 
     const [addDepart, setAddDepart] = useState(false);
+    const [departamentos, setDepartamentos] = useState([
+        {nome: "áudio", membros: ["Samuel Moreno", "Selton Maia"]},
+        {nome: "vídeo", membros: ["Clenda Uchoa", "Tiago"]},
+        {nome: "arte", membros: ["John Kelvy", "João", "Pedro"]},
+    ]);
+
+    function adicionarDepartamentos(objetoDepartMembros) {
+        setDepartamentos(anteriores => [...anteriores, objetoDepartMembros])
+    }
 
     return(
         <View>
             <Top abaName={"Departamentos"} voltar={false}/>
-
             <View style={styles.departamentos}>
 
-                <TouchableOpacity activeOpacity={0.7}>
-                    <View style={styles.depart}>
-                        <CustomText style={styles.textoDepart}>ÁUDIO</CustomText>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7}>
-                    <View style={styles.depart}>
-                        <CustomText style={styles.textoDepart}>VÍDEO</CustomText>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7}>
-                    <View style={styles.depart}>
-                        <CustomText style={styles.textoDepart}>ARTE</CustomText>
-                    </View>
-                </TouchableOpacity>
+                {
+                    departamentos.map((cada, index) =>
+                        <TouchableOpacity activeOpacity={0.7} key={index}>
+                            <View style={styles.depart}>
+                                <CustomText style={styles.textoDepart}>{cada.nome.toUpperCase()}</CustomText>
+                            </View>
+                        </TouchableOpacity>
+                    )
+                }
                 
                 <ButtonAdd style={styles.botaoAdd} onPress={() => setAddDepart(true)}/>
                 <NovoDepartamento
                     visivel={addDepart}
                     aoFechar={() => setAddDepart(false)}
+                    aoCriarDepart={adicionarDepartamentos}
                 />
 
             </View>

@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     campoMembros: { backgroundColor: "#313131", padding: 20, borderRadius: 15 },
     tituloMembros: { fontSize: 16 },
     textoMembros: { fontSize: 14 },
-    areaBotoes: { position: "absolute", bottom: 120, width: "89%", alignItems: "center", gap: 10, },
+    areaBotoes: { position: "absolute", bottom: 130, width: "89%", alignItems: "center", gap: 10, },
     botaoVoltar: { width: "100%", padding: 15, backgroundColor: "#313131", borderRadius: 15 },
     textoBotao: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
     botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#EF5625", borderRadius: 15 }
