@@ -1,6 +1,6 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Pencil } from 'lucide-react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useContext } from 'react';
 import { ProjectContext } from '../../Context/ProjectContext';
@@ -17,34 +17,34 @@ import { useProject } from '../../Hook/useProjects';
 function Details() {
 
     const navigation = useNavigation();
-    const { idProject, projectName } = useContext(ProjectContext);
+    const { idProject, projectName, producer, setProjectName, setProducer } = useContext(ProjectContext) || {};
 
     const [editVisivel, setEditVisivel] = useState(false);
     const [membrosVisivel, setMembrosVisivel] = useState(false);
-    const [nomeProjeto, setNomeProjeto] = useState(projectName);
-    const [nomeProdutora, setNomeProdutora] = useState("LandoP"); // preciso pegar isso de fora!
+    const [nomeProjeto, setNomeProjeto] = useState(projectName || "");
+    const [nomeProdutora, setNomeProdutora] = useState(producer || "");
     const [excluirPopUp, setExcluirPopUp] = useState(false);
     const [links, setLinks] = useState(false);
-    const { projects, loading, error, refetch } = useProject()
+    const { projects, loading, error, refetch } = useProject();
 
-    const mudarInfosProjeto = (novoNome, novaProdutora) => {
-        setNomeProjeto(novoNome);
-        setNomeProdutora(novaProdutora);
-    }
+    useEffect(() => {
+        if (projectName) setNomeProjeto(projectName);
+    }, [projectName]);
+
+    useEffect(() => {
+        if (producer) setNomeProdutora(producer);
+    }, [producer]);
 
     const excluirProjeto = async () => {
         try {
             await projectService.delete(idProject);
-            navigation.navigate('Dashboard')
-            setExcluirPopUp(false)
-            refetch();
+            setExcluirPopUp(false);
+            navigation.navigate('Dashboard');
         } catch (err) {
             console.error("Erro ao excluir o projeto:", err);
-        } finally {
-            setConfirmacaoVisivel(false);
-            setTimeout(() => { setProjetoParaExcluir(null) }, 300);
+            Alert.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
         }
-    }
+    };
 
     return (
         <View style={styles.escopo}>
@@ -113,10 +113,17 @@ function Details() {
                 />
                 <EditNamePopUp
                     visivel={editVisivel}
+                    idProject={idProject}
                     nome={nomeProjeto}
                     produt={nomeProdutora}
                     aoFechar={() => setEditVisivel(false)}
-                    aoSalvar={mudarInfosProjeto}
+                    aoSalvar={(novoNome, novaProdutora) => {
+                        setNomeProjeto(novoNome);
+                        setNomeProdutora(novaProdutora);
+                        if (setProjectName) setProjectName(novoNome);
+                        if (setProducer) setProducer(novaProdutora);
+                        refetch();
+                    }}
                 />
                 <LinksPopUp
                     visivel = {links}
@@ -128,7 +135,7 @@ function Details() {
                 />
             </View>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -153,6 +160,6 @@ const styles = StyleSheet.create({
     botaoVoltar: { width: "100%", padding: 15, backgroundColor: "#313131", borderRadius: 15 },
     textoBotao: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
     botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#EF5625", borderRadius: 15 }
-})
+});
 
 export default Details;

@@ -28,7 +28,7 @@ const Login = () => {
         if (text === '') {
             setIsValid(true)
         } else {
-            setIsValid(emailRegex.test(text))
+            setIsValid(emailRegex.test(text.trim()))
         }
     }
 
@@ -41,23 +41,36 @@ const Login = () => {
     const login = async () => {
         try {
             setLoading(true)
+            setError(false)
+            setMessage('')
+
+            const cleanEmail = email.trim().toLowerCase()
+            const cleanPassword = password
+
             const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
+                email: cleanEmail,
+                password: cleanPassword
             })
+
             if (error) {
+                console.log("Erro detalhado do login:", error)
                 setError(true)
-                setLoading(false)
-                setMessage('E-mail ou Senha invalidos. Por favor, tente novamente!')
+                if (error.message.includes('Email not confirmed')) {
+                    setMessage('E-mail ainda não confirmado. Verifique seu e-mail ou desative a confirmação de e-mail no painel do Supabase.')
+                } else if (error.message.includes('Invalid login credentials')) {
+                    setMessage('E-mail ou senha incorretos. Por favor, tente novamente.')
+                } else {
+                    setMessage(error.message || 'Erro ao realizar login.')
+                }
             }
         } catch (error) {
             console.log("Erro na autenticação do usuário: ", error)
+            setError(true)
+            setMessage('Ocorreu um erro inesperado ao fazer login.')
         }
         finally {
             setLoading(false)
         }
-
-
     }
 
     return (
@@ -98,12 +111,9 @@ const Login = () => {
                             secureTextEntry={visible}
                             value={password}
                             onChangeText={setPassword}
-                            autoCorrect={false}
                         />
                         {
-
-                            visible
-                                ?
+                            visible ?
                                 <TouchableOpacity
                                     style={styles.btnEye}
                                     onPress={() => setVisible(false)}
@@ -119,32 +129,32 @@ const Login = () => {
                                 </TouchableOpacity>
                         }
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate('RedefinirSenha')}>
-                        <CustomText>Esqueci minha senha</CustomText>
-                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.area1}>
-                <TouchableOpacity
-                    style={!formularioValido ? styles.btnLoginDisabled : styles.btnLogin}
-                    onPress={login}
+                <TouchableOpacity style={
+                    !formularioValido ? styles.btnLoginDisabled : styles.btnLogin
+                } onPress={login}
                     disabled={!formularioValido}
                 >
                     {loading ? (
                         <ActivityIndicator size="large" color="#DAD0B7" />
                     ) : (
-                        <CustomText style={styles.textBtnLogin}>Acessar</CustomText>
+                        <CustomText style={styles.textBtnLogin}>Entrar</CustomText>
                     )}
                 </TouchableOpacity>
-                <View style={{ alignItems: 'center', gap: 10 }}>
-                    <CustomText>Ainda não tem uma conta?</CustomText>
-                    <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                        <CustomText style={[styles.textBtnLogin, { color: '#DAB16B' }]}>Cadastre-se</CustomText>
-                    </TouchableOpacity>
-                </View>
+
+                <TouchableOpacity style={styles.btnText} onPress={() => navigation.navigate('RedefinirSenha')}>
+                    <CustomText style={styles.textBtn}>Esqueci minha senha</CustomText>
+                </TouchableOpacity>
 
             </View>
 
+            <View style={styles.area2}>
+                <TouchableOpacity style={styles.btnText} onPress={() => navigation.navigate('Register')}>
+                    <CustomText style={styles.textBtn}>Não possui uma conta? <CustomText style={styles.span}>Cadastre-se</CustomText></CustomText>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -154,13 +164,15 @@ export default Login
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        width: '100%',
         padding: 20,
-        paddingTop: 50,
+        backgroundColor: '#242424',
         alignItems: 'center',
+        justifyContent: 'center',
         gap: 50
     },
     logo: {
-        marginTop: 100,
+        marginTop: 20,
         marginBottom: 50
     },
     cardLogin: {
@@ -168,7 +180,6 @@ const styles = StyleSheet.create({
         height: 'auto',
         gap: 20,
         padding: 10,
-
     },
     items: {
         gap: 10
@@ -206,15 +217,16 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: '#5F5F5F',
     },
-    btnRegister: {
-        width: '60%',
-        height: 50,
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     textBtnLogin: {
         textTransform: 'uppercase',
+    },
+    textBtn: {
+        fontSize: 12
+    },
+    span: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#EF5825'
     },
     btnEye: {
         position: 'absolute',
@@ -226,7 +238,12 @@ const styles = StyleSheet.create({
     area1: {
         width: '100%',
         alignItems: 'center',
-        gap: 50
+        gap: 20
+    },
+    area2: {
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 50
     },
     error: {
         width: '80%',
@@ -237,7 +254,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         backgroundColor: '#ef582540',
         position: 'absolute',
-        top: 220
-
+        top: 150
     }
 })

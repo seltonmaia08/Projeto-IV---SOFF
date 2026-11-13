@@ -1,15 +1,17 @@
-import { View, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, Modal, Alert, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import { BlurView } from 'expo-blur';
 
 import CustomText from '../../Components/Text/CustomText';
 import GetInGreen_button from '../../Components/Projetos_dashboard/GetInGreen_button';
 import GetOut_button from '../../Components/Projetos_dashboard/GetOut_button';
+import { projectService } from '../../Services/api';
 
-function EditNamePopUp({visivel, nome, produt, aoFechar, aoSalvar}) {
+function EditNamePopUp({visivel, idProject, nome, produt, aoFechar, aoSalvar}) {
 
     const [name, setName] = useState(nome);
     const [produtora, setProdutora] = useState(produt);
+    const [loading, setLoading] = useState(false);
 
     useEffect(
         () => {
@@ -18,9 +20,29 @@ function EditNamePopUp({visivel, nome, produt, aoFechar, aoSalvar}) {
         }, [nome, produt]
     )
 
-    const enviarNovaNota = () => {
-        aoSalvar(name, produtora);
-        aoFechar();
+    const salvarEdicao = async () => {
+        if (!name?.trim()) {
+            Alert.alert('Aviso', 'O nome do projeto não pode ficar vazio.');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await projectService.update(idProject, {
+                projectName: name.trim(),
+                producer: (produtora || '').trim()
+            }, 'idProject');
+
+            if (aoSalvar) {
+                aoSalvar(name.trim(), (produtora || '').trim());
+            }
+            aoFechar();
+        } catch (error) {
+            console.error('Erro ao atualizar projeto:', error);
+            Alert.alert('Erro', 'Não foi possível atualizar as informações do projeto.');
+        } finally {
+            setLoading(false);
+        }
     }
 
     return(
@@ -52,12 +74,18 @@ function EditNamePopUp({visivel, nome, produt, aoFechar, aoSalvar}) {
                         </View>
                         <View style={styles.botoes}>
 
-                            <TouchableOpacity activeOpacity={0.5} onPress={aoFechar}>
+                            <TouchableOpacity activeOpacity={0.5} onPress={aoFechar} disabled={loading}>
                                 <GetOut_button acao="CANCELAR"/>
                             </TouchableOpacity>
 
-                            <TouchableOpacity activeOpacity={0.5} onPress={enviarNovaNota}>
-                                <GetInGreen_button acao="SALVAR"/>
+                            <TouchableOpacity activeOpacity={0.5} onPress={salvarEdicao} disabled={loading}>
+                                {loading ? (
+                                    <View style={styles.loadingContainer}>
+                                        <ActivityIndicator color="#DAD0B7" size="small" />
+                                    </View>
+                                ) : (
+                                    <GetInGreen_button acao="SALVAR"/>
+                                )}
                             </TouchableOpacity>
                             
                         </View>
@@ -90,7 +118,15 @@ const styles = StyleSheet.create({
         flex: 1,
         outlineStyle: "none"
     },
-    botoes: {flexDirection: "row", justifyContent: "space-between"}
+    botoes: {flexDirection: "row", justifyContent: "space-between"},
+    loadingContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        backgroundColor: "#1B8F65",
+        borderRadius: 15,
+        alignItems: "center",
+        justifyContent: "center"
+    }
 });
 
 export default EditNamePopUp;
