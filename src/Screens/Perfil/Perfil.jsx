@@ -1,13 +1,32 @@
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
 
 import CustomText from '../../Components/Text/CustomText';
+import EditarSenha from './EditarSenha';
+import EditarPerfil from './EditarPerfil';
 
 const Perfil = ({route}) => {
 
     const navegacao = useNavigation();
-    const {urlFoto} = route.params;
+    const [editarVisivel, setEditarVisivel] = useState(false);
+    const [editarSenhaVisivel, setEditarSenhaVisivel] = useState(false);
+    const [nomeUsuario, setNomeUsuario] = useState("John Wick Kelvy"); // mockado
+    const [emailUsuario, setEmailUsuario] = useState("johnkelvy@gmail.com"); // mockado
+    const [senhaUsuario, setSenhaUsuario] = useState("mucholoco99"); // mockado
+    const { fotoPerfil } = route.params;
+
+    function alterarDados(novoNome, novoEmail) {
+
+        setNomeUsuario(novoNome);
+        setEmailUsuario(novoEmail);
+        setEditarVisivel(false);
+    }
+
+    function alterarSenha (novaSenha) {
+        setSenhaUsuario(novaSenha);
+    }
 
     return (
         <View style={styles.escopo}> 
@@ -19,26 +38,26 @@ const Perfil = ({route}) => {
                 </TouchableOpacity>
                 <Image style={styles.banner} source={{uri: "https://thmais.com.br/wp-content/uploads/2026/01/semana-do-cinema-retorna-em-fevereiro-com-ingressos-a-precos-populares.jpg"}}/>
                 <View style={styles.fotoPerfilCampo}>
-                    <Image style={styles.fotoPerfil} source={{uri: urlFoto}} />
+                    <Image style={styles.fotoPerfil} source={{uri: fotoPerfil}} />
                 </View>
             </View>
 
             <View style={styles.conteudoPerfil}>
 
                 <View style={styles.textos}>
-                    <CustomText style={styles.nomePerfil}>John Wick Kelvy</CustomText>
-                    <CustomText style={styles.emailPefil}>johnkelvy@gmail.com</CustomText>
+                    <CustomText style={styles.nomePerfil}>{nomeUsuario}</CustomText>
+                    <CustomText style={styles.emailPefil}>{emailUsuario}</CustomText>
                 </View>
 
                 <View style={styles.areaBotoes}>
     
                     <View style={styles.gapButtons}>
-                        <TouchableOpacity activeOpacity={0.7} style={styles.editar}>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.editar} onPress={() => setEditarVisivel(true)}>
                             <CustomText style={styles.textoBotao}>EDITAR PERFIL</CustomText>
                         </TouchableOpacity>
                     
 
-                        <TouchableOpacity activeOpacity={0.7} style={styles.senha}>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.senha} onPress={() => setEditarSenhaVisivel(true)}>
                             <CustomText style={styles.textoBotao}>ALTERAR SENHA</CustomText>
                         </TouchableOpacity>
                     </View>
@@ -53,6 +72,21 @@ const Perfil = ({route}) => {
                     </View>
 
                 </View>
+
+                <EditarPerfil
+                    visivel={editarVisivel}
+                    nome={nomeUsuario}
+                    email={emailUsuario}
+                    aoFechar={() => setEditarVisivel(false)}
+                    aoSalvar={alterarDados}
+                />
+                <EditarSenha
+                    visivel={editarSenhaVisivel}
+                    senhaAtual={senhaUsuario}
+                    aoFechar={() => setEditarSenhaVisivel(false)}
+                    aoSalvar={alterarSenha}
+                />
+
             </View>
         </View>
     )

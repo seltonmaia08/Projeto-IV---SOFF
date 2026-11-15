@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
         flexDirection: "row", 
         justifyContent: "space-between", 
         padding: 20,
-        alignItems: "center"
+        alignItems: "flex-end"
     },
     texto: {fontWeight: "bold", fontSize: 22},
     perfil: {overflow: "hidden", borderRadius: 100, borderWidth: 3, borderColor: "#DAD0B7"},
-    imagem: {width: 55, height: 55}
+    imagem: {width: 50, height: 50}
 });
 
 export default Topo_tela;
