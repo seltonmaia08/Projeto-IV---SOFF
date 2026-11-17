@@ -1,4 +1,3 @@
-import { CirclePlus } from 'lucide-react-native';
 import { useState, useCallback } from 'react';
 import { ActivityIndicator, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,27 +10,28 @@ import NewProjetoPopUp from '../../Components/Projetos_dashboard/NewProjetoPopUp
 
 //import's backend
 import { useProject } from '../../Hook/useProjects';
-import { projectService } from '../../Services/api';
+import { projectMemberService, projectService } from '../../Services/api';
 import { useAuth } from '../../Context/AuthContext';
 import LogOut from '../../Components/Buttons/ButtonLogout';
+import ButtonAdd from '../../Components/Buttons/ButtonAdd';
+import JoinProjectPopUp from '../../Components/Projetos_dashboard/JoinProjectPopUp';
+import { supabase } from '../../Utils/Supabase';
 
 
-const styles = StyleSheet.create({
-    escopoTela: { flex: 1 },
-    titulo: { color: "#DAD0B7", fontSize: 14, fontWeight: "bold", marginBottom: 30 },
-    conteudo: { flex: 1, alignItems: "center", paddingTop: 40, position: "relative" },
-    projetos: { gap: 10 },
-    botao_plus: { position: "absolute", bottom: 25, right: 0, color: "#DAD0B7" },
-});
 
 
 const Dashboard = () => {
     const [modalVisivel, setModalVisivel] = useState(false);
     const [confirmacaoVisivel, setConfirmacaoVisivel] = useState(false);
     const [projetoParaExcluir, setProjetoParaExcluir] = useState(null);
+    const [sairProjeto, setSairProjeto] = useState(null)
+    const [isActive, setIsActive] = useState(false)
+    const [inserirConvite, setInserirConvite] = useState(false)
     const { projects, loading, error, refetch } = useProject();
     const { user } = useAuth();
-
+    
+    const toggleModal = () => setIsActive((prev) => !prev);
+    
     // Recarrega os projetos sempre que o Dashboard ganha foco
     useFocusEffect(
         useCallback(() => {
@@ -42,10 +42,40 @@ const Dashboard = () => {
     const adicionarProjeto = (novoProjeto) => {
         refetch();
     };
-
+    
     const prepararExclusao = (projeto) => {
         setProjetoParaExcluir(projeto);
+        setSairProjeto(null);
         setConfirmacaoVisivel(true);
+    };
+
+    const prepararParaSair = (sair) => {
+        setSairProjeto(sair);
+        setProjetoParaExcluir(null);
+        setConfirmacaoVisivel(true);
+    };
+
+    const executarSaida = async () => {
+        if (!sairProjeto || !user?.id) return;
+
+        try {
+            const { error } = await supabase
+                .from('ProjectMember')
+                .delete()
+                .eq('idProject', sairProjeto.idProject)
+                .eq('idUser', user.id);
+
+            if (error) throw error;
+
+            Alert.alert("Sucesso", `Você saiu do projeto "${sairProjeto.projectName}".`);
+            refetch();
+        } catch (err) {
+            console.error("Erro ao sair do projeto:", err);
+            Alert.alert("Erro ao sair", err.message || "Não foi possível sair do projeto.");
+        } finally {
+            setConfirmacaoVisivel(false);
+            setSairProjeto(null);
+        }
     };
 
     const excluirProjeto = async () => {
@@ -59,13 +89,14 @@ const Dashboard = () => {
             Alert.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
         } finally {
             setConfirmacaoVisivel(false);
-            setTimeout(() => { setProjetoParaExcluir(null); }, 300);
+            setProjetoParaExcluir(null);
         }
     };
 
-    const cancelarExclusao = () => {
+    const cancelarModal = () => {
         setConfirmacaoVisivel(false);
-        setTimeout(() => { setProjetoParaExcluir(null); }, 200);
+        setProjetoParaExcluir(null);
+        setSairProjeto(null);
     };
 
     return (
@@ -79,30 +110,66 @@ const Dashboard = () => {
                 {loading && <ActivityIndicator size="large" color="#EF5625" />}
 
                 {error && <CustomText>Erro ao carregar projetos.</CustomText>}
-            
+
                 <View style={styles.projetos}>
 
                     {
                         (!Array.isArray(projects) || projects.length === 0)
-                        ?
-                        <CustomText>Comece criando um novo projeto!</CustomText>
-                        :
-                        projects.map(cada => <Card_projeto
-                            key={cada.idProject}
-                            idProject={cada.idProject}
-                            projectName={cada.projectName}
-                            producer={cada.producer}
-                            created_at={cada.created_at}
-                            onExcluir={prepararExclusao}
-                        />)
+                            ?
+                            <CustomText>Comece criando um novo projeto!</CustomText>
+                            :
+                            projects.map(cada => <Card_projeto
+                                key={cada.idProject}
+                                idProject={cada.idProject}
+                                projectName={cada.projectName}
+                                producer={cada.producer}
+                                created_at={cada.created_at}
+                                onExcluir={prepararExclusao}
+                                onSair={prepararParaSair}
+                            />)
                     }
                 </View>
 
-                <TouchableOpacity style={styles.botao_plus} activeOpacity={0.5} onPress={() => setModalVisivel(true)}>
-                    <CirclePlus style={{ marginBottom: 30, marginRight: 20 }} size={50} color={'#F0EADE'} />
-                </TouchableOpacity>
+                <ButtonAdd onPress={toggleModal} isActive={isActive} />
 
-                <NewProjetoPopUp 
+                {
+
+                    isActive
+                        ?
+                        <View style={styles.menuUp}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setIsActive(false);
+                                    setModalVisivel(true);
+                                }}
+                                style={styles.buttonAddNota}
+                            >
+                                <CustomText style={{ color: "#242424" }}>Novo Projeto</CustomText>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.buttonJoin}
+                                onPress={() => setInserirConvite(true)}
+                            >
+                                <CustomText>Código de Convite</CustomText>
+                            </TouchableOpacity>
+                        </View>
+                        :
+                        <></>
+
+
+                }
+
+                {/* <TouchableOpacity style={styles.botao_plus} activeOpacity={0.5} onPress={() => setModalVisivel(true)}>
+                    <CirclePlus style={{ marginBottom: 30, marginRight: 20 }} size={50} color={'#F0EADE'} />
+                    </TouchableOpacity> */}
+
+                <JoinProjectPopUp
+                    visivel={inserirConvite}
+                    aoFechar={() => setInserirConvite(false)}
+                    aoEntrarComSucesso={adicionarProjeto}
+                />
+
+                <NewProjetoPopUp
                     visivel={modalVisivel}
                     aoFechar={() => setModalVisivel(false)}
                     aoCriarProjeto={adicionarProjeto}
@@ -110,11 +177,15 @@ const Dashboard = () => {
 
                 <ConfirmacaoPopUp
                     visivel={confirmacaoVisivel}
-                    aoCancelar={cancelarExclusao}
-                    aoExecutar={excluirProjeto}
-                    mensagem={`o projeto "${projetoParaExcluir?.projectName}"`}
+                    aoCancelar={cancelarModal}
+                    aoExecutar={projetoParaExcluir ? excluirProjeto : executarSaida}
+                    mensagem={
+                        projetoParaExcluir
+                            ? `o projeto "${projetoParaExcluir?.projectName}"`
+                            : `sair do projeto "${sairProjeto?.projectName}"`
+                    }
                 />
-                
+
                 <LogOut />
             </View>
         </View>
@@ -122,3 +193,36 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+const styles = StyleSheet.create({
+    escopoTela: { flex: 1 },
+    titulo: { color: "#DAD0B7", fontSize: 14, fontWeight: "bold", marginBottom: 30 },
+    conteudo: { flex: 1, alignItems: "center", paddingTop: 40, position: "relative" },
+    projetos: { gap: 10 },
+    botao_plus: { position: "absolute", bottom: 25, right: 0, color: "#DAD0B7" },
+    menuUp: {
+        backgroundColor: "#313131",
+        padding: 10,
+        borderRadius: 20,
+        gap: 10,
+        position: "absolute",
+        bottom: 100,
+        right: 50,
+    },
+    buttonAddNota: {
+        height: 58,
+        width: "100%",
+        backgroundColor: "#DAD0B7",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingHorizontal: 10,
+        borderRadius: 15,
+    },
+    buttonJoin: {
+        height: 58,
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 15,
+    }
+});

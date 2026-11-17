@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Alert, Modal } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Alert, Modal } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { supabase } from '../../Utils/Supabase';
 import { projectMemberService } from '../../Services/api';
-import { useAuth } from '../../Context/AuthContext';
+import { useAuth } from '../../Context/AuthContext'
+import GetInGreen_button from './GetInGreen_button';
+import GetOut_button from './GetOut_button';;
 import CustomText from '../Text/CustomText';
 
 const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
@@ -12,26 +15,28 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
     const [loading, setLoading] = useState(false)
 
     const entrarNoProjeto = async () => {
-        const codLimpo = codigo.trim().toLowerCase()
-        if (!codigo) {
+        const codLimpo = codigo.trim().toUpperCase()
+        if (!codLimpo) {
             Alert.alert('Aviso', 'Digite o código de convite.')
             return
         }
 
         try {
             setLoading(true)
-
+ 
+            console.log('Procurando o projeto...')
             //Procurar por um projeto com esse código
             const { data: projeto, error: projError } = await supabase
                 .from('Project')
                 .select('*')
                 .eq('linkInvitation', codLimpo)
-                .single()
+                .maybeSingle()
 
-            if (projError === !projeto) {
+            if (projError || !projeto) {
                 Alert.alert('Erro', 'Projeto não encontrado. Verifique o código digitado.');
                 return;
             }
+
             // 2. Verifica se o usuário já é membro deste projeto
             const { data: membroExistente } = await supabase
                 .from('ProjectMember')
@@ -43,12 +48,13 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
                 Alert.alert('Aviso', 'Você já faz parte deste projeto!');
                 aoFechar();
                 return;
-            }
+            } 
+
             // 3. Adiciona o usuário como membro na tabela ProjectMember
             await projectMemberService.create({
                 idProject: projeto.idProject,
                 idUser: user.id,
-                cargo: 'Participante'
+                position: 'Participante'
             });
             Alert.alert('Sucesso!', `Você entrou no projeto "${projeto.projectName}".`);
             setCodigo('');
@@ -60,7 +66,6 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
         } finally {
             setLoading(false);
         }
-
     }
 
     return (
@@ -72,11 +77,11 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
         >
             <BlurView style={styles.overlay} intensity={40} tint='dark'>
                 <View style={styles.popUp}>
-                    <Text style={styles.criar}>Criar Projeto</Text>
+                    <CustomText style={styles.criar}>Entrar em um Projeto</CustomText>
 
                     <View style={styles.dados}>
                         <View style={styles.campo}>
-                            <Text style={styles.labels}>Código de convite </Text>
+                            <CustomText style={styles.labels}>Código de convite </CustomText>
                             <TextInput value={codigo} onChangeText={setCodigo} style={styles.inputs} />
                         </View>
                     </View>
@@ -86,7 +91,7 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
                             <GetOut_button acao="CANCELAR" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={aoEntrarComSucesso}>
+                        <TouchableOpacity activeOpacity={0.5} onPress={entrarNoProjeto}>
                             <GetInGreen_button acao="ENTRAR" />
                         </TouchableOpacity>
                     </View>
@@ -95,6 +100,8 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
         </Modal>
     );
 };
+
+export default JoinProjectPopUp
 
 const styles = StyleSheet.create({
     overlay: {
@@ -112,7 +119,7 @@ const styles = StyleSheet.create({
     },
     criar: { fontWeight: "bold", fontSize: 18, color: "#F0EADE" },
     dados: { gap: 10 },
-    campo: { flexDirection: "row", gap: 10 },
+    campo: { flexDirection: "column", gap: 10 },
     labels: { fontSize: 16, color: "#F0EADE" },
     inputs: {
         flex: 1,

@@ -46,42 +46,31 @@ export const useMembers = (idProject) => {
                 if (m.idUser) userIdsToFetch.add(m.idUser);
             });
 
-            // 4. Busca os dados dos perfis (tenta Profiles e caso necessário User)
+            // 4. Busca os dados dos perfis diretamente pela coluna 'id' em Profiles
             let profilesMap = {};
             if (userIdsToFetch.size > 0) {
                 const idsArray = Array.from(userIdsToFetch);
 
-                let { data: profilesData } = await supabase
+                const { data: profilesData, error: profError } = await supabase
                     .from('Profiles')
                     .select('*')
-                    .in('idUser', idsArray);
+                    .in('id', idsArray);
 
-                // Caso a coluna de id seja 'id' em vez de 'idUser'
-                if (!profilesData || profilesData.length === 0) {
-                    const fallbackId = await supabase
-                        .from('Profiles')
-                        .select('*')
-                        .in('id', idsArray);
-                    if (fallbackId.data && fallbackId.data.length > 0) {
-                        profilesData = fallbackId.data;
-                    }
+                if (profError) {
+                    console.warn('Aviso ao consultar Profiles:', profError);
                 }
 
-                // Fallback para a tabela User se Profiles não retornar registros
-                if (!profilesData || profilesData.length === 0) {
-                    const fallbackUser = await supabase
-                        .from('User')
-                        .select('*')
-                        .in('idUser', idsArray);
-                    if (fallbackUser.data && fallbackUser.data.length > 0) {
-                        profilesData = fallbackUser.data;
-                    }
-                }
-
-                if (profilesData) {
+                if (profilesData && profilesData.length > 0) {
                     profilesData.forEach(p => {
-                        const uid = p.idUser || p.id;
-                        if (uid) profilesMap[uid] = p;
+                        const uid = p.id || p.idUser;
+                        if (uid) {
+                            profilesMap[uid] = {
+                                ...p,
+                                userName: p.name || p.userName || "Sem nome",
+                                name: p.name || p.userName || "Sem nome",
+                                email: p.email || ""
+                            };
+                        }
                     });
                 }
             }
@@ -90,12 +79,14 @@ export const useMembers = (idProject) => {
             if (ownerId) {
                 const ownerProfile = profilesMap[ownerId] || {};
                 const ownerMemberRow = memberList.find(m => m.idUser === ownerId);
+                const cargoDono = ownerMemberRow?.cargo || ownerMemberRow?.position || "Proprietário";
+
                 setOwner({
                     idUser: ownerId,
-                    userName: ownerProfile.userName || ownerProfile.name || "Proprietário",
+                    userName: ownerProfile.name || ownerProfile.userName || "Proprietário",
                     email: ownerProfile.email || "",
                     avatar: ownerProfile.avatar || ownerProfile.avatar_url || ownerProfile.photoUrl || null,
-                    cargo: ownerMemberRow?.cargo || "Proprietário"
+                    cargo: cargoDono
                 });
             } else {
                 setOwner(null);
@@ -106,12 +97,14 @@ export const useMembers = (idProject) => {
                 .filter(m => m.idUser !== ownerId)
                 .map(m => {
                     const perfil = profilesMap[m.idUser] || {};
+                    const cargoMembro = m.cargo || m.position || "Participante";
+
                     return {
                         idProjectMember: m.idProjectMember,
                         idUser: m.idUser,
-                        cargo: m.cargo || "Participante",
+                        cargo: cargoMembro,
                         User: {
-                            userName: perfil.userName || perfil.name || "Sem nome",
+                            userName: perfil.name || perfil.userName || "Sem nome",
                             email: perfil.email || "Sem e-mail",
                             avatar: perfil.avatar || perfil.avatar_url || perfil.photoUrl || null
                         }

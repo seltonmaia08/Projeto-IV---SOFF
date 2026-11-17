@@ -6,7 +6,7 @@ import {
 import CustomText from '../../Components/Text/CustomText'
 import { useState } from "react";
 import ViewNotificacao from "../../Components/Notificacao/ViewNotification";
-import ChamadoRecebido from "../../Components/ChamadoRecebido/ChamadoRecebido";
+import ViewCalled from "../../Components/Notificacao/ViewCalled";
 import Top from "../TopAba/Top";
 const Notificacao = () => {
 
@@ -52,7 +52,7 @@ const Notificacao = () => {
                     {
                         isActiveCalled
                         &&
-                        <CustomText>Implementação futura... Não precisa ficar ansioso...</CustomText>
+                        <ViewCalled />
                     }
             </View>
 

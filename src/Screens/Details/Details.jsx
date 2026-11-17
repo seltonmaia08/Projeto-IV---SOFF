@@ -13,11 +13,14 @@ import EditNamePopUp from './EditNamePopUp';
 import LinksPopUp from './LinksPopUp';
 import { projectService } from '../../Services/api';
 import { useProject } from '../../Hook/useProjects';
+import { useAuth } from '../../Context/AuthContext';
+import { supabase } from '../../Utils/Supabase';
 
 function Details() {
 
     const navigation = useNavigation();
     const { idProject, projectName, producer, setProjectName, setProducer } = useContext(ProjectContext) || {};
+    const { user } = useAuth();
 
     const [editVisivel, setEditVisivel] = useState(false);
     const [membrosVisivel, setMembrosVisivel] = useState(false);
@@ -25,6 +28,7 @@ function Details() {
     const [nomeProdutora, setNomeProdutora] = useState(producer || "");
     const [excluirPopUp, setExcluirPopUp] = useState(false);
     const [links, setLinks] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
     const { projects, loading, error, refetch } = useProject();
 
     useEffect(() => {
@@ -35,14 +39,56 @@ function Details() {
         if (producer) setNomeProdutora(producer);
     }, [producer]);
 
+    useEffect(() => {
+        const verificarProprietario = async () => {
+            if (!idProject || !user?.id) return;
+            try {
+                const { data } = await supabase
+                    .from('Project')
+                    .select('idUser')
+                    .eq('idProject', idProject)
+                    .eq('idUser', user.id)
+                    .maybeSingle();
+
+                setIsOwner(!!data);
+            } catch (err) {
+                console.error("Erro ao verificar papel do usuário:", err);
+            }
+        };
+
+        verificarProprietario();
+    }, [idProject, user?.id]);
+
     const excluirProjeto = async () => {
+        if (!idProject) return;
         try {
             await projectService.delete(idProject);
             setExcluirPopUp(false);
-            navigation.navigate('Dashboard');
+            Alert.alert("Sucesso", "Projeto excluído com sucesso.");
+            navigation.getParent()?.goBack() || navigation.navigate("Dashboard");
         } catch (err) {
             console.error("Erro ao excluir o projeto:", err);
             Alert.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
+        }   
+    };
+
+    const sairDoProjeto = async () => {
+        if (!idProject || !user?.id) return;
+        try {
+            const { error } = await supabase
+                .from('ProjectMember')
+                .delete()
+                .eq('idProject', idProject)
+                .eq('idUser', user.id);
+
+            if (error) throw error;
+
+            setExcluirPopUp(false);
+            Alert.alert("Sucesso", `Você saiu do projeto "${nomeProjeto}".`);
+            navigation.getParent()?.goBack() || navigation.navigate("Dashboard");
+        } catch (err) {
+            console.error("Erro ao sair do projeto:", err);
+            Alert.alert("Erro ao sair", err.message || "Não foi possível sair do projeto.");
         }
     };
 
@@ -100,7 +146,9 @@ function Details() {
                         <CustomText style={styles.textoBotao}>Voltar ao Dashboard</CustomText>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.botaoExcluir} activeOpacity={0.5} onPress={() => setExcluirPopUp(true)}>
-                        <CustomText style={styles.textoBotao}>Excluir Projeto</CustomText>
+                        <CustomText style={styles.textoBotao}>
+                            {isOwner ? "Excluir Projeto" : "Sair do Projeto"}
+                        </CustomText>
                     </TouchableOpacity>
 
                 </View>
@@ -108,8 +156,12 @@ function Details() {
                 <ConfirmacaoPopUp
                     visivel={excluirPopUp}
                     aoCancelar={() => setExcluirPopUp(false)}
-                    aoExecutar={excluirProjeto}
-                    mensagem={`o projeto "${nomeProjeto}"`}
+                    aoExecutar={isOwner ? excluirProjeto : sairDoProjeto}
+                    mensagem={
+                        isOwner
+                            ? `o projeto "${nomeProjeto}"`
+                            : `sair do projeto "${nomeProjeto}"`
+                    }
                 />
                 <EditNamePopUp
                     visivel={editVisivel}

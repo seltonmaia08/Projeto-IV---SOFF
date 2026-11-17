@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, Modal, Image, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Modal, Image, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Check, Copy, ChevronDown } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
@@ -10,6 +10,7 @@ import CargosPopUp from './CargosPopUp';
 import { useContext } from 'react';
 import { ProjectContext } from '../../Context/ProjectContext';
 import { useMembers } from '../../Hook/useMembers';
+import { supabase } from '../../Utils/Supabase';
 
 function Membros({ visivel, aoFechar }) {
 
@@ -18,7 +19,7 @@ function Membros({ visivel, aoFechar }) {
     const [cargosVisivel, setCargosVisivel] = useState(false);
 
     const { idProject } = useContext(ProjectContext) || {};
-    const { owner, members, linkInvitation, loading } = useMembers(idProject);
+    const { owner, members, linkInvitation, loading, refetch } = useMembers(idProject);
 
     const fotoPadrao = "https://i.pinimg.com/736x/3d/b1/4a/3db14a40a4e8aa42636ce79da98c4c9e.jpg";
 
@@ -36,9 +37,58 @@ function Membros({ visivel, aoFechar }) {
         }
     };
 
-    function mudarCargoProprietario(novoCargo) {
+    // Função auxiliar resiliente que atualiza na coluna 'cargo' ou 'position'
+    const salvarCargoNoBanco = async (filtro, novoCargo) => {
+        let { error } = await supabase
+            .from('ProjectMember')
+            .update({ cargo: novoCargo })
+            .match(filtro);
+
+        if (error && error.code === 'PGRST204') {
+            const fallback = await supabase
+                .from('ProjectMember')
+                .update({ position: novoCargo })
+                .match(filtro);
+            error = fallback.error;
+        }
+
+        return error;
+    };
+
+    // Altera a função de um participante na tabela ProjectMember
+    const mudarCargoMembro = async (idProjectMember, novoCargo) => {
+        if (!idProjectMember) return;
+
+        try {
+            const error = await salvarCargoNoBanco({ idProjectMember }, novoCargo);
+
+            if (error) throw error;
+
+            Alert.alert("Sucesso", `Função alterada para "${novoCargo}".`);
+            refetch();
+        } catch (err) {
+            console.error("Erro ao alterar cargo do membro:", err);
+            Alert.alert("Erro", "Não foi possível salvar a alteração de cargo. Verifique a coluna no banco.");
+        }
+    };
+
+    // Altera a função do proprietário na tabela ProjectMember
+    const mudarCargoProprietario = async (novoCargo) => {
         setCargoProprietario(novoCargo);
-    }
+        if (!owner?.idUser || !idProject) return;
+
+        try {
+            const error = await salvarCargoNoBanco({ idProject, idUser: owner.idUser }, novoCargo);
+
+            if (error) throw error;
+
+            Alert.alert("Sucesso", `Sua função foi alterada para "${novoCargo}".`);
+            refetch();
+        } catch (err) {
+            console.error("Erro ao alterar cargo do proprietário:", err);
+            Alert.alert("Erro", "Não foi possível salvar a alteração de cargo. Verifique a coluna no banco.");
+        }
+    };
 
     return (
         <Modal visible={visivel} onRequestClose={aoFechar}>
@@ -46,7 +96,7 @@ function Membros({ visivel, aoFechar }) {
 
                 <Top abaName="Membros" voltar={true} voltarOn={aoFechar} />
 
-                <View style={styles.content}>
+                <ScrollView style={styles.scrollArea} contentContainerStyle={styles.content}>
 
                     {loading ? (
                         <ActivityIndicator size="large" color="#EF5625" style={{ marginTop: 40 }} />
@@ -77,7 +127,7 @@ function Membros({ visivel, aoFechar }) {
                                                 style={styles.perfilTagProprietario}
                                             >
                                                 <CustomText style={styles.perfilEmail}>{cargoProprietario}</CustomText>
-                                                <ChevronDown style={styles.setinha} />
+                                                <ChevronDown size={18} style={styles.setinha} />
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -98,10 +148,12 @@ function Membros({ visivel, aoFechar }) {
                                     members.map((membro, index) => (
                                         <MembrosModel
                                             key={membro.idProjectMember || index}
+                                            idProjectMember={membro.idProjectMember}
                                             imagem={membro.User?.avatar || fotoPadrao}
                                             nome={membro.User?.userName || "Sem nome"}
                                             email={membro.User?.email || "Sem e-mail"}
                                             cargo={membro.cargo || "Sem cargo"}
+                                            aoMudarCargo={mudarCargoMembro}
                                         />
                                     ))
                                 )}
@@ -120,7 +172,7 @@ function Membros({ visivel, aoFechar }) {
                         aoSelecionar={mudarCargoProprietario}
                     />
 
-                </View>
+                </ScrollView>
             </View>
         </Modal>
     );
@@ -128,7 +180,8 @@ function Membros({ visivel, aoFechar }) {
 
 const styles = StyleSheet.create({
     escopo: { backgroundColor: "#242424", flex: 1 },
-    content: { padding: 20, height: "100%", width: "100%", gap: 20 },
+    scrollArea: { flex: 1 },
+    content: { padding: 20, gap: 20, paddingBottom: 50 },
     campo: { gap: 10 },
     secaoProprietario: { fontSize: 12, fontWeight: "bold", color: "#1B8F65" },
     perfilProprietario: {
@@ -167,15 +220,15 @@ const styles = StyleSheet.create({
     linha: { borderColor: "#242424", borderBottomColor: "#313131", borderWidth: 3 },
     secaoParticipantes: { fontSize: 12, fontWeight: "bold", color: "#DAD0B7" },
     botaoConvidar: {
-        position: "absolute",
-        bottom: 180,
-        width: "89%",
+        width: "100%",
         padding: 15,
         backgroundColor: "#313131",
         borderRadius: 15,
         flexDirection: "row",
         justifyContent: "center",
-        gap: 15
+        alignItems: "center",
+        gap: 15,
+        marginTop: 10
     },
     textoBotao: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
     setinha: { color: "#DAD0B7" }

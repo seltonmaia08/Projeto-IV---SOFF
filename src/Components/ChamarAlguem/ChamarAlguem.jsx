@@ -3,9 +3,10 @@ import {
   View,
   Modal,
   TouchableOpacity,
-  Pressable,
   TextInput,
   StyleSheet,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { Whistle } from "lucide-react-native";
@@ -13,39 +14,90 @@ import { Dropdown } from "react-native-element-dropdown";
 
 import CustomText from "../Text/CustomText";
 import ConfirmPopUp from "../ConfirmPopUp/ConfirmPopUp";
-import ChamadoRecebido from "../ChamadoRecebido/ChamadoRecebido";
-
-const PARTICIPANTES = [
-  { label: "Clenda Uchôa", value: "1", funcao: "Diretora de arte" },
-  { label: "Selton Maia", value: "2", funcao: "Diretor de fotografia" },
-  { label: "Samuel Moreno", value: "3", funcao: "Diretor de áudio" },
-];
-
-const NOME_USUARIO = "John";
+import { useProjectContext } from "../../Context/ProjectContext";
+import { useAuth } from "../../Context/AuthContext";
+import { useMembers } from "../../Hook/useMembers";
+import { supabase } from "../../Utils/Supabase";
 
 const ChamarAlguem = () => {
-  const [etapa, setEtapa] = useState("fechado");
+  const { idProject } = useProjectContext();
+  const { user } = useAuth();
+  const { owner, members, loading } = useMembers(idProject);
 
+  const [etapa, setEtapa] = useState("fechado"); // "fechado" | "escolhendo" | "confirmando"
   const [participante, setParticipante] = useState(null);
-
   const [mensagem, setMensagem] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  const fecharPopUp = () => setEtapa("fechado");
+  // Unifica dono e participantes conforme a estrutura de useMembers
+  const todosMembros = [
+    ...(owner ? [{ idUser: owner.idUser, userName: owner.userName, cargo: owner.cargo }] : []),
+    ...members.map((m) => ({
+      idUser: m.idUser,
+      userName: m.User?.userName || m.User?.name || "Sem nome",
+      cargo: m.cargo || "Participante",
+    })),
+  ];
 
-  const aoTocarChamar = () => {
-    if (participante === null) return;
-    setEtapa("confirmando");
-  };
-  const cancelarChamado = () => setEtapa("escolhendo");
-  const confirmarChamado = () => setEtapa("recebido");
-  const fecharChamadoRecebido = () => {
+  // Filtra para não permitir chamar a si mesmo
+  const listarParaChamar = todosMembros
+    .filter((m) => m.idUser && m.idUser !== user?.id)
+    .map((m) => ({
+      label: m.userName,
+      value: m.idUser,
+      funcao: m.cargo,
+    }));
+
+  const fecharPopUp = () => {
     setParticipante(null);
     setMensagem("");
     setEtapa("fechado");
   };
 
+  const aoTocarChamar = () => {
+    if (!participante) return;
+    setEtapa("confirmando");
+  };
+
+  const confirmarChamado = async () => {
+    if (!participante?.value || !idProject || !user?.id) return;
+
+    try {
+      setEnviando(true);
+      const remetenteNome =
+        user?.user_metadata?.name ||
+        user?.user_metadata?.userName ||
+        user?.email?.split("@")[0] ||
+        "Colega de equipe";
+
+      // Salva no Supabase na tabela Call
+      const { error } = await supabase.from("Call").insert([
+        {
+          idProject: idProject,
+          idCaller: user.id,
+          callerName: remetenteNome,
+          idCalled: participante.value,
+          message: mensagem.trim(),
+          status: "pendente",
+        },
+      ]);
+
+      if (error) throw error;
+
+      Alert.alert("Sucesso!", `Chamado enviado para ${participante.label}.`);
+      fecharPopUp();
+    } catch (err) {
+      console.error("Erro ao enviar chamado:", err);
+      Alert.alert("Erro", "Não foi possível enviar o chamado.");
+      setEtapa("escolhendo");
+    } finally {
+      setEnviando(false);
+    }
+  };
+
   return (
-    <View style={{padding: 20}}>
+    <View style={{ padding: 20 }}>
+      {/* Botão flutuante do Apito */}
       <TouchableOpacity
         style={styles.botaoFlutuante}
         activeOpacity={0.8}
@@ -53,6 +105,8 @@ const ChamarAlguem = () => {
       >
         <Whistle size={32} color="#FFFFFF" />
       </TouchableOpacity>
+
+      {/* Modal para Escolher Participante */}
       <Modal
         visible={etapa === "escolhendo"}
         transparent={true}
@@ -61,34 +115,38 @@ const ChamarAlguem = () => {
       >
         <BlurView style={styles.overlay} intensity={40} tint="dark">
           <View style={styles.popUp}>
-            <Dropdown
-              style={styles.dropdown}
-              placeholderStyle={styles.textoDropdown}
-              selectedTextStyle={styles.textoDropdown}
-              data={PARTICIPANTES}
-              labelField="label"
-              valueField="value"
-              placeholder="Escolher um participante"
-              value={participante ? participante.value : null}
-              onChange={(item) => setParticipante(item)}
-              containerStyle={styles.listaDropdown}
-              activeColor="#555555"
-              iconColor="#F0EADE"
-              renderItem={(item) => (
-                <View style={styles.itemLista}>
-                  <CustomText style={styles.nomeItem}>{item.label}</CustomText>
-                  <View style={styles.etiqueta}>
-                    <CustomText style={styles.textoEtiqueta}>
-                      {item.funcao}
-                    </CustomText>
+            <CustomText style={styles.tituloPopUp}>Chamar Alguém</CustomText>
+
+            {loading ? (
+              <ActivityIndicator color="#DA9304" />
+            ) : (
+              <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.textoDropdown}
+                selectedTextStyle={styles.textoDropdown}
+                data={listarParaChamar}
+                labelField="label"
+                valueField="value"
+                placeholder="Escolher um participante"
+                value={participante ? participante.value : null}
+                onChange={(item) => setParticipante(item)}
+                containerStyle={styles.listaDropdown}
+                activeColor="#555555"
+                iconColor="#F0EADE"
+                renderItem={(item) => (
+                  <View style={styles.itemLista}>
+                    <CustomText style={styles.nomeItem}>{item.label}</CustomText>
+                    <View style={styles.etiqueta}>
+                      <CustomText style={styles.textoEtiqueta}>{item.funcao}</CustomText>
+                    </View>
                   </View>
-                </View>
-              )}
-            />
+                )}
+              />
+            )}
 
             <TextInput
               style={styles.campoMensagem}
-              placeholder="Escrever uma mensagem..."
+              placeholder="Escrever uma mensagem (opcional)..."
               placeholderTextColor="#F0EADE99"
               value={mensagem}
               onChangeText={setMensagem}
@@ -99,30 +157,35 @@ const ChamarAlguem = () => {
             <TouchableOpacity
               style={[
                 styles.botaoChamar,
-                participante === null && styles.botaoDesativado,
+                (!participante || enviando) && styles.botaoDesativado,
               ]}
               activeOpacity={0.8}
               onPress={aoTocarChamar}
+              disabled={!participante || enviando}
             >
-              <CustomText style={styles.textoChamar}>CHAMAR</CustomText>
-              <Whistle size={22} color="#F0EADE" />
+              {enviando ? (
+                <ActivityIndicator color="#F0EADE" />
+              ) : (
+                <>
+                  <CustomText style={styles.textoChamar}>CHAMAR</CustomText>
+                  <Whistle size={22} color="#F0EADE" />
+                </>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.botaoCancelar} onPress={fecharPopUp}>
+              <CustomText style={styles.textoCancelar}>Cancelar</CustomText>
             </TouchableOpacity>
           </View>
         </BlurView>
       </Modal>
 
+      {/* Modal de Confirmação antes de disparar */}
       <ConfirmPopUp
         visivel={etapa === "confirmando"}
         mensagem={`Tem certeza que quer chamar ${participante?.label}?`}
         aoConfirmar={confirmarChamado}
-        aoCancelar={cancelarChamado}
-      />
-
-      <ChamadoRecebido
-        visivel={etapa === "recebido"}
-        remetente={NOME_USUARIO}
-        mensagem={mensagem}
-        aoFechar={fecharChamadoRecebido}
+        aoCancelar={() => setEtapa("escolhendo")}
       />
     </View>
   );
@@ -151,10 +214,17 @@ const styles = StyleSheet.create({
   },
   popUp: {
     width: 330,
-    backgroundColor: "#F0EADE",
+    backgroundColor: "#242424",
     borderRadius: 25,
-    padding: 14,
+    padding: 16,
     gap: 12,
+  },
+  tituloPopUp: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#F0EADE",
+    textAlign: "center",
+    marginBottom: 4,
   },
   dropdown: {
     height: 50,
@@ -163,7 +233,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   textoDropdown: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#F0EADE",
   },
   listaDropdown: {
@@ -175,7 +245,7 @@ const styles = StyleSheet.create({
   itemLista: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    justifyContent: "space-between",
     paddingVertical: 12,
     paddingHorizontal: 15,
   },
@@ -184,7 +254,7 @@ const styles = StyleSheet.create({
     color: "#F0EADE",
   },
   etiqueta: {
-    backgroundColor: "#F58A4B",
+    backgroundColor: "#DA9304",
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -194,11 +264,11 @@ const styles = StyleSheet.create({
     color: "#F0EADE",
   },
   campoMensagem: {
-    height: 100,
+    height: 90,
     backgroundColor: "#313131",
     borderRadius: 15,
-    padding: 15,
-    fontSize: 16,
+    padding: 12,
+    fontSize: 15,
     color: "#F0EADE",
   },
   botaoChamar: {
@@ -206,18 +276,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 8,
-    height: 54,
+    height: 50,
     backgroundColor: "#DA9304",
     borderRadius: 15,
-    zIndex: 10,
   },
   botaoDesativado: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
   textoChamar: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#F0EADE",
     letterSpacing: 2,
+  },
+  botaoCancelar: {
+    alignItems: "center",
+    paddingVertical: 6,
+  },
+  textoCancelar: {
+    color: "#DAD0B7",
+    fontSize: 13,
   },
 });
