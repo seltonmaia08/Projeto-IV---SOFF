@@ -8,6 +8,7 @@ const ButtonAdd = ({ onPress, isActive }) => {
             <TouchableOpacity
                 style={styles.buttonAdd}
                 onPress={onPress}
+                activeOpacity={0.7}
             >
                 {
                     isActive ?

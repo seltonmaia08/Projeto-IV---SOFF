@@ -6,11 +6,11 @@ const styles = StyleSheet.create({
     button: { 
         paddingHorizontal: 20, 
         paddingVertical: 10, 
-        backgroundColor: "#5F5F5F", 
+        backgroundColor: "#383838", 
         borderRadius: 15,
         alignItems: "center"
     },
-    textButton: {fontSize: 14, color: "#F0EADE", fontWeight: "bold"}
+    textButton: {fontSize: 14, color: "#DAD0B7", fontWeight: "bold"}
 });
 
 const GetOut_button = ({acao}) => {
