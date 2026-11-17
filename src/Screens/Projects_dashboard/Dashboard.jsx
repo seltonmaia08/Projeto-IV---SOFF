@@ -29,6 +29,7 @@ const Dashboard = () => {
     const [modalVisivel, setModalVisivel] = useState(false);
     const [confirmacaoVisivel, setConfirmacaoVisivel] = useState(false);
     const [projetoParaExcluir, setProjetoParaExcluir] = useState(null);
+    const [fotoUsuario, setFotoUsuario] = useState("https://i.pinimg.com/474x/ba/49/74/ba4974e3ba1dbf399f3c66d3c063f74d.jpg");
     const { projects, loading, error, refetch } = useProject();
     const { user } = useAuth();
 
@@ -71,7 +72,7 @@ const Dashboard = () => {
     return (
         <View style={styles.escopoTela}>
 
-            <Topo_tela username={user?.user_metadata?.userName || "Usuário"} />
+            <Topo_tela username={user?.user_metadata?.userName || "Usuário"} fotoAtual={fotoUsuario} />
             <View style={styles.conteudo}>
 
                 <CustomText style={styles.titulo}>MEUS PROJETOS</CustomText>

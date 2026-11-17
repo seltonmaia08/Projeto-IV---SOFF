@@ -5,18 +5,18 @@ import { useNavigation } from '@react-navigation/native';
 import CustomText from '../Text/CustomText';
 
 
-const Topo_tela = ({ username }) => {
+const Topo_tela = ({ username, fotoAtual}) => {
 
     const navegacao = useNavigation();
-    const fotoPerfil = "https://i.pinimg.com/474x/ba/49/74/ba4974e3ba1dbf399f3c66d3c063f74d.jpg";
+    const foto = fotoAtual; // mockado
 
     return (
         <View>
             <View style={styles.escopoTopo}>
                 <CustomText style={styles.texto}>Olá, {username}!</CustomText>
-                <TouchableOpacity activeOpacity={0.5} onPress={() => navegacao.navigate("Perfil", {fotoPerfil})}>
+                <TouchableOpacity activeOpacity={0.5} onPress={() => navegacao.navigate("Perfil", {foto})}>
                     <View style={styles.perfil}>
-                        <Image source={{uri: fotoPerfil}} style={styles.imagem}/>
+                        <Image source={{uri: foto}} style={styles.imagem}/>
                     </View>
                 </TouchableOpacity>
             </View>

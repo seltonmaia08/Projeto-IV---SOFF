@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, TextInput, Modal, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { useState, useEffect } from 'react';
 import { BlurView } from 'expo-blur';
 
@@ -14,6 +14,7 @@ function EditarSenha({visivel, senhaAtual, aoFechar, aoSalvar}) {
     const [confirmNovaSenha, setConfirmNovaSenha] = useState("");
     const [mudarSenhaDisponivel, setMudarSenhaDisponivel] = useState(false);
     const [botaoDisponivel, setBotaoDisponivel] = useState(false);
+    const [senhaIncorreta, setSenhaIncorreta] = useState(false);
 
     useEffect(
 
@@ -31,7 +32,13 @@ function EditarSenha({visivel, senhaAtual, aoFechar, aoSalvar}) {
 
     function handleConfirmarSenha() {
         if(confirmSenha === userPassword) {setMudarSenhaDisponivel(true)}
-        else {setMudarSenhaDisponivel(false)}
+        else {
+            setMudarSenhaDisponivel(false);
+            setSenhaIncorreta(true);
+            setTimeout(() => {
+                setSenhaIncorreta(false);
+            }, 2500);
+        }
     }
 
     function handleFechar() {
@@ -61,6 +68,8 @@ function EditarSenha({visivel, senhaAtual, aoFechar, aoSalvar}) {
                     
                     <View style={styles.escopo}>
                         
+                        <CustomText style={styles.titulo}>Alterar Senha</CustomText>
+
                         <View style={styles.card}>
                             <View style={styles.superior}>
                                 <CustomText>Confirme a senha antiga:</CustomText>
@@ -73,6 +82,9 @@ function EditarSenha({visivel, senhaAtual, aoFechar, aoSalvar}) {
                         <TouchableOpacity style={styles.botaoSenha} onPress={handleConfirmarSenha} activeOpacity={0.7}>
                             <CustomText style={styles.botaoSenhaText}>CONFIRMAR</CustomText>
                         </TouchableOpacity>
+                        {
+                            senhaIncorreta && (<CustomText style={styles.senhaIncorreta}>Senha incorreta!</CustomText>)
+                        }
                         <View style={styles.linha}></View>
 
                         {
@@ -152,6 +164,7 @@ const styles = StyleSheet.create({
         padding: 15,
         gap: 20
     },
+    titulo: {fontWeight: "bold", fontSize: 16},
     linha: {borderColor: "#DAD0B7", borderBottomWidth: 1},
     card: {gap: 10},
     superior: {flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end"},
@@ -164,6 +177,7 @@ const styles = StyleSheet.create({
         flex: 1,
         outlineStyle: "none"
     },
+    senhaIncorreta: {color: "#e05353", textAlign: "center"},
     botaoSenha: {backgroundColor: "#383838", height: 50, borderRadius: 15, paddingHorizontal: 10, justifyContent: "center"},
     botaoSenhaText: {textAlign: "center", fontWeight: "bold"},
     botoes: {flexDirection: "row", justifyContent: "space-between"},

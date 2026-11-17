@@ -6,26 +6,36 @@ import { ChevronLeft } from 'lucide-react-native';
 import CustomText from '../../Components/Text/CustomText';
 import EditarSenha from './EditarSenha';
 import EditarPerfil from './EditarPerfil';
+import SucessPopup from '../../Components/SucessPopUp/SucessPopup';
 
 const Perfil = ({route}) => {
 
     const navegacao = useNavigation();
     const [editarVisivel, setEditarVisivel] = useState(false);
     const [editarSenhaVisivel, setEditarSenhaVisivel] = useState(false);
+    const [popUpSucesso, setPopUpSucesso] = useState(false);
+
     const [nomeUsuario, setNomeUsuario] = useState("John Wick Kelvy"); // mockado
     const [emailUsuario, setEmailUsuario] = useState("johnkelvy@gmail.com"); // mockado
     const [senhaUsuario, setSenhaUsuario] = useState("mucholoco99"); // mockado
-    const { fotoPerfil } = route.params;
+    const [fotoPerfil, setFotoPerfil] = useState(route?.params?.foto || "");
 
-    function alterarDados(novoNome, novoEmail) {
+    function alterarDados(novoNome, novoEmail, novaFoto) {
 
         setNomeUsuario(novoNome);
         setEmailUsuario(novoEmail);
+        setFotoPerfil(novaFoto);
         setEditarVisivel(false);
     }
 
     function alterarSenha (novaSenha) {
         setSenhaUsuario(novaSenha);
+        setTimeout(() => {
+            setPopUpSucesso(true);
+        }, 200)
+        setTimeout(() => {
+            setPopUpSucesso(false);
+        }, 3000);
     }
 
     return (
@@ -77,6 +87,7 @@ const Perfil = ({route}) => {
                     visivel={editarVisivel}
                     nome={nomeUsuario}
                     email={emailUsuario}
+                    fotoAtual={fotoPerfil}
                     aoFechar={() => setEditarVisivel(false)}
                     aoSalvar={alterarDados}
                 />
@@ -85,6 +96,10 @@ const Perfil = ({route}) => {
                     senhaAtual={senhaUsuario}
                     aoFechar={() => setEditarSenhaVisivel(false)}
                     aoSalvar={alterarSenha}
+                />
+                <SucessPopup
+                    visivel={popUpSucesso}
+                    mensagem={"Senha alterada com sucesso!"}
                 />
 
             </View>
