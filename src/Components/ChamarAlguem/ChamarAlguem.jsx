@@ -9,8 +9,9 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { Whistle } from "lucide-react-native";
+import { Whistle, X } from "lucide-react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import { useChamados } from "../../Context/ChamadosContext";
 
 import CustomText from "../Text/CustomText";
 import ConfirmPopUp from "../ConfirmPopUp/ConfirmPopUp";
@@ -49,6 +50,21 @@ const ChamarAlguem = () => {
     }));
 
   const fecharPopUp = () => {
+
+  const { adicionarChamado } = useChamados();
+
+  const fecharPopUp = () => setEtapa("fechado");
+
+  const aoTocarChamar = () => {
+    if (participante === null) return;
+    setEtapa("confirmando");
+  };
+  const cancelarChamado = () => setEtapa("escolhendo");
+  const confirmarChamado = () => {
+    adicionarChamado(NOME_USUARIO, mensagem);
+    setEtapa("recebido");
+  };
+  const fecharChamadoRecebido = () => {
     setParticipante(null);
     setMensagem("");
     setEtapa("fechado");
@@ -98,6 +114,7 @@ const ChamarAlguem = () => {
   return (
     <View style={{ padding: 20 }}>
       {/* Botão flutuante do Apito */}
+    <View style={{ padding: 20 }}>
       <TouchableOpacity
         style={styles.botaoFlutuante}
         activeOpacity={0.8}
@@ -114,6 +131,45 @@ const ChamarAlguem = () => {
         onRequestClose={fecharPopUp}
       >
         <BlurView style={styles.overlay} intensity={40} tint="dark">
+          <View style={styles.areaPopUp}>
+            {/* NOVO: botão X branco, fora do card, no canto superior direito.
+        hitSlop aumenta a área de toque além do desenho do X. */}
+            <TouchableOpacity
+              style={styles.botaoFechar}
+              onPress={fecharPopUp}
+              activeOpacity={0.6}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              accessibilityLabel="Fechar"
+            >
+              <X size={28} color="#FFFFFF" />
+            </TouchableOpacity>
+            <View style={styles.popUp}>
+              <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.textoDropdown}
+                selectedTextStyle={styles.textoDropdown}
+                data={PARTICIPANTES}
+                labelField="label"
+                valueField="value"
+                placeholder="Escolher um participante"
+                value={participante ? participante.value : null}
+                onChange={(item) => setParticipante(item)}
+                containerStyle={styles.listaDropdown}
+                activeColor="#555555"
+                iconColor="#F0EADE"
+                renderItem={(item) => (
+                  <View style={styles.itemLista}>
+                    <CustomText style={styles.nomeItem}>
+                      {item.label}
+                    </CustomText>
+                    <View style={styles.etiqueta}>
+                      <CustomText style={styles.textoEtiqueta}>
+                        {item.funcao}
+                      </CustomText>
+                    </View>
+                  </View>
+                )}
+              />
           <View style={styles.popUp}>
             <CustomText style={styles.tituloPopUp}>Chamar Alguém</CustomText>
 
@@ -153,6 +209,15 @@ const ChamarAlguem = () => {
               multiline={true}
               textAlignVertical="top"
             />
+              <TextInput
+                style={styles.campoMensagem}
+                placeholder="Escrever uma mensagem..."
+                placeholderTextColor="#F0EADE99"
+                value={mensagem}
+                onChangeText={setMensagem}
+                multiline={true}
+                textAlignVertical="top"
+              />
 
             <TouchableOpacity
               style={[
@@ -176,6 +241,18 @@ const ChamarAlguem = () => {
             <TouchableOpacity style={styles.botaoCancelar} onPress={fecharPopUp}>
               <CustomText style={styles.textoCancelar}>Cancelar</CustomText>
             </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.botaoChamar,
+                  participante === null && styles.botaoDesativado,
+                ]}
+                activeOpacity={0.8}
+                onPress={aoTocarChamar}
+              >
+                <CustomText style={styles.textoChamar}>CHAMAR</CustomText>
+                <Whistle size={22} color="#F0EADE" />
+              </TouchableOpacity>
+            </View>
           </View>
         </BlurView>
       </Modal>
@@ -225,6 +302,13 @@ const styles = StyleSheet.create({
     color: "#F0EADE",
     textAlign: "center",
     marginBottom: 4,
+  },
+  areaPopUp: {
+    width: 330,
+  },
+  botaoFechar: {
+    alignSelf: "flex-end",
+    marginBottom: 8,
   },
   dropdown: {
     height: 50,
