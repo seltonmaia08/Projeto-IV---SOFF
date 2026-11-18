@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { ActivityIndicator, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { ActivityIndicator, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import Topo_tela from '../../Components/Projetos_dashboard/Topo_tela';
@@ -16,6 +16,7 @@ import LogOut from '../../Components/Buttons/ButtonLogout';
 import ButtonAdd from '../../Components/Buttons/ButtonAdd';
 import JoinProjectPopUp from '../../Components/Projetos_dashboard/JoinProjectPopUp';
 import { supabase } from '../../Utils/Supabase';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 
 
@@ -68,11 +69,11 @@ const Dashboard = () => {
 
             if (error) throw error;
 
-            Alert.alert("Sucesso", `Você saiu do projeto "${sairProjeto.projectName}".`);
+            AlertaGeral.alert("Sucesso", `Você saiu do projeto "${sairProjeto.projectName}".`);
             refetch();
         } catch (err) {
             console.error("Erro ao sair do projeto:", err);
-            Alert.alert("Erro ao sair", err.message || "Não foi possível sair do projeto.");
+            AlertaGeral.alert("Erro ao sair", err.message || "Não foi possível sair do projeto.");
         } finally {
             setConfirmacaoVisivel(false);
             setSairProjeto(null);
@@ -87,7 +88,7 @@ const Dashboard = () => {
             refetch();
         } catch (err) {
             console.error("Erro ao excluir o projeto:", err);
-            Alert.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
+            AlertaGeral.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
         } finally {
             setConfirmacaoVisivel(false);
             setProjetoParaExcluir(null);

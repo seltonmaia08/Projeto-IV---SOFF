@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, Modal, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import { BlurView } from "expo-blur";
 import { ChevronDown, ChevronUp, Check } from 'lucide-react-native';
 
 import GetInGreen_button from '../../Components/Projetos_dashboard/GetInGreen_button';
 import GetOut_button from '../../Components/Projetos_dashboard/GetOut_button';
 import CustomText from '../../Components/Text/CustomText';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 const NovoDepartamento = ({
     visivel,
@@ -45,7 +46,7 @@ const NovoDepartamento = ({
 
     const handleCriar = () => {
         if (!departamento || departamento.trim() === "") {
-            Alert.alert("Aviso", "Por favor, digite o nome do departamento.");
+            AlertaGeral.alert("Aviso", "Por favor, digite o nome do departamento.");
             return;
         }
 
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     },
     criar: { fontWeight: "bold", fontSize: 18, color: "#DAD0B7" },
     dados: { gap: 30 },
-    campo: { gap: 10, zIndex: 999, position: "relative" },
+    campo: { gap: 10, zIndex: 999, position: "relative", height: 90 },
     labels: { fontSize: 16, color: "#DAD0B7" },
     dropDown: {
         backgroundColor: "#DAD0B7",
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
         color: "#DAD0B7",
         borderBottomColor: "#EF5625",
         borderBottomWidth: 1,
-        outlineStyle: "none"
+        outlineStyle: "none",
     },
     containerLista: {
         maxHeight: 140,
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     },
     textoMembro: {color: "#383838"},
     textoMembroSelecionado: {fontWeight: "bold"},
-    botoes: { flexDirection: "row", justifyContent: "space-between", zIndex: -1 }
+    botoes: { flexDirection: "row", justifyContent: "space-between" }
 });
 
 export default NovoDepartamento;

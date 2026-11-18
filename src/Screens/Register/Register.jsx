@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import Logo from '../../../assets/logo.svg';
 import { supabase } from '../../Utils/Supabase';
 import Top from '../TopAba/Top';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 const Register = () => {
 
@@ -60,7 +61,7 @@ const Register = () => {
     const register = async () => {
         console.log('autenticando...')
         if (!email || !password) {
-            alert('preencha os dados')
+            AlertaGeral.alert('preencha os dados')
             return
         }
         try {

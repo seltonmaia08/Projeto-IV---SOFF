@@ -1,8 +1,9 @@
-import { TouchableOpacity, StyleSheet, Alert, View, ScrollView, Image } from "react-native";
+import { TouchableOpacity, StyleSheet, View, ScrollView, Image } from "react-native";
 import { Camera, X } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import * as ImagePicker from 'expo-image-picker'
 import ImageViewerModal from './ImageViewerModal'
+import AlertaGeral from '../Alerta/AlertaGeral';
 
 const CameraPicker = ({ images, setImages }) => {
 
@@ -12,7 +13,7 @@ const CameraPicker = ({ images, setImages }) => {
     const tirarFoto = async () => {
         const { granted } = await ImagePicker.requestCameraPermissionsAsync()
         if (!granted) {
-            Alert.alert("Permissão necessária", "É necessário permitir o acesso à câmera.")
+            AlertaGeral.alert("Permissão necessária", "É necessário permitir o acesso à câmera.")
             return
         }
 
@@ -40,7 +41,7 @@ const CameraPicker = ({ images, setImages }) => {
     }
 
     const selecionarOrigemFoto = () => {
-        Alert.alert(
+        AlertaGeral.alert(
             "Adicionar Foto",
             "De onde você quer obter a foto?",
             [

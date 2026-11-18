@@ -1,12 +1,13 @@
 import { Copy, Check } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
-import { Alert, Text, View, StyleSheet, TextInput, Modal, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Modal, TouchableOpacity } from 'react-native';
 import { BlurView } from "expo-blur";
 import * as Clipboard from 'expo-clipboard';
 
 import GetInGreen_button from './GetInGreen_button';
 import GetOut_button from './GetOut_button';
 import CustomText from '../Text/CustomText';
+import AlertaGeral from '../Alerta/AlertaGeral';
 
 // import's backend
 import { projectService, projectMemberService } from '../../Services/api';
@@ -77,7 +78,7 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
             aoCriarProjeto(novoProjeto);
         } catch (error) {
             console.error('Erro ao criar projeto:', error);
-            Alert.alert('Erro', 'Não foi possível criar o projeto. Tente novamente.');
+            AlertaGeral.alert('Erro', 'Não foi possível criar o projeto. Tente novamente.');
         } finally {
             setLoading(false);
         }

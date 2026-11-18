@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
@@ -10,6 +10,7 @@ import SucessPopup from '../../Components/SucessPopUp/SucessPopup';
 import { useAuth } from '../../Context/AuthContext';
 import { supabase } from '../../Utils/Supabase';
 import { StorageService } from '../../Utils/StorageService';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 const Perfil = ({ route }) => {
     const navegacao = useNavigation();
@@ -125,10 +126,10 @@ const Perfil = ({ route }) => {
             setEmailUsuario(novoEmail);
             if (fotoUrlFinal) setFotoPerfil(fotoUrlFinal);
             setEditarVisivel(false);
-            Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
+            AlertaGeral.alert("Sucesso", "Perfil atualizado com sucesso!");
         } catch (err) {
             console.error("Erro ao salvar dados do perfil:", err);
-            Alert.alert("Erro", "Não foi possível salvar as alterações.");
+            AlertaGeral.alert("Erro", "Não foi possível salvar as alterações.");
         }
     }
 

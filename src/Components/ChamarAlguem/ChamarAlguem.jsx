@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 import { BlurView } from "expo-blur";
@@ -14,6 +13,7 @@ import { Dropdown } from "react-native-element-dropdown";
 
 import CustomText from "../Text/CustomText";
 import ConfirmPopUp from "../ConfirmPopUp/ConfirmPopUp";
+import AlertaGeral from "../Alerta/AlertaGeral";
 import { useProjectContext } from "../../Context/ProjectContext";
 import { useAuth } from "../../Context/AuthContext";
 import { useMembers } from "../../Hook/useMembers";
@@ -84,11 +84,11 @@ const ChamarAlguem = () => {
 
       if (error) throw error;
 
-      Alert.alert("Sucesso!", `Chamado enviado para ${participante.label}.`);
+      AlertaGeral.alert("Sucesso!", `Chamado enviado para ${participante.label}.`);
       fecharPopUp();
     } catch (err) {
       console.error("Erro ao enviar chamado:", err);
-      Alert.alert("Erro", "Não foi possível enviar o chamado.");
+      AlertaGeral.alert("Erro", "Não foi possível enviar o chamado.");
       setEtapa("escolhendo");
     } finally {
       setEnviando(false);

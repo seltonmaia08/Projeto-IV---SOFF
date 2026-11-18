@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { useState, useEffect, useCallback, useContext } from 'react';
 
 import CustomText from '../../Components/Text/CustomText';
@@ -7,6 +7,7 @@ import ButtonAdd from '../../Components/Buttons/ButtonAdd';
 import NovoDepartamento from './NovoDepartamento';
 import { ProjectContext } from '../../Context/ProjectContext';
 import { supabase } from '../../Utils/Supabase';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 const Departamentos = () => {
 
@@ -25,13 +26,23 @@ const Departamentos = () => {
             setLoading(true);
 
             // 1. Busca departamentos do projeto no Supabase
-            const { data: deptData, error: deptError } = await supabase
+            // Tenta a coluna idProject; se não existir, busca tudo e filtra localmente
+            let deptData = [];
+            let { data: deptResult, error: deptError } = await supabase
                 .from('Department')
                 .select('*')
                 .eq('idProject', idProject);
 
-            if (deptError) {
-                console.warn("Aviso ao buscar departamentos:", deptError);
+            if (deptError && deptError.code === '42703') {
+                // Coluna idProject não existe na tabela Department.
+                // Busca todos os departamentos sem filtro — serão filtrados depois
+                // pelos idDepartment encontrados nos membros do projeto (ProjectMember).
+                console.warn("Coluna idProject não encontrada em Department. Filtrando via ProjectMember.");
+                const { data: allDepts } = await supabase.from('Department').select('*');
+                deptData = allDepts || [];
+            } else {
+                if (deptError) console.warn("Aviso ao buscar departamentos:", deptError);
+                deptData = deptResult || [];
             }
 
             // 2. Busca todos os membros do projeto em ProjectMember
@@ -73,7 +84,21 @@ const Departamentos = () => {
             setTodosMembros(membrosFormatados);
 
             // 5. Mapeia cada departamento com seus respectivos membros
-            const departamentosFormatados = (deptData || []).map(d => {
+            // Quando idProject não existe no Department, filtramos pelos depts que têm
+            // ao menos um membro pertencente a este projeto
+            const idsDepartamentosDosProjeto = new Set(
+                membrosFormatados.map(m => m.idDepartment).filter(Boolean).map(String)
+            );
+
+            const departamentosFormatados = (deptData || [])
+                .filter(d => {
+                    // Se a coluna idProject existe no resultado, filtra por ela
+                    if (d.idProject !== undefined) return String(d.idProject) === String(idProject);
+                    // Caso contrário, mantém apenas depts que têm membros deste projeto
+                    const idDept = d.idDepartment || d.id;
+                    return idsDepartamentosDosProjeto.has(String(idDept));
+                })
+                .map(d => {
                 const idDept = d.idDepartment || d.id;
                 const nomeDept = d.departmentName || d.name || d.nome || "Sem nome";
                 const membrosDesteDept = membrosFormatados.filter(
@@ -106,20 +131,31 @@ const Departamentos = () => {
         try {
             let novoId = null;
 
-            // Insere na tabela Department (tentando colunas departmentName / name)
+            // Insere na tabela Department, tentando com e sem a coluna idProject
+            const payloadComProject = { idProject, departmentName: nome };
             const { data: inserted, error: insErr } = await supabase
                 .from('Department')
-                .insert([{ idProject, departmentName: nome }])
+                .insert([payloadComProject])
                 .select();
 
             if (!insErr && inserted?.[0]) {
                 novoId = inserted[0].idDepartment || inserted[0].id;
+            } else if (insErr?.code === '42703') {
+                // Coluna idProject não existe — insere sem ela
+                const { data: ins2, error: insErr2 } = await supabase
+                    .from('Department')
+                    .insert([{ departmentName: nome }])
+                    .select();
+                if (!insErr2 && ins2?.[0]) novoId = ins2[0].idDepartment || ins2[0].id;
+                else if (insErr2) throw insErr2;
             } else if (insErr?.code === 'PGRST204') {
-                const { data: ins2 } = await supabase
+                // Coluna departmentName não existe — tenta name
+                const { data: ins3, error: insErr3 } = await supabase
                     .from('Department')
                     .insert([{ idProject, name: nome }])
                     .select();
-                if (ins2?.[0]) novoId = ins2[0].idDepartment || ins2[0].id;
+                if (!insErr3 && ins3?.[0]) novoId = ins3[0].idDepartment || ins3[0].id;
+                else if (insErr3) throw insErr3;
             } else if (insErr) {
                 throw insErr;
             }
@@ -137,10 +173,10 @@ const Departamentos = () => {
             }
 
             await carregarDepartamentos();
-            Alert.alert("Sucesso", `Departamento "${nome}" criado com sucesso!`);
+            AlertaGeral.alert("Sucesso", `Departamento "${nome}" criado com sucesso!`);
         } catch (err) {
             console.error("Erro ao criar departamento:", err);
-            Alert.alert("Erro", "Não foi possível criar o departamento.");
+            AlertaGeral.alert("Erro", "Não foi possível criar o departamento.");
         }
     };
 
@@ -184,10 +220,10 @@ const Departamentos = () => {
             }
 
             await carregarDepartamentos();
-            Alert.alert("Sucesso", `Departamento "${nome}" atualizado com sucesso!`);
+            AlertaGeral.alert("Sucesso", `Departamento "${nome}" atualizado com sucesso!`);
         } catch (err) {
             console.error("Erro ao salvar departamento:", err);
-            Alert.alert("Erro", "Não foi possível salvar as alterações.");
+            AlertaGeral.alert("Erro", "Não foi possível salvar as alterações.");
         }
     };
 
@@ -210,15 +246,15 @@ const Departamentos = () => {
             if (delErr) throw delErr;
 
             await carregarDepartamentos();
-            Alert.alert("Sucesso", `Departamento "${nomeDept || ''}" excluído com sucesso!`);
+            AlertaGeral.alert("Sucesso", `Departamento "${nomeDept || ''}" excluído com sucesso!`);
         } catch (err) {
             console.error("Erro ao excluir departamento:", err);
-            Alert.alert("Erro", "Não foi possível excluir o departamento.");
+            AlertaGeral.alert("Erro", "Não foi possível excluir o departamento.");
         }
     };
 
     const confirmarExcluir = (departamento) => {
-        Alert.alert(
+        AlertaGeral.alert(
             "Excluir Departamento",
             `Deseja realmente excluir o departamento "${departamento.nome}"?`,
             [

@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, Modal, Linking, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Modal, Linking, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { BlurView } from 'expo-blur';
 import { Edit, X } from 'lucide-react-native';
@@ -6,6 +6,7 @@ import { Edit, X } from 'lucide-react-native';
 import CustomText from '../../Components/Text/CustomText';
 import EditarLinks from './EditarLinks';
 import { supabase } from '../../Utils/Supabase';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 function LinksPopUp({visivel, aoFechar, idProject}) {
 
@@ -49,7 +50,7 @@ function LinksPopUp({visivel, aoFechar, idProject}) {
             }
         } catch (err) {
             console.error("Erro ao salvar links:", err);
-            Alert.alert("Erro", "Não foi possível salvar os links.");
+            AlertaGeral.alert("Erro", "Não foi possível salvar os links.");
         }
     };
 

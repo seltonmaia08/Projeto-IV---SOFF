@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, Modal, Image, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Modal, Image, ActivityIndicator, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Check, Copy, ChevronDown } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
@@ -11,6 +11,7 @@ import { useContext } from 'react';
 import { ProjectContext } from '../../Context/ProjectContext';
 import { useMembers } from '../../Hook/useMembers';
 import { supabase } from '../../Utils/Supabase';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 function Membros({ visivel, aoFechar }) {
 
@@ -64,11 +65,11 @@ function Membros({ visivel, aoFechar }) {
 
             if (error) throw error;
 
-            Alert.alert("Sucesso", `Função alterada para "${novoCargo}".`);
+            AlertaGeral.alert("Sucesso", `Função alterada para "${novoCargo}".`);
             refetch();
         } catch (err) {
             console.error("Erro ao alterar cargo do membro:", err);
-            Alert.alert("Erro", "Não foi possível salvar a alteração de cargo. Verifique a coluna no banco.");
+            AlertaGeral.alert("Erro", "Não foi possível salvar a alteração de cargo. Verifique a coluna no banco.");
         }
     };
 
@@ -82,11 +83,11 @@ function Membros({ visivel, aoFechar }) {
 
             if (error) throw error;
 
-            Alert.alert("Sucesso", `Sua função foi alterada para "${novoCargo}".`);
+            AlertaGeral.alert("Sucesso", `Sua função foi alterada para "${novoCargo}".`);
             refetch();
         } catch (err) {
             console.error("Erro ao alterar cargo do proprietário:", err);
-            Alert.alert("Erro", "Não foi possível salvar a alteração de cargo. Verifique a coluna no banco.");
+            AlertaGeral.alert("Erro", "Não foi possível salvar a alteração de cargo. Verifique a coluna no banco.");
         }
     };
 
