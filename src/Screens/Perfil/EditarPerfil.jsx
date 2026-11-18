@@ -10,15 +10,17 @@ import GetOut_button from '../../Components/Projetos_dashboard/GetOut_button';
 
 function EditarPerfil({visivel, nome, email, fotoAtual, aoFechar, aoSalvar}) {
 
-    const [userName, setUserName] = useState(nome);
-    const [userEmail, setUserEmail] = useState(email);
-    const [userPhoto, setUserPhoto] = useState(fotoAtual);
+    const [userName, setUserName] = useState(nome || "");
+    const [userEmail, setUserEmail] = useState(email || "");
+    const [userPhoto, setUserPhoto] = useState(fotoAtual || "");
 
-    /*useEffect(
-        () => {
-
-        }, []
-    )*/
+    useEffect(() => {
+        if (visivel) {
+            setUserName(nome || "");
+            setUserEmail(email || "");
+            setUserPhoto(fotoAtual || "");
+        }
+    }, [visivel, nome, email, fotoAtual]);
 
     async function escolherFoto() {
         // pedir permissão pra acesso da galeria

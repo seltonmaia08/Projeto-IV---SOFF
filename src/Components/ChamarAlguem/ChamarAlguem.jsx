@@ -11,7 +11,6 @@ import {
 import { BlurView } from "expo-blur";
 import { Whistle, X } from "lucide-react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { useChamados } from "../../Context/ChamadosContext";
 
 import CustomText from "../Text/CustomText";
 import ConfirmPopUp from "../ConfirmPopUp/ConfirmPopUp";
@@ -50,21 +49,6 @@ const ChamarAlguem = () => {
     }));
 
   const fecharPopUp = () => {
-
-  const { adicionarChamado } = useChamados();
-
-  const fecharPopUp = () => setEtapa("fechado");
-
-  const aoTocarChamar = () => {
-    if (participante === null) return;
-    setEtapa("confirmando");
-  };
-  const cancelarChamado = () => setEtapa("escolhendo");
-  const confirmarChamado = () => {
-    adicionarChamado(NOME_USUARIO, mensagem);
-    setEtapa("recebido");
-  };
-  const fecharChamadoRecebido = () => {
     setParticipante(null);
     setMensagem("");
     setEtapa("fechado");
@@ -114,7 +98,6 @@ const ChamarAlguem = () => {
   return (
     <View style={{ padding: 20 }}>
       {/* Botão flutuante do Apito */}
-    <View style={{ padding: 20 }}>
       <TouchableOpacity
         style={styles.botaoFlutuante}
         activeOpacity={0.8}
@@ -132,8 +115,7 @@ const ChamarAlguem = () => {
       >
         <BlurView style={styles.overlay} intensity={40} tint="dark">
           <View style={styles.areaPopUp}>
-            {/* NOVO: botão X branco, fora do card, no canto superior direito.
-        hitSlop aumenta a área de toque além do desenho do X. */}
+            {/* Botão X para fechar no topo direito fora do card */}
             <TouchableOpacity
               style={styles.botaoFechar}
               onPress={fecharPopUp}
@@ -143,75 +125,40 @@ const ChamarAlguem = () => {
             >
               <X size={28} color="#FFFFFF" />
             </TouchableOpacity>
+
             <View style={styles.popUp}>
-              <Dropdown
-                style={styles.dropdown}
-                placeholderStyle={styles.textoDropdown}
-                selectedTextStyle={styles.textoDropdown}
-                data={PARTICIPANTES}
-                labelField="label"
-                valueField="value"
-                placeholder="Escolher um participante"
-                value={participante ? participante.value : null}
-                onChange={(item) => setParticipante(item)}
-                containerStyle={styles.listaDropdown}
-                activeColor="#555555"
-                iconColor="#F0EADE"
-                renderItem={(item) => (
-                  <View style={styles.itemLista}>
-                    <CustomText style={styles.nomeItem}>
-                      {item.label}
-                    </CustomText>
-                    <View style={styles.etiqueta}>
-                      <CustomText style={styles.textoEtiqueta}>
-                        {item.funcao}
-                      </CustomText>
-                    </View>
-                  </View>
-                )}
-              />
-          <View style={styles.popUp}>
-            <CustomText style={styles.tituloPopUp}>Chamar Alguém</CustomText>
+              <CustomText style={styles.tituloPopUp}>Chamar Alguém</CustomText>
 
-            {loading ? (
-              <ActivityIndicator color="#DA9304" />
-            ) : (
-              <Dropdown
-                style={styles.dropdown}
-                placeholderStyle={styles.textoDropdown}
-                selectedTextStyle={styles.textoDropdown}
-                data={listarParaChamar}
-                labelField="label"
-                valueField="value"
-                placeholder="Escolher um participante"
-                value={participante ? participante.value : null}
-                onChange={(item) => setParticipante(item)}
-                containerStyle={styles.listaDropdown}
-                activeColor="#555555"
-                iconColor="#F0EADE"
-                renderItem={(item) => (
-                  <View style={styles.itemLista}>
-                    <CustomText style={styles.nomeItem}>{item.label}</CustomText>
-                    <View style={styles.etiqueta}>
-                      <CustomText style={styles.textoEtiqueta}>{item.funcao}</CustomText>
+              {loading ? (
+                <ActivityIndicator color="#DA9304" />
+              ) : (
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.textoDropdown}
+                  selectedTextStyle={styles.textoDropdown}
+                  data={listarParaChamar}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Escolher um participante"
+                  value={participante ? participante.value : null}
+                  onChange={(item) => setParticipante(item)}
+                  containerStyle={styles.listaDropdown}
+                  activeColor="#555555"
+                  iconColor="#F0EADE"
+                  renderItem={(item) => (
+                    <View style={styles.itemLista}>
+                      <CustomText style={styles.nomeItem}>{item.label}</CustomText>
+                      <View style={styles.etiqueta}>
+                        <CustomText style={styles.textoEtiqueta}>{item.funcao}</CustomText>
+                      </View>
                     </View>
-                  </View>
-                )}
-              />
-            )}
+                  )}
+                />
+              )}
 
-            <TextInput
-              style={styles.campoMensagem}
-              placeholder="Escrever uma mensagem (opcional)..."
-              placeholderTextColor="#F0EADE99"
-              value={mensagem}
-              onChangeText={setMensagem}
-              multiline={true}
-              textAlignVertical="top"
-            />
               <TextInput
                 style={styles.campoMensagem}
-                placeholder="Escrever uma mensagem..."
+                placeholder="Escrever uma mensagem (opcional)..."
                 placeholderTextColor="#F0EADE99"
                 value={mensagem}
                 onChangeText={setMensagem}
@@ -219,38 +166,23 @@ const ChamarAlguem = () => {
                 textAlignVertical="top"
               />
 
-            <TouchableOpacity
-              style={[
-                styles.botaoChamar,
-                (!participante || enviando) && styles.botaoDesativado,
-              ]}
-              activeOpacity={0.8}
-              onPress={aoTocarChamar}
-              disabled={!participante || enviando}
-            >
-              {enviando ? (
-                <ActivityIndicator color="#F0EADE" />
-              ) : (
-                <>
-                  <CustomText style={styles.textoChamar}>CHAMAR</CustomText>
-                  <Whistle size={22} color="#F0EADE" />
-                </>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.botaoCancelar} onPress={fecharPopUp}>
-              <CustomText style={styles.textoCancelar}>Cancelar</CustomText>
-            </TouchableOpacity>
               <TouchableOpacity
                 style={[
                   styles.botaoChamar,
-                  participante === null && styles.botaoDesativado,
+                  (!participante || enviando) && styles.botaoDesativado,
                 ]}
                 activeOpacity={0.8}
                 onPress={aoTocarChamar}
+                disabled={!participante || enviando}
               >
-                <CustomText style={styles.textoChamar}>CHAMAR</CustomText>
-                <Whistle size={22} color="#F0EADE" />
+                {enviando ? (
+                  <ActivityIndicator color="#F0EADE" />
+                ) : (
+                  <>
+                    <CustomText style={styles.textoChamar}>CHAMAR</CustomText>
+                    <Whistle size={22} color="#F0EADE" />
+                  </>
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -289,6 +221,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  areaPopUp: {
+    width: 330,
+  },
+  botaoFechar: {
+    alignSelf: "flex-end",
+    marginBottom: 8,
+  },
   popUp: {
     width: 330,
     backgroundColor: "#242424",
@@ -302,13 +241,6 @@ const styles = StyleSheet.create({
     color: "#F0EADE",
     textAlign: "center",
     marginBottom: 4,
-  },
-  areaPopUp: {
-    width: 330,
-  },
-  botaoFechar: {
-    alignSelf: "flex-end",
-    marginBottom: 8,
   },
   dropdown: {
     height: 50,
@@ -372,13 +304,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#F0EADE",
     letterSpacing: 2,
-  },
-  botaoCancelar: {
-    alignItems: "center",
-    paddingVertical: 6,
-  },
-  textoCancelar: {
-    color: "#DAD0B7",
-    fontSize: 13,
   },
 });

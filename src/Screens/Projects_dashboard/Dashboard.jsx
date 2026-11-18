@@ -187,7 +187,6 @@ const Dashboard = () => {
                     }
                 />
 
-                <LogOut />
             </View>
         </View>
     );

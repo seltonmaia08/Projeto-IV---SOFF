@@ -1,7 +1,6 @@
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import CustomText from "../../Components/Text/CustomText";
 import { useState } from "react";
-import ViewCalled from "../../Components/Notificacao/ViewCalled";
 import ViewNotificacao from "../../Components/Notificacao/ViewNotification";
 import ViewCalled from "../../Components/Notificacao/ViewCalled";
 import Top from "../TopAba/Top";

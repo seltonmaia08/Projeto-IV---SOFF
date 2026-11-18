@@ -180,6 +180,7 @@ function Details() {
                 <LinksPopUp
                     visivel = {links}
                     aoFechar = {() => setLinks(false)}
+                    idProject = {idProject}
                 />
                 <Membros
                     visivel={membrosVisivel}

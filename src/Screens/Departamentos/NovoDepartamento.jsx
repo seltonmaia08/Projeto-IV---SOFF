@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, StyleSheet, TextInput, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, StyleSheet, TextInput, Modal, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { BlurView } from "expo-blur";
 import { ChevronDown, ChevronUp, Check } from 'lucide-react-native';
 
@@ -7,37 +7,85 @@ import GetInGreen_button from '../../Components/Projetos_dashboard/GetInGreen_bu
 import GetOut_button from '../../Components/Projetos_dashboard/GetOut_button';
 import CustomText from '../../Components/Text/CustomText';
 
-const NovoDepartamento = ({ visivel, aoFechar, aoCriarDepart }) => {
+const NovoDepartamento = ({
+    visivel,
+    aoFechar,
+    aoCriarDepart,
+    aoSalvarDepart,
+    aoExcluirDepart,
+    departamentoParaEditar,
+    todosMembros = []
+}) => {
 
-    const [departamento, setDepartamento] = useState();
-    const [listaMembros, setListaMembros] = useState(["Selton Maia", "Clenda Uchoa", "Samuel Moreno", "Pedro", "Tiago", "João"]); // mockados
+    const [departamento, setDepartamento] = useState("");
+    const [listaMembros, setListaMembros] = useState([]);
     const [listaOn, setListaOn] = useState(false);
     const [membrosSelecionados, setMembrosSelecionados] = useState([]);
+
+    useEffect(() => {
+        if (visivel) {
+            setListaMembros(todosMembros || []);
+            if (departamentoParaEditar) {
+                setDepartamento(departamentoParaEditar.nome || "");
+                setMembrosSelecionados(departamentoParaEditar.membrosIds || []);
+            } else {
+                setDepartamento("");
+                setMembrosSelecionados([]);
+            }
+            setListaOn(false);
+        }
+    }, [visivel, departamentoParaEditar, todosMembros]);
 
     const handleCancelar = () => {
         setDepartamento("");
         setMembrosSelecionados([]);
         setListaOn(false);
         aoFechar();
-    }
+    };
 
     const handleCriar = () => {
+        if (!departamento || departamento.trim() === "") {
+            Alert.alert("Aviso", "Por favor, digite o nome do departamento.");
+            return;
+        }
 
-        aoCriarDepart({nome: departamento, membros: [membrosSelecionados]});
+        if (departamentoParaEditar) {
+            if (aoSalvarDepart) {
+                aoSalvarDepart({
+                    idDepartment: departamentoParaEditar.idDepartment,
+                    nome: departamento.trim(),
+                    membrosIds: membrosSelecionados
+                });
+            }
+        } else {
+            if (aoCriarDepart) {
+                aoCriarDepart({
+                    nome: departamento.trim(),
+                    membrosIds: membrosSelecionados
+                });
+            }
+        }
+
         setDepartamento("");
         setMembrosSelecionados([]);
         setListaOn(false);
         aoFechar();
-    }
+    };
 
-    const toggleMembro = (nome) => {
-        if(membrosSelecionados.includes(nome)){
-            setMembrosSelecionados(membrosSelecionados.filter(cada => cada !== nome));
+    const handleExcluir = () => {
+        if (departamentoParaEditar && aoExcluirDepart) {
+            aoExcluirDepart(departamentoParaEditar.idDepartment, departamentoParaEditar.nome);
+            aoFechar();
         }
-        else {
-            setMembrosSelecionados([...membrosSelecionados, nome]);
+    };
+
+    const toggleMembro = (idMembro) => {
+        if (membrosSelecionados.includes(idMembro)) {
+            setMembrosSelecionados(membrosSelecionados.filter(cada => cada !== idMembro));
+        } else {
+            setMembrosSelecionados([...membrosSelecionados, idMembro]);
         }
-    }
+    };
 
     return (
         <Modal
@@ -48,7 +96,9 @@ const NovoDepartamento = ({ visivel, aoFechar, aoCriarDepart }) => {
         >
             <BlurView style={styles.overlay} intensity={40} tint='dark'>
                 <View style={styles.popUp}>
-                    <CustomText style={styles.criar}>Criar Departamento</CustomText>
+                    <CustomText style={styles.criar}>
+                        {departamentoParaEditar ? "Editar Departamento" : "Criar Departamento"}
+                    </CustomText>
 
                     <View style={styles.dados}>
                         <View style={styles.campo}>
@@ -83,22 +133,23 @@ const NovoDepartamento = ({ visivel, aoFechar, aoCriarDepart }) => {
                                         <ScrollView style={styles.containerLista} nestedScrollEnabled={true}>
                                             {
                                                 listaMembros.map((cada, index) => {
-
-                                                    const selecionado = membrosSelecionados.includes(cada) // verifica se o "cada" está selecionado
+                                                    const idKey = cada.idProjectMember || cada.idUser || index;
+                                                    const nomeExibicao = cada.nome || cada.userName || (typeof cada === 'string' ? cada : 'Membro');
+                                                    const selecionado = membrosSelecionados.includes(idKey);
                                                     return (
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.7}
-                                                        key={index}
-                                                        onPress={() => toggleMembro(cada)}
-                                                        style={styles.itemMembro}
-                                                    >
-                                                        
-                                                        <CustomText style={[styles.textoMembro, selecionado && styles.textoMembroSelecionado]}>
-                                                            {cada}
-                                                        </CustomText>
-                                                        {selecionado && <Check style={styles.setinhaDrop}/>}
-                                                    </TouchableOpacity>
-                                                )})
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.7}
+                                                            key={idKey}
+                                                            onPress={() => toggleMembro(idKey)}
+                                                            style={styles.itemMembro}
+                                                        >
+                                                            <CustomText style={[styles.textoMembro, selecionado && styles.textoMembroSelecionado]}>
+                                                                {nomeExibicao}
+                                                            </CustomText>
+                                                            {selecionado && <Check style={styles.setinhaDrop}/>}
+                                                        </TouchableOpacity>
+                                                    );
+                                                })
                                             }
                                         </ScrollView>
                                     )
@@ -114,10 +165,16 @@ const NovoDepartamento = ({ visivel, aoFechar, aoCriarDepart }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity activeOpacity={0.5} onPress={handleCriar}>
-                            <GetInGreen_button acao="CRIAR" />
+                            <GetInGreen_button acao={departamentoParaEditar ? "SALVAR" : "CRIAR"} />
                         </TouchableOpacity>
 
                     </View>
+
+                    {departamentoParaEditar && (
+                        <TouchableOpacity activeOpacity={0.5} onPress={handleExcluir} style={{ alignItems: 'center', marginTop: 10 }}>
+                            <CustomText style={{ color: "#EF5625", fontSize: 14 }}>Excluir Departamento</CustomText>
+                        </TouchableOpacity>
+                    )}
                 </View>
             </BlurView>
         </Modal>
