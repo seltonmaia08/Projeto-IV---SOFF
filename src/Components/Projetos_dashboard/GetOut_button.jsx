@@ -8,7 +8,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10, 
         backgroundColor: "#383838", 
         borderRadius: 15,
-        alignItems: "center"
+        alignItems: "center",
+        minWidth: 120
     },
     textButton: {fontSize: 14, color: "#DAD0B7", fontWeight: "bold"}
 });

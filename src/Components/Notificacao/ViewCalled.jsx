@@ -186,6 +186,7 @@ export default ViewCalled;
 const styles = StyleSheet.create({
   lista: {
     width: "100%",
+    padding: 20
   },
   listaContent: {
     paddingHorizontal: 16,

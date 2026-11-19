@@ -8,6 +8,8 @@ import LerAnotacao from './LerAnotacao';
 import { useNotes } from '../../Hook/useNotes';
 import { useProjectContext } from '../../Context/ProjectContext';
 import { notesService } from '../../Services/api';
+import AlertaGeral from '../Alerta/AlertaGeral';
+import { supabase } from '../../Utils/Supabase';
 
 function Anotacoes() {
 
@@ -19,18 +21,55 @@ function Anotacoes() {
 
     const handleFechar = () => { setAnotacoesVisivel(false) }
     const handleSalvar = async (title, newNote) => {
-        if(!title || !newNote) return
+        if(!title?.trim() || !newNote?.trim()) {
+            AlertaGeral.alert('Aviso', 'Preencha o título e o texto da anotação.');
+            return;
+        }
+
+        if (!idProject) {
+            AlertaGeral.alert('Erro', 'Identificador do projeto não encontrado.');
+            return;
+        }
+
         try {
             await notesService.create({
-                noteTitle: title,
-                noteText: newNote,
+                noteTitle: title.trim(),
+                noteText: newNote.trim(),
                 idProject: idProject
-            })
+            });
 
-            refetch()
-            setAnotacoesVisivel(false)
+            refetch();
+            setAnotacoesVisivel(false);
         } catch (error) {
             console.error('Erro ao salvar anotações no banco: ', error);
+
+            // Fallback caso a tabela utilize colunas alternativas (title / text)
+            if (error?.code === 'PGRST204') {
+                try {
+                    const { error: errAlt } = await supabase
+                        .from('Notes')
+                        .insert([{
+                            title: title.trim(),
+                            text: newNote.trim(),
+                            idProject: idProject
+                        }])
+                        .select();
+
+                    if (!errAlt) {
+                        refetch();
+                        setAnotacoesVisivel(false);
+                        return;
+                    }
+                } catch (eAlt) {
+                    console.warn('Fallback alternativo também falhou:', eAlt);
+                }
+            }
+
+            const mensagemErro = error?.code === '42501'
+                ? 'Erro de permissão no Supabase (RLS). Execute a query SQL para liberar permissões na tabela Notes.'
+                : (error?.message || 'Não foi possível salvar a anotação.');
+
+            AlertaGeral.alert('Erro ao salvar', mensagemErro);
         }
     }
 
@@ -44,22 +83,44 @@ function Anotacoes() {
             setAnotacaoSelecionada(null);
         } catch (error) {
             console.error('Erro ao apagar anotação no banco: ', error)
+            AlertaGeral.alert('Erro ao excluir', error?.message || 'Não foi possível excluir a anotação.');
         }
     }
 
     const atualizarNota = async (newTitle, newNote) => {
-        if (!anotacaoSelecionada?.idNotes) return
+        // Captura o id antes de qualquer mudança de estado
+        const idNota = anotacaoSelecionada?.idNotes ?? anotacaoSelecionada?.id;
+        if (!idNota) return;
 
         try {
-            await notesService.update(anotacaoSelecionada.idNotes, {
-                noteTitle: newTitle,
-                noteText: newNote
-            }, 'idNotes')
+            // Tenta atualizar com a coluna idNotes (padrão do BaseServices)
+            let atualizado = false;
+            try {
+                await notesService.update(idNota, {
+                    noteTitle: newTitle.trim(),
+                    noteText: newNote.trim()
+                }, 'idNotes');
+                atualizado = true;
+            } catch (err) {
+                // Se a coluna idNotes não existir, tenta com 'id'
+                if (err?.code === 'PGRST204' || err?.code === '42703') {
+                    await notesService.update(idNota, {
+                        noteTitle: newTitle.trim(),
+                        noteText: newNote.trim()
+                    }, 'id');
+                    atualizado = true;
+                } else {
+                    throw err;
+                }
+            }
 
-            refetch()
-            setAnotacaoSelecionada(null);
+            if (atualizado) {
+                refetch();
+                setAnotacaoSelecionada(null);
+            }
         } catch (error) {
-            console.error('Erro ao atualizar anotação no banco: ', error)
+            console.error('Erro ao atualizar anotação no banco: ', error);
+            AlertaGeral.alert('Erro ao atualizar', error?.message || 'Não foi possível atualizar a anotação.');
         }
     }
 

@@ -116,7 +116,11 @@ const NovoDepartamento = ({
                     <View style={styles.dados}>
                         <View style={styles.campo}>
                             <CustomText style={styles.labels}>Nome do Departamento: </CustomText>
-                            <TextInput value={departamento} onChangeText={setDepartamento} style={styles.inputs}/>
+                            <TextInput
+                                value={departamento}
+                                onChangeText={setDepartamento}
+                                placeholderTextColor={'#5F5F5F'}
+                                style={styles.inputs} />
                         </View>
                         <View style={styles.campo}>
                             <CustomText style={styles.labels}>Selecione os colaboradores: </CustomText>
@@ -127,16 +131,16 @@ const NovoDepartamento = ({
                                         <CustomText style={styles.textoDrop}>
                                             {
                                                 membrosSelecionados.length > 0 ?
-                                                `${membrosSelecionados.length} membros selecionado(s)` :
-                                                "Selecionar"
+                                                    `${membrosSelecionados.length} membros selecionado(s)` :
+                                                    "Selecionar"
                                             }
                                         </CustomText>
                                         {
                                             listaOn ?
-                                            <ChevronUp style={styles.setinhaDrop}/> :
-                                            <ChevronDown style={styles.setinhaDrop}/>
+                                                <ChevronUp style={styles.setinhaDrop} /> :
+                                                <ChevronDown style={styles.setinhaDrop} />
                                         }
-                                        
+
                                     </View>
                                 </TouchableOpacity>
 
@@ -159,7 +163,7 @@ const NovoDepartamento = ({
                                                             <CustomText style={[styles.textoMembro, selecionado && styles.textoMembroSelecionado]}>
                                                                 {nomeExibicao}
                                                             </CustomText>
-                                                            {selecionado && <Check style={styles.setinhaDrop}/>}
+                                                            {selecionado && <Check style={styles.setinhaDrop} />}
                                                         </TouchableOpacity>
                                                     );
                                                 })
@@ -233,8 +237,8 @@ const styles = StyleSheet.create({
         borderBottomColor: "#c3c3c3",
         borderBottomWidth: 1
     },
-    textoDrop: {color: "#383838"},
-    setinhaDrop: {color: "#383838"},
+    textoDrop: { color: "#383838" },
+    setinhaDrop: { color: "#383838" },
     inputs: {
         flex: 1,
         fontSize: 16,
@@ -260,11 +264,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 5, 
+        paddingVertical: 5,
         borderRadius: 15
     },
-    textoMembro: {color: "#383838"},
-    textoMembroSelecionado: {fontWeight: "bold"},
+    textoMembro: { color: "#383838" },
+    textoMembroSelecionado: { fontWeight: "bold" },
     botoes: { flexDirection: "row", justifyContent: "space-between" },
     loadingContainer: {
         paddingHorizontal: 20,

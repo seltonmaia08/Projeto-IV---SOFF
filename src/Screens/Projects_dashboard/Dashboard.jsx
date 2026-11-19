@@ -212,12 +212,13 @@ const styles = StyleSheet.create({
     },
     buttonAddNota: {
         height: 58,
-        width: "100%",
-        backgroundColor: "#DAD0B7",
+        width: 180,
         alignItems: "center",
         justifyContent: "center",
         paddingHorizontal: 10,
+        borderColor: "#DAD0B7",
         borderRadius: 15,
+        borderWidth: 1
     },
     buttonJoin: {
         height: 58,
@@ -225,5 +226,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 15,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#DAD0B7',
     }
 });

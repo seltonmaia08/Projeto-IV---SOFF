@@ -28,25 +28,32 @@ const Departamentos = () => {
 
   // Carrega os departamentos e membros do projeto
   const carregarDepartamentos = useCallback(async () => {
-    if (!idProject) return;
+    if (!idProject) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
 
-      // 1. Busca departamentos do projeto no Supabase
-      // Tenta a coluna idProject; se não existir, busca tudo e filtra localmente
+      // 1. Busca departamentos do projeto no Supabase (com timeout de segurança)
       let deptData = [];
-      let { data: deptResult, error: deptError } = await supabase
+      const deptPromise = supabase
         .from("Department")
         .select("*")
         .eq("idProject", idProject);
 
-      if (deptError && deptError.code === "42703") {
-        // Coluna idProject não existe na tabela Department.
-        // Busca todos os departamentos sem filtro — serão filtrados depois
-        // pelos idDepartment encontrados nos membros do projeto (ProjectMember).
-        console.warn(
-          "Coluna idProject não encontrada em Department. Filtrando via ProjectMember.",
+      const timeoutPromise = (ms) =>
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout ao carregar dados")), ms)
         );
+
+      let { data: deptResult, error: deptError } = await Promise.race([
+        deptPromise,
+        timeoutPromise(8000),
+      ]).catch((e) => ({ data: [], error: e }));
+
+      if (deptError && deptError.code === "42703") {
         const { data: allDepts } = await supabase
           .from("Department")
           .select("*");
@@ -308,20 +315,41 @@ const Departamentos = () => {
     <View style={styles.container}>
       <Top abaName={"Departamentos"} voltar={false} />
       <ScrollView contentContainerStyle={styles.departamentos}>
-        {departamentos.map((cada, index) => (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            key={cada.idDepartment || index}
-            onPress={() => setDepartamentoAberto(cada)}
-            onLongPress={() => confirmarExcluir(cada)}
-          >
-            <View style={styles.depart}>
-              <CustomText style={styles.textoDepart}>
-                {cada.nome.toUpperCase()}
-              </CustomText>
-            </View>
-          </TouchableOpacity>
-        ))}
+        {loading ? (
+          <View style={{ alignItems: "center", justifyContent: "center", gap: 10, marginTop: 40 }}>
+            <ActivityIndicator size="large" color="#EF5625" />
+            <CustomText>Carregando departamentos...</CustomText>
+          </View>
+        ) : departamentos.length === 0 ? (
+          <View style={{ alignItems: "center", justifyContent: "center", gap: 10, marginTop: 40, paddingHorizontal: 20 }}>
+            <CustomText style={{ textAlign: "center", fontSize: 16, color: "#DAD0B7" }}>
+              Nenhum departamento cadastrado.
+            </CustomText>
+            <CustomText style={{ textAlign: "center", fontSize: 12, color: "#8E8E8E" }}>
+              Toque no botão + abaixo para criar um departamento e vincular membros.
+            </CustomText>
+          </View>
+        ) : (
+          departamentos.map((cada, index) => (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              key={cada.idDepartment || index}
+              onPress={() => setDepartamentoAberto(cada)}
+              onLongPress={() => confirmarExcluir(cada)}
+            >
+              <View style={styles.depart}>
+                <CustomText style={styles.textoDepart}>
+                  {cada.nome.toUpperCase()}
+                </CustomText>
+                {cada.membros && cada.membros.length > 0 ? (
+                  <CustomText style={styles.subtextoDepart}>
+                    {cada.membros.length} colaborador{cada.membros.length > 1 ? "es" : ""}
+                  </CustomText>
+                ) : null}
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
 
       <ButtonAdd
@@ -343,17 +371,18 @@ const Departamentos = () => {
         departamentoParaEditar={departamentoSelecionado}
         todosMembros={todosMembros}
       />
-      {departamentos.map((cada) => (
+      {departamentoAberto && (
         <DepartamentoDetalhe
-          key={cada.idDepartment}
-          visivel={
-            departamentoAberto !== null &&
-            departamentoAberto.idDepartment === cada.idDepartment
-          }
-          departamento={cada}
+          visivel={true}
+          departamento={departamentoAberto}
           aoFechar={() => setDepartamentoAberto(null)}
+          aoEditarDepartamento={(dept) => {
+            setDepartamentoAberto(null);
+            setDepartamentoSelecionado(dept);
+            setAddDepart(true);
+          }}
         />
-      ))}
+      )}
     </View>
   );
 };
@@ -377,6 +406,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#242424",
     textAlign: "center",
+  },
+  subtextoDepart: {
+    fontSize: 12,
+    color: "#555",
+    textAlign: "center",
+    marginTop: 4,
   },
   botaoAdd: { position: "absolute", bottom: 20, right: 20 },
 });

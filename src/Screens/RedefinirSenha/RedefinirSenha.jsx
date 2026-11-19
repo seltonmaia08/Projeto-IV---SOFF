@@ -13,7 +13,7 @@ const RedefinirSenha = () => {
   const [token, setToken] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  
+
   // Etapa 1: Enviar código para o e-mail
   const handleSendToken = async () => {
     if (!email) {
@@ -60,7 +60,7 @@ const RedefinirSenha = () => {
   }
   return (
     <View style={styles.container}>
-      <Top abaName="Recuperar Senha" voltar={true} voltarOn={() => navigation.getParent()?.goBack() || navigation.navigate("Login")}/>
+      <Top abaName="Recuperar Senha" voltar={true} voltarOn={() => navigation.getParent()?.goBack() || navigation.navigate("Login")} />
       <View style={styles.content}>
         {step === 1 ? (
           <>
@@ -72,6 +72,7 @@ const RedefinirSenha = () => {
               placeholder="exemplo@email.com"
               keyboardType="email-address"
               autoCapitalize="none"
+              placeholderTextColor={'#5F5F5F'}
               value={email}
               onChangeText={setEmail}
             />
@@ -88,6 +89,7 @@ const RedefinirSenha = () => {
               style={styles.input}
               placeholder="Código de 6 dígitos"
               keyboardType="number-pad"
+              placeholderTextColor={'#5F5F5F'}
               value={token}
               onChangeText={setToken}
             />
@@ -96,6 +98,7 @@ const RedefinirSenha = () => {
               placeholder="Nova senha"
               secureTextEntry
               value={newPassword}
+              placeholderTextColor={'#5F5F5F'}
               onChangeText={setNewPassword}
             />
             <TouchableOpacity style={styles.btn} onPress={handleReset} disabled={loading}>
@@ -110,7 +113,7 @@ const RedefinirSenha = () => {
 export default RedefinirSenha
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#242424' },
-  content: { padding: 25, gap: 20, alignItems: 'center', marginTop: 40 },
+  content: { padding: 25, gap: 10, alignItems: 'center', marginTop: 40 },
   instruction: { textAlign: 'center', marginBottom: 10 },
   input: {
     height: 50,
@@ -126,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 20,
   },
   btnText: { textTransform: 'uppercase', fontWeight: 'bold' },
 })

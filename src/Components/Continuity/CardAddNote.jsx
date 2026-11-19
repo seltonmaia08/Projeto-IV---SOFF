@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { useProjectContext } from '../../Context/ProjectContext'
 import CameraPicker from '../Camera/CameraPicker'
 import { StorageService } from '../../Utils/StorageService'
+import AlertaGeral from '../Alerta/AlertaGeral'
 
 const CardAddNote = ({
     closeNote,
@@ -61,6 +62,7 @@ const CardAddNote = ({
             closeNote();
         } catch (error) {
             console.log("Erro ao salvar:", error);
+            AlertaGeral.alert("Erro ao salvar", error?.message || "Não foi possível salvar a anotação de continuidade.");
         } finally {
             setLoading(false);
         }

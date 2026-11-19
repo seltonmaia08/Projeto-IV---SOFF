@@ -7,117 +7,65 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { Users, UserRoundPlus, Plus } from "lucide-react-native";
+import { Users, UserRoundPlus, Pencil } from "lucide-react-native";
 
 import Top from "../TopAba/Top";
 import CustomText from "../../Components/Text/CustomText";
-import ConfirmPopUp from "../../Components/ConfirmPopUp/ConfirmPopUp";
-import CardTarefa from "../../Components/Departamentos/CardTarefa";
-import PopUpTarefa from "../../Components/Departamentos/PopUpTarefa";
 import AnotacoesDepartamento from "../../Components/Anotacoes/AnotacoesDepartamento";
+import ToDoList from "../../Components/ToDoList/ToDoList";
 
-const MEMBROS_FIXOS = ["Samuel Moreno", "Selton Maia", "Clenda"];
-
-const DepartamentoDetalhe = ({ visivel, departamento, aoFechar }) => {
-  const [tarefas, setTarefas] = useState([]);
-
-  const [selecionadaId, setSelecionadaId] = useState(null);
-
-  const [adicionando, setAdicionando] = useState(false);
-  const [editando, setEditando] = useState(null);
-  const [excluindo, setExcluindo] = useState(null);
+const DepartamentoDetalhe = ({
+  visivel,
+  departamento,
+  aoFechar,
+  aoEditarDepartamento,
+}) => {
   const [membrosAberto, setMembrosAberto] = useState(false);
 
-  const alternarSelecao = (id) => {
-    setSelecionadaId(selecionadaId === id ? null : id);
-  };
-
-  const adicionarTarefa = (texto) => {
-    const nova = { id: String(Date.now()), texto, status: "1" };
-    setTarefas((atual) => [...atual, nova]);
-    setAdicionando(false);
-  };
-
-  const editarTarefa = (texto) => {
-    setTarefas((atual) =>
-      atual.map((t) => (t.id === editando.id ? { ...t, texto } : t)),
-    );
-    setEditando(null);
-    setSelecionadaId(null);
-  };
-
-  const mudarStatus = (id, novoStatus) => {
-    setTarefas((atual) =>
-      atual.map((t) => (t.id === id ? { ...t, status: novoStatus } : t)),
-    );
-  };
-
-  const excluirTarefa = () => {
-    setTarefas((atual) => atual.filter((t) => t.id !== excluindo.id));
-    setExcluindo(null);
-    setSelecionadaId(null);
-  };
-
   const sair = () => {
-    setSelecionadaId(null);
     setMembrosAberto(false);
     aoFechar();
   };
 
+  const membros = departamento?.membros || [];
+
   return (
     <Modal visible={visivel} animationType="slide" onRequestClose={sair}>
       <View style={styles.tela}>
-        <View>
-          <Top abaName={departamento.nome} voltar={true} voltarOn={sair} />
-          <TouchableOpacity
-            style={styles.botaoMembros}
-            activeOpacity={0.6}
-            onPress={() => setMembrosAberto(!membrosAberto)}
-            accessibilityLabel="Ver membros do departamento"
-          >
-            <Users size={24} color="#DAD0B7" />
-          </TouchableOpacity>
-        </View>
+        <View style={styles.topoContainer}>
+          <Top abaName={departamento?.nome || "Departamento"} voltar={true} voltarOn={sair} />
 
-        <ScrollView contentContainerStyle={styles.conteudoScroll}>
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            onPress={() => setSelecionadaId(null)}
-          />
-
-          <CustomText style={styles.rotulo}>Tarefas</CustomText>
-          <View style={styles.cardTarefas} pointerEvents="box-none">
-            {tarefas.length === 0 ? (
-              <CustomText style={styles.semTarefas}>
-                Sem tarefas no momento.
-              </CustomText>
-            ) : (
-              tarefas.map((tarefa) => (
-                <CardTarefa
-                  key={tarefa.id}
-                  tarefa={tarefa}
-                  selecionada={selecionadaId === tarefa.id}
-                  aoTocar={() => alternarSelecao(tarefa.id)}
-                  aoMudarStatus={(novo) => mudarStatus(tarefa.id, novo)}
-                  aoEditar={() => setEditando(tarefa)}
-                  aoExcluir={() => setExcluindo(tarefa)}
-                />
-              ))
+          <View style={styles.botoesTopo}>
+            {aoEditarDepartamento && (
+              <TouchableOpacity
+                style={styles.botaoAcaoTopo}
+                activeOpacity={0.6}
+                onPress={() => {
+                  sair();
+                  aoEditarDepartamento(departamento);
+                }}
+                accessibilityLabel="Editar departamento"
+              >
+                <Pencil size={20} color="#DAD0B7" />
+              </TouchableOpacity>
             )}
 
             <TouchableOpacity
-              style={styles.botaoAdicionar}
-              activeOpacity={0.8}
-              onPress={() => setAdicionando(true)}
+              style={styles.botaoAcaoTopo}
+              activeOpacity={0.6}
+              onPress={() => setMembrosAberto(!membrosAberto)}
+              accessibilityLabel="Ver colaboradores do departamento"
             >
-              <Plus size={18} color="#242424" />
-              <CustomText style={styles.textoAdicionar}>
-                Adicionar tarefa
-              </CustomText>
+              <Users size={24} color="#DAD0B7" />
             </TouchableOpacity>
           </View>
-          <AnotacoesDepartamento idDepartment={departamento.idDepartment} />
+        </View>
+
+        <ScrollView contentContainerStyle={styles.conteudoScroll}>
+          <ToDoList idDepartment={departamento?.idDepartment}/>
+          <AnotacoesDepartamento idDepartment={departamento?.idDepartment} />
         </ScrollView>
+
         {membrosAberto && (
           <>
             <Pressable
@@ -126,45 +74,50 @@ const DepartamentoDetalhe = ({ visivel, departamento, aoFechar }) => {
             />
 
             <View style={styles.popUpMembros}>
-              {MEMBROS_FIXOS.map((nome) => (
-                <View key={nome} style={styles.itemMembro}>
-                  <CustomText style={styles.nomeMembro}>{nome}</CustomText>
-                </View>
-              ))}
+              <CustomText style={styles.tituloPopUpMembros}>
+                Colaboradores ({membros.length})
+              </CustomText>
+
+              <ScrollView style={{ maxHeight: 180 }} nestedScrollEnabled={true}>
+                {membros.length > 0 ? (
+                  membros.map((nome, index) => (
+                    <View key={index} style={styles.itemMembro}>
+                      <CustomText style={styles.nomeMembro}>{nome}</CustomText>
+                    </View>
+                  ))
+                ) : (
+                  <View style={styles.itemMembro}>
+                    <CustomText
+                      style={[
+                        styles.nomeMembro,
+                        { fontStyle: "italic", opacity: 0.7 },
+                      ]}
+                    >
+                      Nenhum membro vinculado
+                    </CustomText>
+                  </View>
+                )}
+              </ScrollView>
 
               <TouchableOpacity
                 style={styles.botaoAddMembro}
                 activeOpacity={0.7}
+                onPress={() => {
+                  setMembrosAberto(false);
+                  if (aoEditarDepartamento) {
+                    sair();
+                    aoEditarDepartamento(departamento);
+                  }
+                }}
               >
                 <UserRoundPlus size={18} color="#242424" />
                 <CustomText style={styles.textoAddMembro}>
-                  Adicionar membro
+                  Gerenciar membros
                 </CustomText>
               </TouchableOpacity>
             </View>
           </>
         )}
-
-        <PopUpTarefa
-          visivel={adicionando}
-          textoInicial=""
-          textoBotao="Adicionar"
-          aoCancelar={() => setAdicionando(false)}
-          aoConfirmar={adicionarTarefa}
-        />
-        <PopUpTarefa
-          visivel={editando !== null}
-          textoInicial={editando ? editando.texto : ""}
-          textoBotao="Concluir"
-          aoCancelar={() => setEditando(null)}
-          aoConfirmar={editarTarefa}
-        />
-        <ConfirmPopUp
-          visivel={excluindo !== null}
-          mensagem="Tem certeza que quer excluir esta tarefa?"
-          aoConfirmar={excluirTarefa}
-          aoCancelar={() => setExcluindo(null)}
-        />
       </View>
     </Modal>
   );
@@ -177,65 +130,53 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#242424",
   },
-  botaoMembros: {
+  topoContainer: {
+    position: "relative",
+  },
+  botoesTopo: {
     position: "absolute",
     right: 20,
     top: 78,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    zIndex: 10,
+  },
+  botaoAcaoTopo: {
+    padding: 4,
   },
   conteudoScroll: {
     flexGrow: 1,
     padding: 20,
     paddingBottom: 60,
   },
-  rotulo: {
-    fontSize: 18,
-    color: "#DAD0B7",
-    marginBottom: 10,
-  },
-  cardTarefas: {
-    backgroundColor: "#313131",
-    borderRadius: 20,
-    padding: 14,
-  },
-  semTarefas: {
-    textAlign: "center",
-    color: "#DAD0B7",
-    paddingVertical: 24,
-  },
-  botaoAdicionar: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-    height: 54,
-    backgroundColor: "#DAD0B7",
-    borderRadius: 15,
-  },
-  textoAdicionar: {
-    fontSize: 14,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    letterSpacing: 2,
-    color: "#242424",
-  },
   popUpMembros: {
     position: "absolute",
     top: 126,
     right: 20,
-    width: 250,
+    width: 260,
     backgroundColor: "#313131",
     borderRadius: 20,
     padding: 16,
-    gap: 4,
+    gap: 6,
     elevation: 10,
+    borderWidth: 1,
+    borderColor: "#444",
+    zIndex: 999,
+  },
+  tituloPopUpMembros: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#DAD0B7",
+    marginBottom: 6,
   },
   itemMembro: {
-    paddingVertical: 10,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#242424",
   },
   nomeMembro: {
-    fontSize: 15,
+    fontSize: 14,
     color: "#DAD0B7",
   },
   botaoAddMembro: {
@@ -246,10 +187,11 @@ const styles = StyleSheet.create({
     height: 44,
     backgroundColor: "#DAD0B7",
     borderRadius: 22,
-    marginTop: 12,
+    marginTop: 10,
   },
   textoAddMembro: {
-    fontSize: 14,
+    fontSize: 13,
+    fontWeight: "bold",
     color: "#242424",
   },
 });

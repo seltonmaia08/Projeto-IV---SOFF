@@ -67,10 +67,9 @@ function CargosPopUp({ visivel, aoFechar, aoSelecionar }) {
 
 const styles = StyleSheet.create({
     overlay: { flex: 1, backgroundColor: "rgba(0, 0, 0, 0.6)", justifyContent: "center", alignItems: "center" },
-    geral: { gap: 10 },
+    geral: { gap: 10, justifyContent: 'center', alignItems: 'center' },
     escopo: {
         width: 320,
-        maxHeight: "80%",
         borderRadius: 15, 
         backgroundColor: "#313131",
         overflow: "hidden",
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     card: { gap: 16 },
     superior: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     titulo: { fontSize: 16, fontWeight: "bold", color: "#F0EADE" },
-    scrollCargos: { maxHeight: 380 },
+    scrollCargos: { maxHeight: 380},
     campoName: { gap: 8, paddingBottom: 10 },
     campoCargo: { backgroundColor: "#DAD0B7", borderRadius: 12, paddingVertical: 10, paddingHorizontal: 12 },
     cargos: { fontSize: 15, color: "#313131", fontWeight: "500" }

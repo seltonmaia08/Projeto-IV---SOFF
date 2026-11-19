@@ -143,6 +143,7 @@ const Register = () => {
                                 placeholder='José'
                                 value={name}
                                 onChangeText={setName}
+                                placeholderTextColor={'#5F5F5F'}
                                 autoCorrect={false}
                             />
                         </View>
@@ -155,6 +156,7 @@ const Register = () => {
                                 keyboardType='default'
                                 placeholder='Silva'
                                 value={lastname}
+                                placeholderTextColor={'#5F5F5F'}
                                 onChangeText={setLastname}
                                 autoCorrect={false}
                             />
@@ -167,6 +169,7 @@ const Register = () => {
                                 style={isValid ? styles.input : styles.inputError}
                                 keyboardType='email-address'
                                 placeholder='exemplo@email.com'
+                                placeholderTextColor={'#5F5F5F'}
                                 value={email}
                                 onChangeText={validEmail}
                                 autoCapitalize='none'
@@ -182,6 +185,7 @@ const Register = () => {
                                     style={styles.input}
                                     keyboardType='default'
                                     secureTextEntry={visible}
+                                    placeholderTextColor={'#5F5F5F'}
                                     value={password}
                                     onChangeText={setPassword}
                                 />
@@ -214,6 +218,7 @@ const Register = () => {
                                 <TextInput
                                     style={confirPass.length > 0 && !senhasIguais ? styles.inputError : styles.input}
                                     keyboardType='default'
+                                    placeholderTextColor={'#5F5F5F'}
                                     secureTextEntry={visible}
                                     value={confirPass}
                                     onChangeText={setConfirPass}
@@ -331,7 +336,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 26,
         height: 26,
-        right: 20
+        right: 10
     },
     area1: {
         width: '100%',

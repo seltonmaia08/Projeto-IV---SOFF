@@ -24,7 +24,7 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
 
         try {
             setLoading(true)
- 
+
             console.log('Procurando o projeto...')
             //Procurar por um projeto com esse código
             const { data: projeto, error: projError } = await supabase
@@ -49,7 +49,7 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
                 AlertaGeral.alert('Aviso', 'Você já faz parte deste projeto!');
                 aoFechar();
                 return;
-            } 
+            }
 
             // 3. Adiciona o usuário como membro na tabela ProjectMember
             await projectMemberService.create({
@@ -83,7 +83,11 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
                     <View style={styles.dados}>
                         <View style={styles.campo}>
                             <CustomText style={styles.labels}>Código de convite </CustomText>
-                            <TextInput value={codigo} onChangeText={setCodigo} style={styles.inputs} />
+                            <TextInput
+                                value={codigo}
+                                onChangeText={setCodigo}
+                                placeholderTextColor={'#5F5F5F'}
+                                style={styles.inputs} />
                         </View>
                     </View>
 

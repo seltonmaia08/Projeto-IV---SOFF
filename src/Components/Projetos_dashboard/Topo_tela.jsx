@@ -27,7 +27,7 @@ const Topo_tela = ({ username, fotoAtual}) => {
 const styles = StyleSheet.create({
     escopoTopo: {
         backgroundColor: "#383838",
-        height: 104, 
+        height: 140, 
         flexDirection: "row", 
         justifyContent: "space-between", 
         padding: 20,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { continuityService } from '../Services/api'
 
 export const useContinuity = (idProject) => {
@@ -6,25 +6,29 @@ export const useContinuity = (idProject) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
-    const fetchContinuity = async () => {
-        if(!idProject) return
+    const fetchContinuity = useCallback(async () => {
+        if(!idProject) {
+            setContinuity([]);
+            setLoading(false);
+            return;
+        }
 
         try {
-            setLoading(true)
-            const data = await continuityService.getAllColumn('idProject', idProject)
-
-            setContinuity(data)
+            setLoading(true);
+            const data = await continuityService.getAllColumn('idProject', idProject);
+            setContinuity(Array.isArray(data) ? data : []);
         } catch (err) {
-            setError(err)
-            console.error('Erro ao buscar as anotações: ', err)
+            setError(err);
+            console.error('Erro ao buscar notas de continuidade: ', err);
+            setContinuity([]);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    }, [idProject]);
 
     useEffect(() => {
-        fetchContinuity()
-    }, [idProject])
+        fetchContinuity();
+    }, [fetchContinuity]);
 
-    return { continuity, loading, error, refetch: fetchContinuity }
+    return { continuity: Array.isArray(continuity) ? continuity : [], loading, error, refetch: fetchContinuity }
 }

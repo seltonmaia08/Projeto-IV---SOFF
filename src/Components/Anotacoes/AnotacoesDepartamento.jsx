@@ -14,6 +14,8 @@ import LerAnotacao from "./LerAnotacao";
 
 import { useProjectContext } from "../../Context/ProjectContext";
 import { notesService } from "../../Services/api";
+import AlertaGeral from "../Alerta/AlertaGeral";
+import { supabase } from "../../Utils/Supabase";
 
 function AnotacoesDepartamento({ idDepartment }) {
   const [anotacoes, setAnotacoes] = useState([]);
@@ -56,55 +58,110 @@ function AnotacoesDepartamento({ idDepartment }) {
 
   // Criar uma anotação
   const handleSalvar = async (title, newNote) => {
-    if (!title?.trim() || !newNote?.trim()) return;
+    if (!title?.trim() || !newNote?.trim()) {
+      AlertaGeral.alert("Aviso", "Preencha o título e o texto da anotação.");
+      return;
+    }
+
+    if (!idProject) {
+      AlertaGeral.alert("Erro", "Identificador do projeto não encontrado.");
+      return;
+    }
 
     try {
-      await notesService.create({
-        noteTitle: title,
-        noteText: newNote,
+      const payload = {
+        noteTitle: title.trim(),
+        noteText: newNote.trim(),
         idProject: idProject,
-        idDepartment: idDepartment,
-      });
+        ...(idDepartment ? { idDepartment } : {}),
+      };
 
+      await notesService.create(payload);
       await carregarAnotacoes();
       setAnotacoesVisivel(false);
     } catch (error) {
-      console.error("Erro ao salvar anotação:", error);
+      console.error("Erro ao salvar anotação do departamento:", error);
+
+      // Se a coluna idDepartment não existir no schema do Supabase
+      if (error?.code === "PGRST204" && error?.message?.includes("idDepartment")) {
+        try {
+          await notesService.create({
+            noteTitle: title.trim(),
+            noteText: newNote.trim(),
+            idProject: idProject,
+          });
+
+          await carregarAnotacoes();
+          setAnotacoesVisivel(false);
+          AlertaGeral.alert(
+            "Aviso",
+            "A anotação foi criada, mas a coluna 'idDepartment' ainda não existe na tabela Notes no Supabase. Execute a query SQL fornecida para vinculá-la a este departamento."
+          );
+          return;
+        } catch (eFallback) {
+          console.warn("Fallback sem idDepartment também falhou:", eFallback);
+        }
+      }
+
+      const msg = error?.code === "42501"
+        ? "Erro de permissão no Supabase (RLS). Execute a query SQL fornecida para liberar permissões na tabela Notes."
+        : (error?.message || "Não foi possível salvar a anotação do departamento.");
+
+      AlertaGeral.alert("Erro ao salvar", msg);
     }
   };
 
   // Excluir uma anotação
   const handleApagarAnotacao = async () => {
-    if (!anotacaoSelecionada?.idNotes) return;
+    const idNota = anotacaoSelecionada?.idNotes ?? anotacaoSelecionada?.id;
+    if (!idNota) return;
 
     try {
-      await notesService.delete(anotacaoSelecionada.idNotes);
+      await notesService.delete(idNota);
 
       await carregarAnotacoes();
       setAnotacaoSelecionada(null);
     } catch (error) {
       console.error("Erro ao excluir anotação:", error);
+      AlertaGeral.alert("Erro ao excluir", error?.message || "Não foi possível excluir a anotação.");
     }
   };
 
   // Editar uma anotação
   const atualizarAnotacao = async (newTitle, newNote) => {
-    if (!anotacaoSelecionada?.idNotes) return;
+    const idNota = anotacaoSelecionada?.idNotes ?? anotacaoSelecionada?.id;
+    if (!idNota) return;
 
     try {
-      await notesService.update(
-        anotacaoSelecionada.idNotes,
-        {
-          noteTitle: newTitle,
-          noteText: newNote,
-        },
-        "idNotes",
-      );
+      try {
+        await notesService.update(
+          idNota,
+          {
+            noteTitle: newTitle.trim(),
+            noteText: newNote.trim(),
+          },
+          "idNotes",
+        );
+      } catch (err) {
+        if (err?.code === 'PGRST204' || err?.code === '42703') {
+          await notesService.update(
+            idNota,
+            {
+              noteTitle: newTitle.trim(),
+              noteText: newNote.trim(),
+            },
+            "id",
+          );
+        } else {
+          throw err;
+        }
+      }
 
       await carregarAnotacoes();
       setAnotacaoSelecionada(null);
     } catch (error) {
       console.error("Erro ao atualizar anotação:", error);
+      AlertaGeral.alert("Erro ao atualizar", error?.message || "Não foi possível atualizar a anotação.");
     }
   };
 

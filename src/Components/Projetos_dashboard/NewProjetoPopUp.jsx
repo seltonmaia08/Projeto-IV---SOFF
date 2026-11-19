@@ -106,11 +106,19 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
                     <View style={styles.dados}>
                         <View style={styles.campo}>
                             <CustomText style={styles.labels}>Nome: </CustomText>
-                            <TextInput value={projectName} onChangeText={setProjectName} style={styles.inputs} />
+                            <TextInput
+                                value={projectName}
+                                onChangeText={setProjectName}
+                                placeholderTextColor={'#5F5F5F'}
+                                style={styles.inputs} />
                         </View>
                         <View style={styles.campo}>
                             <CustomText style={styles.labels}>Produtora: </CustomText>
-                            <TextInput value={producer} onChangeText={setProducer} style={styles.inputs} />
+                            <TextInput
+                                value={producer}
+                                onChangeText={setProducer}
+                                placeholderTextColor={'#5F5F5F'}
+                                style={styles.inputs} />
                         </View>
                     </View>
 
@@ -165,7 +173,7 @@ const styles = StyleSheet.create({
     },
     criar: { fontWeight: "bold", fontSize: 18, color: "#DAD0B7" },
     dados: { gap: 10 },
-    campo: { flexDirection: "row", gap: 10 },
+    campo: { flexDirection: "row", gap: 10, justifyContent: 'flex-end', alignItems: 'center' },
     labels: { fontSize: 16, color: "#DAD0B7" },
     inputs: {
         flex: 1,

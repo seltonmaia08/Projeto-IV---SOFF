@@ -93,6 +93,7 @@ const Login = () => {
                         style={!isValid ? styles.inputError : styles.input}
                         keyboardType='email-address'
                         placeholder='exemplo@email.com'
+                        placeholderTextColor={'#5F5F5F'}
                         value={email}
                         onChangeText={validEmail}
                         autoCapitalize='none'
@@ -109,6 +110,7 @@ const Login = () => {
                             style={styles.input}
                             keyboardType='default'
                             secureTextEntry={visible}
+                            placeholderTextColor={'#5F5F5F'}
                             value={password}
                             onChangeText={setPassword}
                         />
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 26,
         height: 26,
-        right: 20
+        right: 10,
 
     },
     area1: {
