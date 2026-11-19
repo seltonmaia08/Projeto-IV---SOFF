@@ -13,6 +13,8 @@ function EditarPerfil({visivel, nome, email, fotoAtual, aoFechar, aoSalvar}) {
     const [userName, setUserName] = useState(nome || "");
     const [userEmail, setUserEmail] = useState(email || "");
     const [userPhoto, setUserPhoto] = useState(fotoAtual || "");
+    const [anexoMensagem, setAnexoMensagem] = useState("Sai do chãoooo");
+    const [photoConfirm, setPhotoConfirm] = useState(false);
 
     useEffect(() => {
         if (visivel) {
@@ -25,7 +27,13 @@ function EditarPerfil({visivel, nome, email, fotoAtual, aoFechar, aoSalvar}) {
     async function escolherFoto() {
         // pedir permissão pra acesso da galeria
         const permissao = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if(!permissao.granted) {return}
+        if(!permissao.granted) { // permissão não dada
+            anexoMensagem("Acesso aos arquivos negado!");
+            setPhotoConfirm(true);
+
+            setTimeout(() => {setPhotoConfirm(false)}, 3000);
+            return;
+        }
 
         const resultado = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'], // bloquear outros arquivos fora imagens;
@@ -35,7 +43,11 @@ function EditarPerfil({visivel, nome, email, fotoAtual, aoFechar, aoSalvar}) {
         });
 
         if(!resultado.canceled) { // se não cancelou
+
             setUserPhoto(resultado.assets[0].uri); // coloco a uri do primeiro resultado do vetor de imagens;
+            setAnexoMensagem(`Imagem ${resultado.assets[0].fileName} anexada com sucesso!`);
+            setPhotoConfirm(true);
+            setTimeout(() => {setPhotoConfirm(false)}, 4000);
         } 
     }
 
@@ -81,11 +93,16 @@ function EditarPerfil({visivel, nome, email, fotoAtual, aoFechar, aoSalvar}) {
 
                         <View style={styles.card}>
                             <View style={styles.linha}></View>
+                            <CustomText>Foto de Perfil (1:1)</CustomText>
                             <TouchableOpacity style={styles.trocarFoto} activeOpacity={0.7} onPress={escolherFoto}>
-                                <CustomText style={{textAlign: "center"}}>Trocar foto de perfil</CustomText>
+                                <CustomText style={{textAlign: "center"}}>Fazer upload</CustomText>
                                 <Upload style={{color: "#DAD0B7", width: 20, height: 20}}/>
                             </TouchableOpacity>
+                            {photoConfirm && (
+                                <CustomText style={styles.mensagemAnexo}>{anexoMensagem}</CustomText>
+                            )}
                         </View>
+                        
                         <View style={styles.botoes}>
 
                             <TouchableOpacity activeOpacity={0.5} onPress={handleFechar}>
@@ -138,6 +155,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
+    mensagemAnexo: {textAlign: "center", fontSize: 12},
     botoes: {flexDirection: "row", justifyContent: "space-between"},
 });
 

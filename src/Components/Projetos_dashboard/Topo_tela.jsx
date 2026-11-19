@@ -1,22 +1,32 @@
 import { CircleUser } from 'lucide-react-native';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useAuth } from '../../Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
 import CustomText from '../Text/CustomText';
 
 
-const Topo_tela = ({ username, fotoAtual}) => {
+const Topo_tela = ({ username }) => {
 
     const navegacao = useNavigation();
-    const foto = fotoAtual; // mockado
+    const { user } = useAuth();
+
+    const foto = user?.user_metadata?.avatar_url || user?.user_metadata?.photoUrl || null;
+    const temFoto = Boolean(foto && foto.trim() !== "");
 
     return (
         <View>
             <View style={styles.escopoTopo}>
                 <CustomText style={styles.texto}>Olá, {username}!</CustomText>
-                <TouchableOpacity activeOpacity={0.5} onPress={() => navegacao.navigate("Perfil", {foto})}>
+                <TouchableOpacity activeOpacity={0.5} onPress={() => navegacao.navigate("Perfil")}>
                     <View style={styles.perfil}>
-                        <Image source={{uri: foto}} style={styles.imagem}/>
+
+                        {
+                            temFoto ? <Image source={{uri: foto}} style={styles.imagem}/>
+                            :
+                            <CircleUser size={50} style={{color: "#DAD0B7"}}/>
+                        } 
+                        
                     </View>
                 </TouchableOpacity>
             </View>
