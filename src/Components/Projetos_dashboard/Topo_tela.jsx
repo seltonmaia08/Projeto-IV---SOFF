@@ -11,7 +11,8 @@ const Topo_tela = ({ username }) => {
     const navegacao = useNavigation();
     const { user } = useAuth();
 
-    const foto = user?.user_metadata?.avatar_url || user?.user_metadata?.photoUrl || ""; 
+    const foto = user?.user_metadata?.avatar_url || user?.user_metadata?.photoUrl || null;
+    const temFoto = Boolean(foto && foto.trim() !== "");
 
     return (
         <View>
@@ -19,7 +20,13 @@ const Topo_tela = ({ username }) => {
                 <CustomText style={styles.texto}>Olá, {username}!</CustomText>
                 <TouchableOpacity activeOpacity={0.5} onPress={() => navegacao.navigate("Perfil")}>
                     <View style={styles.perfil}>
-                        <Image source={{uri: foto}} style={styles.imagem}/>
+
+                        {
+                            temFoto ? <Image source={{uri: foto}} style={styles.imagem}/>
+                            :
+                            <CircleUser size={50} style={{color: "#DAD0B7"}}/>
+                        } 
+                        
                     </View>
                 </TouchableOpacity>
             </View>

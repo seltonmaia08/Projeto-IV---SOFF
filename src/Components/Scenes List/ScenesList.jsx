@@ -140,7 +140,7 @@ const ScenesList = () => {
           visivel={true}
           aoCancelar={cancelarDelecao}
           aoExecutar={confirmarDelecao}
-          mensagem={'esta cena?'}
+          mensagem={'esta cena'}
         />
 
       }
