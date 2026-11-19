@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, TextInput, Modal, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import { BlurView } from 'expo-blur';
 
@@ -7,6 +7,7 @@ import GetInGreen_button from '../../Components/Projetos_dashboard/GetInGreen_bu
 import GetOut_button from '../../Components/Projetos_dashboard/GetOut_button';
 import { useAuth } from '../../Context/AuthContext';
 import { supabase } from '../../Utils/Supabase';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 function EditarSenha({ visivel, aoFechar, aoSalvar }) {
     const { user } = useAuth();
@@ -86,7 +87,7 @@ function EditarSenha({ visivel, aoFechar, aoSalvar }) {
             handleFechar();
         } catch (err) {
             console.error("Erro ao alterar senha:", err);
-            Alert.alert("Erro", err.message || "Não foi possível alterar a senha.");
+            AlertaGeral.alert("Erro", err.message || "Não foi possível alterar a senha.");
         } finally {
             setSalvando(false);
         }

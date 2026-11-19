@@ -1,4 +1,4 @@
-import { Alert, Modal, StyleSheet, TextInput, View } from 'react-native'
+import { Modal, StyleSheet, TextInput, View } from 'react-native'
 import CustomText from '../Text/CustomText'
 import ButtonCancel from '../Buttons/ButtonCancel'
 import ButtonSave from '../Buttons/ButtonSave'
@@ -6,6 +6,7 @@ import { BlurView } from 'expo-blur'
 import { useState } from 'react'
 
 import { scenesListService } from '../../Services/api'
+import AlertaGeral from '../Alerta/AlertaGeral'
 
 const CreateItemList = ({ setIsActive, refetch, idProject }) => {
     const [scene, setScene] = useState('')
@@ -28,7 +29,7 @@ const CreateItemList = ({ setIsActive, refetch, idProject }) => {
 
         } catch (error) {
             console.error('Erro ao criar cena:', error)
-            Alert.alert('Erro', 'Não foi possível criar a cena. Tente novamente.')
+            AlertaGeral.alert('Erro', 'Não foi possível criar a cena. Tente novamente.')
         } finally {
             setTimeout(() => {
                     setIsActive(false)

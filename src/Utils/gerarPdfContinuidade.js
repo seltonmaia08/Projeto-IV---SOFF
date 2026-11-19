@@ -1,9 +1,9 @@
-import { Alert } from "react-native";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { File, Paths } from "expo-file-system";
 
 import { continuityService } from "../Services/api";
+import AlertaGeral from "../Components/Alerta/AlertaGeral";
 
 const escapar = (texto) => {
   return String(texto ?? "")
@@ -103,7 +103,7 @@ export const gerarPdfContinuidade = async (idProject, nomeProjeto) => {
     const notas = await continuityService.getAllColumn("idProject", idProject);
 
     if (notas.length === 0) {
-      Alert.alert(
+      AlertaGeral.alert(
         "Nenhuma nota de continuidade cadastrada",
         "Adicione pelo menos uma nota para gerar o PDF.",
       );
@@ -145,7 +145,7 @@ export const gerarPdfContinuidade = async (idProject, nomeProjeto) => {
 
     const podeCompartilhar = await Sharing.isAvailableAsync();
     if (!podeCompartilhar) {
-      Alert.alert(
+      AlertaGeral.alert(
         "Atenção",
         "Este aparelho não permite compartilhar arquivos.",
       );
@@ -159,7 +159,7 @@ export const gerarPdfContinuidade = async (idProject, nomeProjeto) => {
     });
   } catch (erro) {
     console.log("Erro ao gerar PDF de continuidade:", erro);
-    Alert.alert(
+    AlertaGeral.alert(
       "Erro",
       "Não foi possível gerar o PDF.\n\n" + String(erro?.message ?? erro),
     );

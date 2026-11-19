@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, TextInput, Modal, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import { BlurView } from 'expo-blur';
 
@@ -6,6 +6,7 @@ import CustomText from '../../Components/Text/CustomText';
 import GetInGreen_button from '../../Components/Projetos_dashboard/GetInGreen_button';
 import GetOut_button from '../../Components/Projetos_dashboard/GetOut_button';
 import { projectService } from '../../Services/api';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 function EditNamePopUp({visivel, idProject, nome, produt, aoFechar, aoSalvar}) {
 
@@ -22,7 +23,7 @@ function EditNamePopUp({visivel, idProject, nome, produt, aoFechar, aoSalvar}) {
 
     const salvarEdicao = async () => {
         if (!name?.trim()) {
-            Alert.alert('Aviso', 'O nome do projeto não pode ficar vazio.');
+            AlertaGeral.alert('Aviso', 'O nome do projeto não pode ficar vazio.');
             return;
         }
 
@@ -39,7 +40,7 @@ function EditNamePopUp({visivel, idProject, nome, produt, aoFechar, aoSalvar}) {
             aoFechar();
         } catch (error) {
             console.error('Erro ao atualizar projeto:', error);
-            Alert.alert('Erro', 'Não foi possível atualizar as informações do projeto.');
+            AlertaGeral.alert('Erro', 'Não foi possível atualizar as informações do projeto.');
         } finally {
             setLoading(false);
         }

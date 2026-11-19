@@ -1,12 +1,13 @@
 import { Copy, Check } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
-import { Alert, Text, View, StyleSheet, TextInput, Modal, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Modal, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { BlurView } from "expo-blur";
 import * as Clipboard from 'expo-clipboard';
 
 import GetInGreen_button from './GetInGreen_button';
 import GetOut_button from './GetOut_button';
 import CustomText from '../Text/CustomText';
+import AlertaGeral from '../Alerta/AlertaGeral';
 
 // import's backend
 import { projectService, projectMemberService } from '../../Services/api';
@@ -77,7 +78,7 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
             aoCriarProjeto(novoProjeto);
         } catch (error) {
             console.error('Erro ao criar projeto:', error);
-            Alert.alert('Erro', 'Não foi possível criar o projeto. Tente novamente.');
+            AlertaGeral.alert('Erro', 'Não foi possível criar o projeto. Tente novamente.');
         } finally {
             setLoading(false);
         }
@@ -132,8 +133,14 @@ const NewProjetoPopUp = ({ visivel, aoFechar, aoCriarProjeto }) => {
                             <GetOut_button acao="CANCELAR" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={handleCriar}>
-                            <GetInGreen_button acao="CRIAR" />
+                        <TouchableOpacity activeOpacity={0.5} onPress={handleCriar} disabled={loading}>
+                            {loading ? (
+                                <View style={styles.loadingContainer}>
+                                    <ActivityIndicator size="small" color="#DAD0B7" />
+                                </View>
+                            ) : (
+                                <GetInGreen_button acao="CRIAR" />
+                            )}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -182,7 +189,16 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         alignSelf: "center"
     },
-    botoes: { flexDirection: "row", justifyContent: "space-between" }
+    botoes: { flexDirection: "row", justifyContent: "space-between" },
+    loadingContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        backgroundColor: "#1B8F65",
+        borderRadius: 15,
+        alignItems: "center",
+        justifyContent: "center",
+        minWidth: 70,
+    }
 });
 
 export default NewProjetoPopUp;

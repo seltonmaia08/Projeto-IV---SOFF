@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Pencil } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -15,6 +15,7 @@ import { projectService } from '../../Services/api';
 import { useProject } from '../../Hook/useProjects';
 import { useAuth } from '../../Context/AuthContext';
 import { supabase } from '../../Utils/Supabase';
+import AlertaGeral from '../../Components/Alerta/AlertaGeral';
 
 function Details() {
 
@@ -64,11 +65,11 @@ function Details() {
         try {
             await projectService.delete(idProject);
             setExcluirPopUp(false);
-            Alert.alert("Sucesso", "Projeto excluído com sucesso.");
+            AlertaGeral.alert("Sucesso", "Projeto excluído com sucesso.");
             navigation.getParent()?.goBack() || navigation.navigate("Dashboard");
         } catch (err) {
             console.error("Erro ao excluir o projeto:", err);
-            Alert.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
+            AlertaGeral.alert("Erro ao excluir", err.message || "Não foi possível excluir o projeto.");
         }   
     };
 
@@ -84,11 +85,11 @@ function Details() {
             if (error) throw error;
 
             setExcluirPopUp(false);
-            Alert.alert("Sucesso", `Você saiu do projeto "${nomeProjeto}".`);
+            AlertaGeral.alert("Sucesso", `Você saiu do projeto "${nomeProjeto}".`);
             navigation.getParent()?.goBack() || navigation.navigate("Dashboard");
         } catch (err) {
             console.error("Erro ao sair do projeto:", err);
-            Alert.alert("Erro ao sair", err.message || "Não foi possível sair do projeto.");
+            AlertaGeral.alert("Erro ao sair", err.message || "Não foi possível sair do projeto.");
         }
     };
 

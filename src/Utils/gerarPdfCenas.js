@@ -1,9 +1,9 @@
-import { Alert } from "react-native";
 import * as Print from "expo-print"; // converte HTML em pdf
 import * as Sharing from "expo-sharing"; // abre o menu "salvar/compartilhar"
 import { File, Paths } from "expo-file-system"; //biblioteca para mexer em arquivos
 
 import { scenesListService } from "../Services/api";
+import AlertaGeral from "../Components/Alerta/AlertaGeral";
 const STATUS = {
   1: { nome: "Pendente", cor: "#5F5F5F" },
   2: { nome: "Em andamento", cor: "#EF5625" },
@@ -81,7 +81,7 @@ export const gerarPdfCenas = async (idProject, nomeProjeto) => {
   try {
     const cenas = await scenesListService.getAllColumn("idProject", idProject);
     if (cenas.length === 0) {
-      Alert.alert(
+      AlertaGeral.alert(
         "Nenhuma cena cadastrada",
         "Adicione pelo menos uma cena para gerar o PDF.",
       );
@@ -111,7 +111,7 @@ export const gerarPdfCenas = async (idProject, nomeProjeto) => {
 
     const podeCompartilhar = await Sharing.isAvailableAsync();
     if (!podeCompartilhar) {
-      Alert.alert(
+      AlertaGeral.alert(
         "Atenção",
         "Este aparelho não permite compartilhar arquivos.",
       );
@@ -125,6 +125,6 @@ export const gerarPdfCenas = async (idProject, nomeProjeto) => {
     });
   } catch (erro) {
     console.log("Erro ao gerar PDF:", erro);
-    Alert.alert("Erro", String(erro?.message ?? erro));
+    AlertaGeral.alert("Erro", String(erro?.message ?? erro));
   }
 };

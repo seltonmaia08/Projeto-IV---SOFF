@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import { BlurView } from 'expo-blur';
 
@@ -9,18 +9,25 @@ import GetOut_button from '../../Components/Projetos_dashboard/GetOut_button';
 function EditarLinks({visivel, aoFechar, linksIniciais, aoSalvar}) {
 
     const [textoEditavel, setTextoEditavel] = useState("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(
         
         () => {
             if (visivel) {
                 setTextoEditavel(linksIniciais);
+                setLoading(false);
             }
     }, [visivel, linksIniciais]);
 
-    const handleSalvar = () => {
-        aoSalvar(textoEditavel);
-        aoFechar();
+    const handleSalvar = async () => {
+        setLoading(true);
+        try {
+            await aoSalvar(textoEditavel);
+            aoFechar();
+        } finally {
+            setLoading(false);
+        }
     }
 
     return(
@@ -49,12 +56,18 @@ function EditarLinks({visivel, aoFechar, linksIniciais, aoSalvar}) {
 
                         <View style={styles.botoes}>
 
-                            <TouchableOpacity activeOpacity={0.5} onPress={aoFechar}>
+                            <TouchableOpacity activeOpacity={0.5} onPress={aoFechar} disabled={loading}>
                                 <GetOut_button acao="CANCELAR"/>
                             </TouchableOpacity>
 
-                            <TouchableOpacity activeOpacity={0.5} onPress={handleSalvar}>
-                                <GetInGreen_button acao="SALVAR"/>
+                            <TouchableOpacity activeOpacity={0.5} onPress={handleSalvar} disabled={loading}>
+                                {loading ? (
+                                    <View style={styles.loadingContainer}>
+                                        <ActivityIndicator size="small" color="#DAD0B7" />
+                                    </View>
+                                ) : (
+                                    <GetInGreen_button acao="SALVAR"/>
+                                )}
                             </TouchableOpacity>
                             
                         </View>
@@ -98,7 +111,16 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 15
     },
-    botoes: {flexDirection: "row", justifyContent: "space-between"}
+    botoes: {flexDirection: "row", justifyContent: "space-between"},
+    loadingContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        backgroundColor: "#1B8F65",
+        borderRadius: 15,
+        alignItems: "center",
+        justifyContent: "center",
+        minWidth: 70,
+    }
 })
 
 export default EditarLinks;

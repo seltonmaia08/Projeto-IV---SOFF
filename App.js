@@ -9,6 +9,7 @@ import { reminderService } from './src/Services/api';
 import { useNotification } from './src/Hook/useNotification';
 import { useProject } from './src/Hook/useProjects';
 import { AuthProvider } from './src/Context/AuthContext';
+import AlertaGeral from './src/Components/Alerta/AlertaGeral';
 
 // Ignora o aviso específico de VirtualizedList aninhado
 LogBox.ignoreLogs([
@@ -31,6 +32,7 @@ export default function App() {
       <AuthProvider>
         <NavigationContainer theme={myDarkTheme}>
           <Routes />
+          <AlertaGeral />
         </NavigationContainer>
       </AuthProvider>
     </SafeAreaProvider>

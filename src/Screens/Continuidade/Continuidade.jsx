@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   View,
   StyleSheet,
   Modal,
@@ -25,6 +24,7 @@ import Top from "../TopAba/Top";
 import ChamadoRecebido from "../../Components/ChamadoRecebido/ChamadoRecebido";
 import { useAuth } from "../../Context/AuthContext";
 import { supabase } from "../../Utils/Supabase";
+import AlertaGeral from "../../Components/Alerta/AlertaGeral";
 
 const Continuidade = () => {
   const [isActive, setIsActive] = useState(false);
@@ -119,7 +119,7 @@ const Continuidade = () => {
 
   const aoTocarGerarPdf = async () => {
     if (SemNotas) {
-      Alert.alert(
+      AlertaGeral.alert(
         "Nenhuma nota de continuidade cadastrada",
         "Adicione pelo menos uma nota para gerar o PDF."
       );

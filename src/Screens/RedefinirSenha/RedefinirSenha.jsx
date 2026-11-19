@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import CustomText from '../../Components/Text/CustomText'
 import { supabase } from '../../Utils/Supabase'
 import { useNavigation } from '@react-navigation/native'
 import Top from '../TopAba/Top'
+import AlertaGeral from '../../Components/Alerta/AlertaGeral'
 
 const RedefinirSenha = () => {
   const navigation = useNavigation()
@@ -16,23 +17,23 @@ const RedefinirSenha = () => {
   // Etapa 1: Enviar código para o e-mail
   const handleSendToken = async () => {
     if (!email) {
-      Alert.alert('Atenção', 'Informe o seu e-mail.')
+      AlertaGeral.alert('Atenção', 'Informe o seu e-mail.')
       return
     }
     setLoading(true)
     const { error } = await supabase.auth.resetPasswordForEmail(email)
     setLoading(false)
     if (error) {
-      Alert.alert('Erro', error.message)
+      AlertaGeral.alert('Erro', error.message)
     } else {
-      Alert.alert('Código Enviado', 'Verifique sua caixa de entrada e digite o código de 6 dígitos.')
+      AlertaGeral.alert('Código Enviado', 'Verifique sua caixa de entrada e digite o código de 6 dígitos.')
       setStep(2)
     }
   }
   // Etapa 2: Validar o código e salvar a nova senha
   const handleReset = async () => {
     if (!token || !newPassword) {
-      Alert.alert('Atenção', 'Preencha o código e a nova senha.')
+      AlertaGeral.alert('Atenção', 'Preencha o código e a nova senha.')
       return
     }
     setLoading(true)
@@ -49,10 +50,10 @@ const RedefinirSenha = () => {
         password: newPassword,
       })
       if (updateError) throw updateError
-      Alert.alert('Sucesso', 'Sua senha foi redefinida com sucesso!')
+      AlertaGeral.alert('Sucesso', 'Sua senha foi redefinida com sucesso!')
       navigation.navigate('Login')
     } catch (err) {
-      Alert.alert('Erro', err.message)
+      AlertaGeral.alert('Erro', err.message)
     } finally {
       setLoading(false)
     }

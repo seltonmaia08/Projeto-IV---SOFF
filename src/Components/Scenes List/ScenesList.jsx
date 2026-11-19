@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   StyleSheet,
   View,
@@ -19,6 +18,7 @@ import { useScenes } from "../../Hook/useScenes";
 import { gerarPdfCenas } from "../../Utils/gerarPdfCenas";
 import { scenesListService } from "../../Services/api";
 import ConfirmacaoPopUp from "../ConfirmPopUp/ConfirmacaoPopUp";
+import AlertaGeral from "../Alerta/AlertaGeral";
 
 const ScenesList = () => {
   const [isActive, setIsActive] = useState(false);
@@ -38,7 +38,7 @@ const ScenesList = () => {
 
   const aoTocarGerarPdf = async () => {
     if (semCenas) {
-      Alert.alert(
+      AlertaGeral.alert(
         "Nenhuma cena cadastrada",
         "Adicione pelo menos uma cena para gerar o PDF.",
       );
