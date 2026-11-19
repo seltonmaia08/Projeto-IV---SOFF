@@ -126,7 +126,7 @@ const Perfil = ({ route }) => {
             setEmailUsuario(novoEmail);
             if (fotoUrlFinal) setFotoPerfil(fotoUrlFinal);
             setEditarVisivel(false);
-            AlertaGeral.alert("Sucesso", "Perfil atualizado com sucesso!");
+            //AlertaGeral.alert("Sucesso", "Perfil atualizado com sucesso!");
         } catch (err) {
             console.error("Erro ao salvar dados do perfil:", err);
             AlertaGeral.alert("Erro", "Não foi possível salvar as alterações.");
@@ -140,13 +140,14 @@ const Perfil = ({ route }) => {
         }, 3000);
     }
 
-    function onDadosAlteradoComSucesso() {
-        setEditarVisivel(false)
-        setPopUpSucesso(true);
-        setTimeout(() => {
-            setPopUpSucesso(false);
-        }, 3000);
-    }
+    // function onDadosAlteradoComSucesso() {
+    //     alterarDados()
+    //     setEditarVisivel(false)
+    //     setPopUpSucesso(true);
+    //     setTimeout(() => {
+    //         setPopUpSucesso(false);
+    //     }, 3000);
+    // }
 
     const logout = async () => {
         try {
@@ -202,7 +203,7 @@ const Perfil = ({ route }) => {
                     email={emailUsuario}
                     fotoAtual={fotoPerfil}
                     aoFechar={() => setEditarVisivel(false)}
-                    aoSalvar={onDadosAlteradoComSucesso}
+                    aoSalvar={alterarDados}
                 />
 
                 <EditarSenha
