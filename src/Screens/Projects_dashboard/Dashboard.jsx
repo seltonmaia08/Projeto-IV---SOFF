@@ -143,7 +143,7 @@ const Dashboard = () => {
                                 }}
                                 style={styles.buttonAddNota}
                             >
-                                <CustomText style={{ color: "#242424" }}>Novo Projeto</CustomText>
+                                <CustomText>Novo Projeto</CustomText>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.buttonJoin}

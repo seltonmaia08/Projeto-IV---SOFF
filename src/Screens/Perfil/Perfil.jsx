@@ -140,6 +140,14 @@ const Perfil = ({ route }) => {
         }, 3000);
     }
 
+    function onDadosAlteradoComSucesso() {
+        setEditarVisivel(false)
+        setPopUpSucesso(true);
+        setTimeout(() => {
+            setPopUpSucesso(false);
+        }, 3000);
+    }
+
     const logout = async () => {
         try {
             await supabase.auth.signOut();
@@ -194,7 +202,7 @@ const Perfil = ({ route }) => {
                     email={emailUsuario}
                     fotoAtual={fotoPerfil}
                     aoFechar={() => setEditarVisivel(false)}
-                    aoSalvar={alterarDados}
+                    aoSalvar={onDadosAlteradoComSucesso}
                 />
 
                 <EditarSenha
@@ -205,7 +213,7 @@ const Perfil = ({ route }) => {
 
                 <SucessPopup
                     visivel={popUpSucesso}
-                    mensagem={"Senha alterada com sucesso!"}
+                    mensagem={"Ação realizada com sucesso!"}
                 />
             </View>
         </View>
