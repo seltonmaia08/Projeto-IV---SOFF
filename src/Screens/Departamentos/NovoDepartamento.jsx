@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, TextInput, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { BlurView } from "expo-blur";
 import { ChevronDown, ChevronUp, Check } from 'lucide-react-native';
 
@@ -22,6 +22,7 @@ const NovoDepartamento = ({
     const [listaMembros, setListaMembros] = useState([]);
     const [listaOn, setListaOn] = useState(false);
     const [membrosSelecionados, setMembrosSelecionados] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (visivel) {
@@ -34,6 +35,7 @@ const NovoDepartamento = ({
                 setMembrosSelecionados([]);
             }
             setListaOn(false);
+            setLoading(false);
         }
     }, [visivel, departamentoParaEditar, todosMembros]);
 
@@ -44,39 +46,49 @@ const NovoDepartamento = ({
         aoFechar();
     };
 
-    const handleCriar = () => {
+    const handleCriar = async () => {
         if (!departamento || departamento.trim() === "") {
             AlertaGeral.alert("Aviso", "Por favor, digite o nome do departamento.");
             return;
         }
 
-        if (departamentoParaEditar) {
-            if (aoSalvarDepart) {
-                aoSalvarDepart({
-                    idDepartment: departamentoParaEditar.idDepartment,
-                    nome: departamento.trim(),
-                    membrosIds: membrosSelecionados
-                });
+        setLoading(true);
+        try {
+            if (departamentoParaEditar) {
+                if (aoSalvarDepart) {
+                    await aoSalvarDepart({
+                        idDepartment: departamentoParaEditar.idDepartment,
+                        nome: departamento.trim(),
+                        membrosIds: membrosSelecionados
+                    });
+                }
+            } else {
+                if (aoCriarDepart) {
+                    await aoCriarDepart({
+                        nome: departamento.trim(),
+                        membrosIds: membrosSelecionados
+                    });
+                }
             }
-        } else {
-            if (aoCriarDepart) {
-                aoCriarDepart({
-                    nome: departamento.trim(),
-                    membrosIds: membrosSelecionados
-                });
-            }
-        }
 
-        setDepartamento("");
-        setMembrosSelecionados([]);
-        setListaOn(false);
-        aoFechar();
+            setDepartamento("");
+            setMembrosSelecionados([]);
+            setListaOn(false);
+            aoFechar();
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleExcluir = () => {
+    const handleExcluir = async () => {
         if (departamentoParaEditar && aoExcluirDepart) {
-            aoExcluirDepart(departamentoParaEditar.idDepartment, departamentoParaEditar.nome);
-            aoFechar();
+            setLoading(true);
+            try {
+                await aoExcluirDepart(departamentoParaEditar.idDepartment, departamentoParaEditar.nome);
+                aoFechar();
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -161,18 +173,24 @@ const NovoDepartamento = ({
 
                     <View style={styles.botoes}>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={handleCancelar}>
+                        <TouchableOpacity activeOpacity={0.5} onPress={handleCancelar} disabled={loading}>
                             <GetOut_button acao="CANCELAR" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={handleCriar}>
-                            <GetInGreen_button acao={departamentoParaEditar ? "SALVAR" : "CRIAR"} />
+                        <TouchableOpacity activeOpacity={0.5} onPress={handleCriar} disabled={loading}>
+                            {loading ? (
+                                <View style={styles.loadingContainer}>
+                                    <ActivityIndicator size="small" color="#DAD0B7" />
+                                </View>
+                            ) : (
+                                <GetInGreen_button acao={departamentoParaEditar ? "SALVAR" : "CRIAR"} />
+                            )}
                         </TouchableOpacity>
 
                     </View>
 
                     {departamentoParaEditar && (
-                        <TouchableOpacity activeOpacity={0.5} onPress={handleExcluir} style={{ alignItems: 'center', marginTop: 10 }}>
+                        <TouchableOpacity activeOpacity={0.5} onPress={handleExcluir} disabled={loading} style={{ alignItems: 'center', marginTop: 10 }}>
                             <CustomText style={{ color: "#EF5625", fontSize: 14 }}>Excluir Departamento</CustomText>
                         </TouchableOpacity>
                     )}
@@ -247,7 +265,16 @@ const styles = StyleSheet.create({
     },
     textoMembro: {color: "#383838"},
     textoMembroSelecionado: {fontWeight: "bold"},
-    botoes: { flexDirection: "row", justifyContent: "space-between" }
+    botoes: { flexDirection: "row", justifyContent: "space-between" },
+    loadingContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        backgroundColor: "#1B8F65",
+        borderRadius: 15,
+        alignItems: "center",
+        justifyContent: "center",
+        minWidth: 70,
+    }
 });
 
 export default NovoDepartamento;

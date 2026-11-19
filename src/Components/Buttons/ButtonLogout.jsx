@@ -1,15 +1,21 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import CustomText from "../Text/CustomText";
 import { LogOut as LogOutIcon } from "lucide-react-native";
 import { supabase } from "../../Utils/Supabase";
+import { useState } from "react";
 
 const LogOut = ({ style }) => {
 
+    const [loading, setLoading] = useState(false);
+
     const logout = async () => {
         try {
+            setLoading(true);
             await supabase.auth.signOut();
         } catch (error) {
             console.error("Erro ao sair:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -18,9 +24,16 @@ const LogOut = ({ style }) => {
             style={[styles.btn, style]}
             onPress={logout}
             activeOpacity={0.7}
+            disabled={loading}
         >
-            <CustomText style={styles.text}>LOGOUT</CustomText>
-            <LogOutIcon size={18} color="#DAD0B7" />
+            {loading ? (
+                <ActivityIndicator size="small" color="#DAD0B7" />
+            ) : (
+                <>
+                    <CustomText style={styles.text}>LOGOUT</CustomText>
+                    <LogOutIcon size={18} color="#DAD0B7" />
+                </>
+            )}
         </TouchableOpacity>
     );
 };

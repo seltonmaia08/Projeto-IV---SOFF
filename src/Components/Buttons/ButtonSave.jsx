@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import CustomText from "../Text/CustomText";
 
 const ButtonSave = ({ onPress, loading }) => {
@@ -9,7 +9,11 @@ const ButtonSave = ({ onPress, loading }) => {
             style={styles.buttonSave}
             onPress={onPress}
         >
-            <CustomText style={styles.text}>{loading ? 'Adicionando' : 'Adicionar'}</CustomText>
+            {loading ? (
+                <ActivityIndicator size="small" color="#F0EADE" />
+            ) : (
+                <CustomText style={styles.text}>Adicionar</CustomText>
+            )}
         </TouchableOpacity>
     )
 }

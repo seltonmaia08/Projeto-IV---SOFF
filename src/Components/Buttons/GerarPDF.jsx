@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import CustomText from "../Text/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
 import { Plus } from "lucide-react-native";
@@ -8,12 +8,17 @@ const GerarPDF = ({ onPress, desativado, carregando }) => {
     <TouchableOpacity
       style={[styles.button, desativado && styles.buttonDesativado]}
       onPress={onPress}
+      disabled={carregando || desativado}
     >
-      <CustomText
-        style={[styles.textButton, desativado && styles.textDesativado]}
-      >
-        {carregando ? "Gerando..." : "Gerar PDF"}
-      </CustomText>
+      {carregando ? (
+        <ActivityIndicator size="small" color={desativado ? "#5F5F5F" : "#DAD0B7"} />
+      ) : (
+        <CustomText
+          style={[styles.textButton, desativado && styles.textDesativado]}
+        >
+          Gerar PDF
+        </CustomText>
+      )}
     </TouchableOpacity>
   );
 };
