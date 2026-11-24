@@ -34,9 +34,11 @@ export const useProject = () => {
             if (err2) throw err2
 
             // 3. Busca dados completos dos projetos ingressados (sem duplicatas)
-            const idsIngressados = membros
-                .map(m => m.idProject)
-                .filter(id => !criados.some(p => p.idProject === id))
+            const idsIngressados = Array.from(new Set(
+                membros
+                    .map(m => m.idProject)
+                    .filter(id => id && !criados.some(p => p.idProject === id))
+            ))
 
             let ingressados = []
             if (idsIngressados.length > 0) {

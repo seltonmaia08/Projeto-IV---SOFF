@@ -56,12 +56,15 @@ function Membros({ visivel, aoFechar }) {
         return error;
     };
 
-    // Altera a função de um participante na tabela ProjectMember
-    const mudarCargoMembro = async (idProjectMember, novoCargo) => {
-        if (!idProjectMember) return;
-
+    // Altera a função de um participante na tabela ProjectMember (atualiza todas as linhas do usuário no projeto)
+    const mudarCargoMembro = async (idProjectMember, novoCargo, idUser = null) => {
         try {
-            const error = await salvarCargoNoBanco({ idProjectMember }, novoCargo);
+            let error;
+            if (idUser && idProject) {
+                error = await salvarCargoNoBanco({ idProject, idUser }, novoCargo);
+            } else if (idProjectMember) {
+                error = await salvarCargoNoBanco({ idProjectMember }, novoCargo);
+            }
 
             if (error) throw error;
 
@@ -79,7 +82,27 @@ function Membros({ visivel, aoFechar }) {
         if (!owner?.idUser || !idProject) return;
 
         try {
-            const error = await salvarCargoNoBanco({ idProject, idUser: owner.idUser }, novoCargo);
+            const { data: existingOwnerRows } = await supabase
+                .from('ProjectMember')
+                .select('idProjectMember')
+                .eq('idProject', idProject)
+                .eq('idUser', owner.idUser)
+                .limit(1);
+
+            let error;
+            if (!existingOwnerRows || existingOwnerRows.length === 0) {
+                const res = await supabase.from('ProjectMember').insert([
+                    {
+                        idProject,
+                        idUser: owner.idUser,
+                        cargo: novoCargo,
+                        position: novoCargo,
+                    },
+                ]);
+                error = res.error;
+            } else {
+                error = await salvarCargoNoBanco({ idProject, idUser: owner.idUser }, novoCargo);
+            }
 
             if (error) throw error;
 
@@ -90,6 +113,8 @@ function Membros({ visivel, aoFechar }) {
             AlertaGeral.alert("Erro", "Não foi possível salvar a alteração de cargo. Verifique a coluna no banco.");
         }
     };
+
+    const participantes = members.filter((m) => m.idUser !== owner?.idUser);
 
     return (
         <Modal visible={visivel} onRequestClose={aoFechar}>
@@ -141,20 +166,20 @@ function Membros({ visivel, aoFechar }) {
                             <View style={styles.campo}>
                                 <CustomText style={styles.secaoParticipantes}>Participantes</CustomText>
 
-                                {members.length === 0 ? (
+                                {participantes.length === 0 ? (
                                     <CustomText style={{ color: "#DAD0B7", fontStyle: "italic" }}>
                                         Nenhum participante adicionado ainda.
                                     </CustomText>
                                 ) : (
-                                    members.map((membro, index) => (
+                                    participantes.map((membro, index) => (
                                         <MembrosModel
-                                            key={membro.idProjectMember || index}
+                                            key={membro.idProjectMember || membro.idUser || index}
                                             idProjectMember={membro.idProjectMember}
                                             imagem={membro.User?.avatar || fotoPadrao}
                                             nome={membro.User?.userName || "Sem nome"}
                                             email={membro.User?.email || "Sem e-mail"}
                                             cargo={membro.cargo || "Sem cargo"}
-                                            aoMudarCargo={mudarCargoMembro}
+                                            aoMudarCargo={(idPM, novoCargo) => mudarCargoMembro(idPM, novoCargo, membro.idUser)}
                                         />
                                     ))
                                 )}

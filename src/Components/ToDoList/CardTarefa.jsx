@@ -1,23 +1,29 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import CustomText from '../Text/CustomText'
-import { ClosedCaption, X } from 'lucide-react-native'
-import { useState } from 'react'
+import { X } from 'lucide-react-native'
+import { useState, useEffect } from 'react'
 import StatusTaskDrop from './StatusTaskDrop'
 
 const CardTarefa = ({ item, deleteScene }) => {
-    const [status, setStatus] = useState(item.sceneStatus)
+    const rawStatus = item.taskStatus || item.status || '1'
+    const [status, setStatus] = useState(rawStatus)
     const [isActive, setIsActive] = useState(false)
 
+    useEffect(() => {
+        setStatus(item.taskStatus || item.status || '1')
+    }, [item.taskStatus, item.status])
+
     const getBorderColor = () => {
-        if (status === '2') return '#DA9304';
-        if (status === '3') return '#1B8F65';
-        return '#242424';
-    };
+        const clean = String(status || '').replace(/'/g, '').trim()
+        if (clean === '2') return '#DA9304'
+        if (clean === '3') return '#1B8F65'
+        return '#242424'
+    }
 
     return (
         <TouchableOpacity style={[
             styles.compList,
-            { borderColor: getBorderColor() }
+            { borderColor: getBorderColor(), borderLeftColor: getBorderColor() }
         ]}
             onPress={() => setIsActive((prev) => !prev)}
         >
@@ -39,13 +45,12 @@ const CardTarefa = ({ item, deleteScene }) => {
                     <CustomText
                         style={styles.subtitleScene}
                     >
-                        task
                         {item.taskText}
                     </CustomText>
                 }
 
                 <View style={styles.dropContainer}>
-                    <StatusTaskDrop id={item.idScenes} status={item.sceneStatus} setStatus={setStatus} />
+                    <StatusTaskDrop id={item.idTask} status={status} setStatus={setStatus} />
                 </View>
             </View>
         </TouchableOpacity>

@@ -44,8 +44,8 @@ const JoinProjectPopUp = ({ visivel, aoFechar, aoEntrarComSucesso }) => {
                 .select('*')
                 .eq('idProject', projeto.idProject)
                 .eq('idUser', user.id)
-                .single();
-            if (membroExistente) {
+                .limit(1);
+            if (membroExistente && membroExistente.length > 0) {
                 AlertaGeral.alert('Aviso', 'Você já faz parte deste projeto!');
                 aoFechar();
                 return;

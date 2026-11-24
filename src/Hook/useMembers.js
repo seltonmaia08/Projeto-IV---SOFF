@@ -76,9 +76,10 @@ export const useMembers = (idProject) => {
             }
 
             // 5. Dados do Proprietário
+            let ownerMemberRow = null;
             if (ownerId) {
                 const ownerProfile = profilesMap[ownerId] || {};
-                const ownerMemberRow = memberList.find(m => m.idUser === ownerId);
+                ownerMemberRow = memberList.find(m => m.idUser === ownerId);
                 const cargoDono = ownerMemberRow?.cargo || ownerMemberRow?.position || "Proprietário";
 
                 setOwner({
@@ -92,24 +93,49 @@ export const useMembers = (idProject) => {
                 setOwner(null);
             }
 
-            // 6. Lista de Participantes (todos os membros exceto o dono, para evitar duplicação)
-            const participantesFormatados = memberList
-                .filter(m => m.idUser !== ownerId)
-                .map(m => {
+            // 6. Lista de Membros (inclui o dono do projeto e deduplica por idUser)
+            const seenUserIds = new Set();
+            const participantesFormatados = [];
+
+            // Se existir dono, inclui na lista de membros para que possa participar de departamentos
+            if (ownerId) {
+                seenUserIds.add(ownerId);
+                const ownerProfile = profilesMap[ownerId] || {};
+                const cargoDono = ownerMemberRow?.cargo || ownerMemberRow?.position || "Proprietário";
+
+                participantesFormatados.push({
+                    idProjectMember: ownerMemberRow?.idProjectMember || null,
+                    idUser: ownerId,
+                    cargo: cargoDono,
+                    isOwner: true,
+                    User: {
+                        userName: ownerProfile.name || ownerProfile.userName || "Proprietário",
+                        email: ownerProfile.email || "Sem e-mail",
+                        avatar: ownerProfile.avatar || ownerProfile.avatar_url || ownerProfile.photoUrl || null
+                    }
+                });
+            }
+
+            // Adiciona os demais membros sem duplicar por idUser (caso estejam em múltiplos departamentos)
+            memberList.forEach(m => {
+                if (m.idUser && !seenUserIds.has(m.idUser)) {
+                    seenUserIds.add(m.idUser);
                     const perfil = profilesMap[m.idUser] || {};
                     const cargoMembro = m.cargo || m.position || "Participante";
 
-                    return {
+                    participantesFormatados.push({
                         idProjectMember: m.idProjectMember,
                         idUser: m.idUser,
                         cargo: cargoMembro,
+                        isOwner: false,
                         User: {
                             userName: perfil.name || perfil.userName || "Sem nome",
                             email: perfil.email || "Sem e-mail",
                             avatar: perfil.avatar || perfil.avatar_url || perfil.photoUrl || null
                         }
-                    };
-                });
+                    });
+                }
+            });
 
             setMembers(participantesFormatados);
 
