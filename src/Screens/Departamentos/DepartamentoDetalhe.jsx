@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     paddingBottom: 60,
+    gap: 20,
   },
   popUpMembros: {
     position: "absolute",

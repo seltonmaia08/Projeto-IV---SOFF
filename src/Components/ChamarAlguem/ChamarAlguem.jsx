@@ -29,15 +29,25 @@ const ChamarAlguem = () => {
   const [mensagem, setMensagem] = useState("");
   const [enviando, setEnviando] = useState(false);
 
-  // Unifica dono e participantes conforme a estrutura de useMembers
-  const todosMembros = [
-    ...(owner ? [{ idUser: owner.idUser, userName: owner.userName, cargo: owner.cargo }] : []),
-    ...members.map((m) => ({
-      idUser: m.idUser,
-      userName: m.User?.userName || m.User?.name || "Sem nome",
-      cargo: m.cargo || "Participante",
-    })),
-  ];
+  // Unifica dono e membros conforme useMembers, garantindo unicidade por idUser
+  const mapaMembros = new Map();
+  if (owner?.idUser) {
+    mapaMembros.set(owner.idUser, {
+      idUser: owner.idUser,
+      userName: owner.userName || "Proprietário",
+      cargo: owner.cargo || "Proprietário",
+    });
+  }
+  members.forEach((m) => {
+    if (m.idUser && !mapaMembros.has(m.idUser)) {
+      mapaMembros.set(m.idUser, {
+        idUser: m.idUser,
+        userName: m.User?.userName || m.User?.name || "Sem nome",
+        cargo: m.cargo || "Participante",
+      });
+    }
+  });
+  const todosMembros = Array.from(mapaMembros.values());
 
   // Filtra para não permitir chamar a si mesmo
   const listarParaChamar = todosMembros

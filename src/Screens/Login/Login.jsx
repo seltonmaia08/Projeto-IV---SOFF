@@ -223,10 +223,10 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
     },
     textBtn: {
-        fontSize: 12
+        fontSize: 14
     },
     span: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#EF5825'
     },
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     area2: {
         alignItems: 'center',
         position: 'absolute',
-        bottom: 50
+        bottom: 130
     },
     error: {
         width: '80%',

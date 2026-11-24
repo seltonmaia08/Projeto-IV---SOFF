@@ -25,6 +25,7 @@ const Departamentos = () => {
   const [departamentoSelecionado, setDepartamentoSelecionado] = useState(null);
   const [loading, setLoading] = useState(false);
   const [departamentoAberto, setDepartamentoAberto] = useState(null);
+  const [donoProjetoId, setDonoProjetoId] = useState(null);
 
   // Carrega os departamentos e membros do projeto
   const carregarDepartamentos = useCallback(async () => {
@@ -64,7 +65,24 @@ const Departamentos = () => {
         deptData = deptResult || [];
       }
 
-      // 2. Busca todos os membros do projeto em ProjectMember
+      // 2. Busca os dados do Projeto para obter o dono (idUser)
+      let ownerId = null;
+      try {
+        const { data: projData, error: projErr } = await supabase
+          .from("Project")
+          .select("idUser")
+          .eq("idProject", idProject)
+          .single();
+
+        if (!projErr && projData?.idUser) {
+          ownerId = projData.idUser;
+          setDonoProjetoId(ownerId);
+        }
+      } catch (e) {
+        console.warn("Aviso ao buscar dono do projeto:", e);
+      }
+
+      // 3. Busca todos os membros do projeto em ProjectMember
       const { data: membData, error: membError } = await supabase
         .from("ProjectMember")
         .select("*")
@@ -76,14 +94,20 @@ const Departamentos = () => {
 
       const membrosDoProjeto = membData || [];
 
-      // 3. Busca os perfis para obter os nomes
-      const userIds = membrosDoProjeto.map((m) => m.idUser).filter(Boolean);
+      // 4. Coleta os IDs de todos os usuários a serem consultados (membros + dono)
+      const userIdsSet = new Set();
+      if (ownerId) userIdsSet.add(ownerId);
+      membrosDoProjeto.forEach((m) => {
+        if (m.idUser) userIdsSet.add(m.idUser);
+      });
+
+      // 5. Busca os perfis para obter os nomes
       let profilesMap = {};
-      if (userIds.length > 0) {
+      if (userIdsSet.size > 0) {
         const { data: profData } = await supabase
           .from("Profiles")
           .select("*")
-          .in("id", userIds);
+          .in("id", Array.from(userIdsSet));
 
         if (profData) {
           profData.forEach((p) => {
@@ -95,20 +119,44 @@ const Departamentos = () => {
         }
       }
 
-      // 4. Formata a lista completa de membros do projeto
-      const membrosFormatados = membrosDoProjeto.map((m) => ({
-        idProjectMember: m.idProjectMember,
-        idUser: m.idUser,
-        idDepartment: m.idDepartment,
-        nome: profilesMap[m.idUser] || "Participante",
-      }));
-      setTodosMembros(membrosFormatados);
+      // 6. Formata a lista de colaboradores únicos do projeto (inclui o dono do projeto)
+      const seenUsers = new Set();
+      const membrosUnicos = [];
 
-      // 5. Mapeia cada departamento com seus respectivos membros
-      // Quando idProject não existe no Department, filtramos pelos depts que têm
-      // ao menos um membro pertencente a este projeto
-      const idsDepartamentosDosProjeto = new Set(
-        membrosFormatados
+      // Se houver dono, inclui na lista para que possa participar de qualquer departamento
+      if (ownerId) {
+        seenUsers.add(ownerId);
+        const ownerRow = membrosDoProjeto.find((m) => m.idUser === ownerId);
+        const cargoDono = ownerRow?.cargo || ownerRow?.position || "Proprietário";
+        membrosUnicos.push({
+          idProjectMember: ownerId, // Usamos sempre o idUser (UUID) como chave identificadora única
+          idUser: ownerId,
+          nome: profilesMap[ownerId] || "Proprietário",
+          cargo: cargoDono,
+          isOwner: true,
+        });
+      }
+
+      // Adiciona os demais membros sem duplicatas
+      membrosDoProjeto.forEach((m) => {
+        if (m.idUser && !seenUsers.has(m.idUser)) {
+          seenUsers.add(m.idUser);
+          membrosUnicos.push({
+            idProjectMember: m.idUser, // Usamos sempre o idUser (UUID) como chave identificadora única
+            idUser: m.idUser,
+            nome: profilesMap[m.idUser] || "Participante",
+            cargo: m.cargo || m.position || "Participante",
+            isOwner: false,
+          });
+        }
+      });
+
+      setTodosMembros(membrosUnicos);
+
+      // 7. Mapeia cada departamento com seus respectivos membros
+      // Um colaborador agora pode participar de múltiplos departamentos!
+      const idsDepartamentosDosMembros = new Set(
+        membrosDoProjeto
           .map((m) => m.idDepartment)
           .filter(Boolean)
           .map(String),
@@ -116,25 +164,32 @@ const Departamentos = () => {
 
       const departamentosFormatados = (deptData || [])
         .filter((d) => {
-          // Se a coluna idProject existe no resultado, filtra por ela
           if (d.idProject !== undefined)
             return String(d.idProject) === String(idProject);
-          // Caso contrário, mantém apenas depts que têm membros deste projeto
           const idDept = d.idDepartment || d.id;
-          return idsDepartamentosDosProjeto.has(String(idDept));
+          return idsDepartamentosDosMembros.has(String(idDept));
         })
         .map((d) => {
           const idDept = d.idDepartment || d.id;
           const nomeDept = d.departmentName || d.name || d.nome || "Sem nome";
-          const membrosDesteDept = membrosFormatados.filter(
-            (m) => String(m.idDepartment) === String(idDept),
+
+          // Filtra todas as linhas de ProjectMember que pertencem a este departamento
+          const registrosDesteDept = membrosDoProjeto.filter(
+            (m) => m.idDepartment && String(m.idDepartment) === String(idDept),
+          );
+
+          // Pega os userIds únicos deste departamento
+          const userIdsDesteDept = Array.from(
+            new Set(registrosDesteDept.map((m) => m.idUser).filter(Boolean)),
           );
 
           return {
             idDepartment: idDept,
             nome: nomeDept,
-            membros: membrosDesteDept.map((m) => m.nome),
-            membrosIds: membrosDesteDept.map((m) => m.idProjectMember),
+            membros: userIdsDesteDept.map(
+              (uid) => profilesMap[uid] || (uid === ownerId ? "Proprietário" : "Participante"),
+            ),
+            membrosIds: userIdsDesteDept, // array de idUser dos colaboradores vinculados
           };
         });
 
@@ -150,7 +205,7 @@ const Departamentos = () => {
     carregarDepartamentos();
   }, [carregarDepartamentos]);
 
-  // Cria um novo departamento e associa os membros selecionados
+  // Cria um novo departamento e associa os membros selecionados (sem desvincular de outros departamentos)
   const criarDepartamento = async ({ nome, membrosIds = [] }) => {
     if (!idProject) return;
     try {
@@ -166,7 +221,6 @@ const Departamentos = () => {
       if (!insErr && inserted?.[0]) {
         novoId = inserted[0].idDepartment || inserted[0].id;
       } else if (insErr?.code === "42703") {
-        // Coluna idProject não existe — insere sem ela
         const { data: ins2, error: insErr2 } = await supabase
           .from("Department")
           .insert([{ departmentName: nome }])
@@ -174,7 +228,6 @@ const Departamentos = () => {
         if (!insErr2 && ins2?.[0]) novoId = ins2[0].idDepartment || ins2[0].id;
         else if (insErr2) throw insErr2;
       } else if (insErr?.code === "PGRST204") {
-        // Coluna departmentName não existe — tenta name
         const { data: ins3, error: insErr3 } = await supabase
           .from("Department")
           .insert([{ idProject, name: nome }])
@@ -185,15 +238,57 @@ const Departamentos = () => {
         throw insErr;
       }
 
-      // Se houver membros selecionados, associa ao departamento
+      // Se houver membros selecionados, associa cada um ao novo departamento
       if (novoId && membrosIds.length > 0) {
-        const { error: updError } = await supabase
+        const { data: currentMembers } = await supabase
           .from("ProjectMember")
-          .update({ idDepartment: novoId })
-          .in("idProjectMember", membrosIds);
+          .select("*")
+          .eq("idProject", idProject);
 
-        if (updError) {
-          console.warn("Aviso ao associar membros ao departamento:", updError);
+        const currentMembersList = currentMembers || [];
+
+        // Converte qualquer identificador recebido no idUser (UUID)
+        const resolvedUserIds = membrosIds
+          .map((id) => {
+            if (typeof id === "string" && id.includes("-")) return id;
+            const match = currentMembersList.find(
+              (m) => String(m.idProjectMember) === String(id) || m.idUser === id,
+            );
+            return match?.idUser || id;
+          })
+          .filter(Boolean);
+
+        for (const userId of resolvedUserIds) {
+          // Se o usuário tem uma linha com idDepartment nulo, atualiza essa linha
+          const rowWithNull = currentMembersList.find(
+            (m) => m.idUser === userId && !m.idDepartment,
+          );
+
+          if (rowWithNull) {
+            await supabase
+              .from("ProjectMember")
+              .update({ idDepartment: novoId })
+              .eq("idProjectMember", rowWithNull.idProjectMember);
+          } else {
+            // Caso contrário, insere uma nova associação para manter o participante nos outros departamentos
+            const existingRow = currentMembersList.find((m) => m.idUser === userId);
+            const userCargo =
+              existingRow?.cargo ||
+              existingRow?.position ||
+              (userId === donoProjetoId ? "Proprietário" : "Participante");
+
+            await supabase
+              .from("ProjectMember")
+              .insert([
+                {
+                  idProject,
+                  idUser: userId,
+                  idDepartment: novoId,
+                  cargo: userCargo,
+                  position: userCargo,
+                },
+              ]);
+          }
         }
       }
 
@@ -209,6 +304,7 @@ const Departamentos = () => {
   };
 
   // Atualiza departamento, adiciona pessoas selecionadas e remove pessoas desmarcadas
+  // Permite que um mesmo colaborador participe de mais de um departamento
   const salvarDepartamento = async ({
     idDepartment,
     nome,
@@ -229,30 +325,99 @@ const Departamentos = () => {
           .eq("idDepartment", idDepartment);
       }
 
-      // 2. Busca quem estava neste departamento antes
-      const membrosAntes = todosMembros.filter(
-        (m) => String(m.idDepartment) === String(idDepartment),
-      );
-      const idsAntes = membrosAntes.map((m) => m.idProjectMember);
+      // 2. Busca todas as linhas de ProjectMember deste projeto
+      const { data: allMembersData } = await supabase
+        .from("ProjectMember")
+        .select("*")
+        .eq("idProject", idProject);
 
-      // Membros a remover (estavam antes, mas foram desmarcados)
-      const idsParaRemover = idsAntes.filter((id) => !membrosIds.includes(id));
-      if (idsParaRemover.length > 0) {
-        await supabase
-          .from("ProjectMember")
-          .update({ idDepartment: null })
-          .in("idProjectMember", idsParaRemover);
+      const allMembers = allMembersData || [];
+
+      // Converte qualquer identificador recebido no idUser (UUID) com resiliência
+      const resolvedUserIds = membrosIds
+        .map((id) => {
+          if (typeof id === "string" && id.includes("-")) return id;
+          const match = allMembers.find(
+            (m) => String(m.idProjectMember) === String(id) || m.idUser === id,
+          );
+          return match?.idUser || id;
+        })
+        .filter(Boolean);
+
+      // Membros que estavam vinculados a este departamento antes
+      const rowsDesteDept = allMembers.filter(
+        (m) => m.idDepartment && String(m.idDepartment) === String(idDepartment),
+      );
+      const userIdsAntes = Array.from(
+        new Set(rowsDesteDept.map((m) => m.idUser).filter(Boolean)),
+      );
+
+      // 3. Membros a remover (estavam no departamento antes, mas foram desmarcados)
+      const userIdsParaRemover = userIdsAntes.filter(
+        (uid) => !resolvedUserIds.includes(uid),
+      );
+
+      for (const uid of userIdsParaRemover) {
+        const rowsToRemove = rowsDesteDept.filter((r) => r.idUser === uid);
+        const userOtherRows = allMembers.filter(
+          (m) => m.idUser === uid && String(m.idDepartment) !== String(idDepartment),
+        );
+
+        if (userOtherRows.length > 0) {
+          // O usuário já pertence a outro departamento ou tem outra linha: remove esta linha de vinculação
+          for (const row of rowsToRemove) {
+            await supabase
+              .from("ProjectMember")
+              .delete()
+              .eq("idProjectMember", row.idProjectMember);
+          }
+        } else {
+          // É a única linha do usuário no projeto: seta idDepartment como null para mantê-lo no projeto
+          for (const row of rowsToRemove) {
+            await supabase
+              .from("ProjectMember")
+              .update({ idDepartment: null })
+              .eq("idProjectMember", row.idProjectMember);
+          }
+        }
       }
 
-      // Membros a adicionar (marcados agora, mas não pertenciam a este departamento)
-      const idsParaAdicionar = membrosIds.filter(
-        (id) => !idsAntes.includes(id),
+      // 4. Membros a adicionar (marcados agora, mas não pertenciam a este departamento)
+      const userIdsParaAdicionar = resolvedUserIds.filter(
+        (uid) => !userIdsAntes.includes(uid),
       );
-      if (idsParaAdicionar.length > 0) {
-        await supabase
-          .from("ProjectMember")
-          .update({ idDepartment })
-          .in("idProjectMember", idsParaAdicionar);
+
+      for (const uid of userIdsParaAdicionar) {
+        // Se tem linha com idDepartment nulo, atualiza essa linha
+        const rowWithNull = allMembers.find(
+          (m) => m.idUser === uid && !m.idDepartment,
+        );
+
+        if (rowWithNull) {
+          await supabase
+            .from("ProjectMember")
+            .update({ idDepartment })
+            .eq("idProjectMember", rowWithNull.idProjectMember);
+        } else {
+          // Insere nova associação para este departamento, mantendo as associações anteriores
+          const existingRow = allMembers.find((m) => m.idUser === uid);
+          const userCargo =
+            existingRow?.cargo ||
+            existingRow?.position ||
+            (uid === donoProjetoId ? "Proprietário" : "Participante");
+
+          await supabase
+            .from("ProjectMember")
+            .insert([
+              {
+                idProject,
+                idUser: uid,
+                idDepartment,
+                cargo: userCargo,
+                position: userCargo,
+              },
+            ]);
+        }
       }
 
       await carregarDepartamentos();
@@ -266,15 +431,41 @@ const Departamentos = () => {
     }
   };
 
-  // Exclui o departamento e desvincula os membros
+  // Exclui o departamento e desvincula os membros sem remover quem participa de outros departamentos
   const excluirDepartamento = async (idDepartment, nomeDept) => {
     if (!idDepartment) return;
     try {
-      // 1. Desvincula todos os membros pertencentes a esse departamento
-      await supabase
+      // 1. Busca todos os membros do projeto para tratar desvinculação
+      const { data: allMembersData } = await supabase
         .from("ProjectMember")
-        .update({ idDepartment: null })
-        .eq("idDepartment", idDepartment);
+        .select("*")
+        .eq("idProject", idProject);
+
+      const allMembers = allMembersData || [];
+      const rowsDesteDept = allMembers.filter(
+        (m) => m.idDepartment && String(m.idDepartment) === String(idDepartment),
+      );
+
+      for (const row of rowsDesteDept) {
+        const uid = row.idUser;
+        const otherRows = allMembers.filter(
+          (m) => m.idUser === uid && m.idProjectMember !== row.idProjectMember,
+        );
+
+        if (otherRows.length > 0) {
+          // O usuário já possui outra linha (outro departamento ou nulo); deleta esta linha
+          await supabase
+            .from("ProjectMember")
+            .delete()
+            .eq("idProjectMember", row.idProjectMember);
+        } else {
+          // Única linha do usuário: define idDepartment como null para manter o membro no projeto
+          await supabase
+            .from("ProjectMember")
+            .update({ idDepartment: null })
+            .eq("idProjectMember", row.idProjectMember);
+        }
+      }
 
       // 2. Deleta o departamento da tabela Department
       const { error: delErr } = await supabase

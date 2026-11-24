@@ -80,17 +80,17 @@ const NovoDepartamento = ({
         }
     };
 
-    const handleExcluir = async () => {
-        if (departamentoParaEditar && aoExcluirDepart) {
-            setLoading(true);
-            try {
-                await aoExcluirDepart(departamentoParaEditar.idDepartment, departamentoParaEditar.nome);
-                aoFechar();
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
+    // const handleExcluir = async () => {
+    //     if (departamentoParaEditar && aoExcluirDepart) {
+    //         setLoading(true);
+    //         try {
+    //             await aoExcluirDepart(departamentoParaEditar.idDepartment, departamentoParaEditar.nome);
+    //             aoFechar();
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    // };
 
     const toggleMembro = (idMembro) => {
         if (membrosSelecionados.includes(idMembro)) {
@@ -150,7 +150,7 @@ const NovoDepartamento = ({
                                         <ScrollView style={styles.containerLista} nestedScrollEnabled={true}>
                                             {
                                                 listaMembros.map((cada, index) => {
-                                                    const idKey = cada.idProjectMember || cada.idUser || index;
+                                                    const idKey = cada.idUser || String(cada.idProjectMember || index);
                                                     const nomeExibicao = cada.nome || cada.userName || (typeof cada === 'string' ? cada : 'Membro');
                                                     const selecionado = membrosSelecionados.includes(idKey);
                                                     return (
@@ -193,11 +193,11 @@ const NovoDepartamento = ({
 
                     </View>
 
-                    {departamentoParaEditar && (
+                    {/* {departamentoParaEditar && (
                         <TouchableOpacity activeOpacity={0.5} onPress={handleExcluir} disabled={loading} style={{ alignItems: 'center', marginTop: 10 }}>
                             <CustomText style={{ color: "#EF5625", fontSize: 14 }}>Excluir Departamento</CustomText>
                         </TouchableOpacity>
-                    )}
+                    )} */}
                 </View>
             </BlurView>
         </Modal>
@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
         gap: 30
     },
     criar: { fontWeight: "bold", fontSize: 18, color: "#DAD0B7" },
-    dados: { gap: 30 },
-    campo: { gap: 10, zIndex: 999, position: "relative", height: 90 },
+    dados: { gap: 30, height: 'auto' },
+    campo: { gap: 10, minHeight: 90 },
     labels: { fontSize: 16, color: "#DAD0B7" },
     dropDown: {
         backgroundColor: "#DAD0B7",
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         padding: 10,
-        borderRadius: 15
+        borderRadius: 15,
     },
     dropDownAberto: {
         borderBottomLeftRadius: 0,
@@ -254,11 +254,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#DAD0B7",
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
-        position: "absolute",
-        top: "100%",
         width: "100%",
-        elevation: 99,
-        zIndex: 9999
     },
     itemMembro: {
         flexDirection: "row",

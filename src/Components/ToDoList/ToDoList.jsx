@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import CustomText from "../Text/CustomText";
 import PopUpTarefa from "./PopUpTarefa";
 import AddSceneList from "../Buttons/AddSceneList";
+import ConfirmacaoPopUp from "../ConfirmPopUp/ConfirmacaoPopUp";
 
 import { useProjectContext } from "../../Context/ProjectContext";
 import { useTasks } from "../../Hook/useToDo";
@@ -122,7 +123,7 @@ const ToDoList = ({ idDepartment }) => {
 
  const styles = StyleSheet.create({
    container: {
-     flex: 1,
+     width: "100%",
      marginBottom: 10,
    },
    card: {

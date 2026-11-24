@@ -1,5 +1,4 @@
-import { ArrowBigDownDash } from 'lucide-react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
 
@@ -11,9 +10,21 @@ const data = [
     { label: 'Concluído', value: '3' },
 ];
 
+const getStatusColor = (val) => {
+    const clean = String(val || '').replace(/'/g, '').trim();
+    if (clean === '2') return '#DA9304';
+    if (clean === '3') return '#1B8F65';
+    return '#666666';
+};
+
 const StatusSceneDrop = ({ id, status, setStatus }) => {
-    const [value, setValue] = useState(status ?? data[0].value)
-    const [isFocus, setIsFocus] = useState(false)
+    const normalize = (v) => (v ? String(v).replace(/'/g, '').trim() : '1');
+    const [value, setValue] = useState(normalize(status));
+    const [isFocus, setIsFocus] = useState(false);
+
+    useEffect(() => {
+        setValue(normalize(status));
+    }, [status]);
     
     const updateStatus = async (newValue) => {
         try {
@@ -29,6 +40,7 @@ const StatusSceneDrop = ({ id, status, setStatus }) => {
             <Dropdown
                 style={[
                     styles.dropdown,
+                    { paddingLeft: 20},
                     isFocus && { borderColor: '#28D593' },
                 ]}
                 placeholderStyle={styles.placeholderStyle}
