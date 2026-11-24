@@ -1,13 +1,27 @@
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { ChevronLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 
 import CustomText from '../../Components/Text/CustomText';
+import SucessPopUp from '../../Components/SucessPopUp/SucessPopup';
 
 function PlanoGratuito({route}) {
 
     const {nomeUsuario, emailUsuario, planoPago} = route.params;
+    const [popUp, setPopUp] = useState(false);
     const navegacao = useNavigation();
+
+    function handleCancelar() {
+        setPopUp(true);
+
+        setTimeout(() => setPopUp(false), 2500);
+        navegacao.navigate("Planos", {nomeUsuario, emailUsuario, planoPago: false});
+    }
+
+    function handleAssinar() {
+        navegacao.navigate("PlanoPago", {nomeUsuario, emailUsuario, planoPago});
+    }
 
     return(
         <ScrollView style={styles.escopo}>
@@ -46,18 +60,22 @@ function PlanoGratuito({route}) {
 
                         {
                             planoPago?
-                            <TouchableOpacity activeOpacity={0.5} style={styles.cancelar} onPress={() => navegacao.navigate("Planos", {nomeUsuario, emailUsuario, planoPago: false})}>
+                            <TouchableOpacity activeOpacity={0.5} style={styles.cancelar} onPress={handleCancelar}>
                                 <CustomText style={{fontWeight: "bold"}}>CANCELAR O PLANO PRO</CustomText>
                             </TouchableOpacity>
                             :
-                            <TouchableOpacity activeOpacity={0.5} style={styles.assinar} onPress={() => navegacao.navigate("PlanoPago", {nomeUsuario, emailUsuario, planoPago})}>
+                            <TouchableOpacity activeOpacity={0.5} style={styles.assinar} onPress={handleAssinar}>
                                 <CustomText style={{fontWeight: "bold"}}>ASSINAR O PLANO PRO</CustomText>
                             </TouchableOpacity>
                         }
                         
                     </View>
                 </View>
-
+                
+                <SucessPopUp
+                    visivel={popUp}
+                    mensagem="Ação realizada com sucesso!"
+                />
             </View>
 
         </ScrollView>

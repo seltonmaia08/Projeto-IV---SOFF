@@ -4,17 +4,26 @@ import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 
 import CustomText from '../../Components/Text/CustomText';
+import ConfirmacaoPopUp from '../../Components/ConfirmPopUp/ConfirmacaoPopUp';
+import SucessPopUp from "../../Components/SucessPopUp/SucessPopup"
 
 function PlanoPago({route}) {
 
     const {nomeUsuario, emailUsuario, planoPago} = route.params;
     const [checado, setChecado] = useState(false);
+    const [popUp, setPopUp] = useState(false);
     const navegacao = useNavigation();
 
     function handleAssinar() {
+        setPopUp(true);
+
+        setTimeout(() => setPopUp(false), 2500);
         navegacao.navigate("Planos", {nomeUsuario: nomeUsuario, emailUsuario: emailUsuario, planoPago: true});
     }
     function handleCancelar() {
+        setPopUp(true);
+
+        setTimeout(() => setPopUp(false), 2500);
         navegacao.navigate("Planos", {nomeUsuario: nomeUsuario, emailUsuario: emailUsuario, planoPago: false});
     }
 
@@ -52,12 +61,12 @@ function PlanoPago({route}) {
                         <CustomText style={styles.textos}>• Modalidade: O plano contratado é na modalidade mensal podendo ser cancelado a qualquer momento.</CustomText>
 
                         <CustomText style={styles.subtopicos}>2. VALORES E COBRANÇA</CustomText>
-                        <CustomText style={styles.textos}>• Valor: O valor recorrente do plano é de R$ 25,00 por mês.</CustomText>
+                        <CustomText style={styles.textos}>• Valor: O valor recorrente do plano é de R$ 45,00 por mês.</CustomText>
                         <CustomText style={styles.textos}>• Forma de Pagamento: A cobrança será realizada diretamente pela loja de aplicativos (Google Play Store ou Apple App Store) no cartão cadastrado ou método de pagamento escolhido.</CustomText>
                         <CustomText style={styles.textos}>• Renovação Automática: A assinatura é renovada automaticamente ao final de cada período contratado, a menos que seja cancelada pelo usuário com pelo menos 24 horas de antecedência em relação ao término do ciclo vigente.</CustomText>
 
                         <CustomText style={styles.subtopicos}>3. CANCELAMENTO E REEMBOLSO</CustomText>
-                        <CustomText style={styles.textos}>• Como Cancelar: O cancelamento pode ser feito a qualquer momento diretamente pela aba de perfil do usuário, logo abaixo dos termos.</CustomText>
+                        <CustomText style={styles.textos}>• Como Cancelar: O cancelamento pode ser feito a qualquer momento diretamente pela aba de planos, dentro do perfil do usuário, logo abaixo dos termos.</CustomText>
                         <CustomText style={styles.textos}>• Vigência após o cancelamento: Ao cancelar, você continuará com acesso aos recursos do plano até o final do período já pago.</CustomText>
                         <CustomText style={styles.textos}>• Reembolsos: Pedidos de reembolso devem ser solicitados diretamente à plataforma responsável pela cobrança (Apple ou Google), sujeitos às políticas de reembolso de cada empresa.</CustomText>
 
@@ -98,7 +107,11 @@ function PlanoPago({route}) {
 
                     
                 </View>
-
+                
+                <SucessPopUp
+                    visivel={popUp}
+                    mensagem="Ação realizada com sucesso!"
+                />
             </View>
 
         </ScrollView>
