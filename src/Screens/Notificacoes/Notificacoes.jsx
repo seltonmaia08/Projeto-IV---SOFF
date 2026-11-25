@@ -19,7 +19,7 @@ const Notificacao = () => {
             setIsActiveNotification(true);
           }}
         >
-          <CustomText style={isActiveNotification && { color: "#DA9304" }}>
+          <CustomText style={isActiveNotification && { color: "#F68E49" }}>
             Lembretes
           </CustomText>
         </TouchableOpacity>
@@ -30,7 +30,7 @@ const Notificacao = () => {
             setIsActiveNotification(false);
           }}
         >
-          <CustomText style={isActiveCalled && { color: "#DA9304" }}>
+          <CustomText style={isActiveCalled && { color: "#F68E49" }}>
             Chamados
           </CustomText>
         </TouchableOpacity>

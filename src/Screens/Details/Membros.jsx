@@ -125,7 +125,7 @@ function Membros({ visivel, aoFechar }) {
                 <ScrollView style={styles.scrollArea} contentContainerStyle={styles.content}>
 
                     {loading ? (
-                        <ActivityIndicator size="large" color="#EF5625" style={{ marginTop: 40 }} />
+                        <ActivityIndicator size="large" color="#F68E49" style={{ marginTop: 40 }} />
                     ) : (
                         <>
                             {/* --- SEÇÃO DO PROPRIETÁRIO --- */}

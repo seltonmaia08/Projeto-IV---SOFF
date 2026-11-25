@@ -20,7 +20,7 @@ const LISTA_STATUS = [
     id: "gravando",
     nome: "Gravando",
     frase: "Silêncio no set",
-    cores: ["#DA9304", "#723F04"],
+    cores: ["#F68E49", "#F68E49"],
     Icone: Radio,
   },
   {

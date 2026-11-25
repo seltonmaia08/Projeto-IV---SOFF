@@ -135,7 +135,7 @@ function Anotacoes() {
 
                     {loading ? (
                         <View style={[styles.card, { justifyContent: 'center', alignItems: 'center', gap: 10 }]}>
-                            <ActivityIndicator size={"large"} color={"#EF5625"} />
+                            <ActivityIndicator size={"large"} color={"#F68E49"} />
                             <CustomText>Carregando...</CustomText>
                         </View>
                     ) :

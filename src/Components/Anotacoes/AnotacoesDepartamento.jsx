@@ -173,7 +173,7 @@ function AnotacoesDepartamento({ idDepartment }) {
         <View style={styles.cards}>
           {carregando ? (
             <View style={styles.cardCarregando}>
-              <ActivityIndicator size="large" color="#EF5625" />
+              <ActivityIndicator size="large" color="#F68E49" />
               <CustomText>Carregando...</CustomText>
             </View>
           ) : erroCarregamento ? (

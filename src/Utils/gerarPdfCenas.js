@@ -6,7 +6,7 @@ import { scenesListService } from "../Services/api";
 import AlertaGeral from "../Components/Alerta/AlertaGeral";
 const STATUS = {
   1: { nome: "Pendente", cor: "#5F5F5F" },
-  2: { nome: "Em andamento", cor: "#EF5625" },
+  2: { nome: "Em andamento", cor: "#F68E49" },
   3: { nome: "Concluído", cor: "#1B8F65" },
 };
 
@@ -51,10 +51,10 @@ const montarHtml = (cenas, nomeProjeto) => {
                 <meta charset="utf-8" />
                 <style>
                     body { font-family: Helvetica, Arial, sans-serif; color: #313131; }
-                    h1 { color: #EF5625; margin-bottom: 4px; }
+                    h1 { color: #F68E49; margin-bottom: 4px; }
                     .data { color: #5F5F5F; font-size: 12px; margin-bottom: 20px; }
                     .cena {
-                        border-left: 6px solid #EF5625;
+                        border-left: 6px solid #F68E49;
                         background: #F0EADE;
                         border-radius: 8px;
                         padding: 12px 16px;
@@ -62,7 +62,7 @@ const montarHtml = (cenas, nomeProjeto) => {
                         page-break-inside: avoid; /* não corta uma cena no meio entre duas páginas */
                     }
                     .linha-topo { display: flex; justify-content: space-between; font-size: 12px; }
-                    .numero { font-weight: bold; color: #EF5625; }
+                    .numero { font-weight: bold; color: #F68E49; }
                     .status { font-weight: bold; }
                     .titulo { font-size: 18px; font-weight: bold; margin-top: 6px; }
                     .descricao { font-size: 14px; margin-top: 4px; }

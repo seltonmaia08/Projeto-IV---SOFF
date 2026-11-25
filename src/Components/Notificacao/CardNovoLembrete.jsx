@@ -101,7 +101,7 @@ const CardNovoLembrete = ({
             />
             <View style={styles.containerDataHora}>
                 <TouchableOpacity style={styles.btnPicker} onPress={() => setShowDate(true)}>
-                    <CustomText style={styles.TextDateTime}>Data: <CustomText style={{ color: '#DA9304', letterSpacing: 2 }}>{formatDate()}</CustomText></CustomText>
+                    <CustomText style={styles.TextDateTime}>Data: <CustomText style={{ color: '#F68E49', letterSpacing: 2 }}>{formatDate()}</CustomText></CustomText>
                 </TouchableOpacity>
                 {
                     showDate && <DateTimePicker
@@ -122,7 +122,7 @@ const CardNovoLembrete = ({
                     />
                 }
                 <TouchableOpacity style={styles.btnPicker} onPress={() => setShowTime(true)}>
-                    <CustomText style={styles.TextDateTime}>Horário: <CustomText style={{ color: '#DA9304', letterSpacing: 2 }}>{formatTime()}</CustomText></CustomText>
+                    <CustomText style={styles.TextDateTime}>Horário: <CustomText style={{ color: '#F68E49', letterSpacing: 2 }}>{formatTime()}</CustomText></CustomText>
                     {
                         showTime && <DateTimePicker
                             testID='dateTimePicker'

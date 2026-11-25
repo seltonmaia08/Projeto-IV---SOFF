@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#DAD0B7',
         borderRadius: 15,
         borderWidth: 2,
-        borderColor: '#EF5825'
+        borderColor: '#F68E49'
     },
     btnLogin: {
         width: '60%',
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     span: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#EF5825'
+        color: '#F68E49'
     },
     btnEye: {
         position: 'absolute',
@@ -251,10 +251,10 @@ const styles = StyleSheet.create({
         width: '80%',
         height: 'auto',
         padding: 10,
-        borderColor: '#EF5825',
+        borderColor: '#F68E49',
         borderLeftWidth: 10,
         borderRadius: 15,
-        backgroundColor: '#ef582540',
+        backgroundColor: '#F68E4940',
         position: 'absolute',
         top: 150
     }

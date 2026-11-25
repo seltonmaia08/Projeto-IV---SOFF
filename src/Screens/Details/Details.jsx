@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     },
     campoProjetoItens: { gap: 10 },
     nomeProjeto: { fontSize: 14 },
-    campoTexto: { borderBottomColor: "#EF5625", borderBottomWidth: 2 },
+    campoTexto: { borderBottomColor: "#F68E49", borderBottomWidth: 2 },
     nomeProjetoTexto: { fontSize: 16, marginLeft: 10, marginBottom: 10 },
     outrosCampos: { gap: 10, width: '100%' },
     campoMembros: { backgroundColor: "#313131", padding: 20, borderRadius: 15 },
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     areaBotoes: { position: "absolute", bottom: 130, width: "89%", alignItems: "center", gap: 10, },
     botaoVoltar: { width: "100%", padding: 15, backgroundColor: "#313131", borderRadius: 15 },
     textoBotao: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
-    botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#EF5625", borderRadius: 15 }
+    botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#F68E49", borderRadius: 15 }
 });
 
 export default Details;

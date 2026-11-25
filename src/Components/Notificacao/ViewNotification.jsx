@@ -69,7 +69,7 @@ const ViewNotificacao = () => {
             {
                 // loading ? (
                 //     <View style={[styles.card, { justifyContent: 'center', alignItems: 'center', gap: 10 }]}>
-                //         <ActivityIndicator size={"large"} color={"#EF5625"} />
+                //         <ActivityIndicator size={"large"} color={"#F68E49"} />
                 //         <CustomText>Carregando...</CustomText>
                 //     </View>
                 // ) :
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
         bottom: 100,
         right: 50,
         borderRadius: 20
-        // borderColor: '#EF5625',
+        // borderColor: '#F68E49',
         // borderWidth: 2
     },
     buttonAddNota: {

@@ -63,7 +63,7 @@ const ListNotificacao = ({ item, refetch }) => {
                     item.read ?
                         <Bell size={24} color={'#313131'} />
                         :
-                        <BellRing size={24} color={'#EF5625'} />
+                        <BellRing size={24} color={'#F68E49'} />
 
                 }
             </View>

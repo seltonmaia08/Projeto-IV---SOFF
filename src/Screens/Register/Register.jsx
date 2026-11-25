@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#DAD0B7',
         borderRadius: 15,
         borderWidth: 2,
-        borderColor: '#EF5825'
+        borderColor: '#F68E49'
     },
     btnRegister: {
         width: '60%',
@@ -348,10 +348,10 @@ const styles = StyleSheet.create({
         width: '80%',
         height: 'auto',
         padding: 10,
-        borderColor: '#EF5825',
+        borderColor: '#F68E49',
         borderLeftWidth: 10,
         borderRadius: 15,
-        backgroundColor: '#ef582540',
+        backgroundColor: '#F68E4940',
         marginBottom: 10
     }
 });

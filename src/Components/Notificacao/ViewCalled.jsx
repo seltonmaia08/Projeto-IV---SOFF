@@ -151,7 +151,7 @@ const ViewCalled = () => {
   }, [buscarChamados]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#DA9304" style={{ marginTop: 30 }} />;
+    return <ActivityIndicator size="large" color="#F68E49" style={{ marginTop: 30 }} />;
   }
 
   if (chamados.length === 0) {
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     width: 13,
     height: 13,
     borderRadius: 6.5,
-    backgroundColor: "#DA9304",
+    backgroundColor: "#F68E49",
     marginLeft: 6,
   },
 });

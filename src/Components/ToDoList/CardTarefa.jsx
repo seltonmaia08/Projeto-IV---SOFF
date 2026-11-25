@@ -15,7 +15,7 @@ const CardTarefa = ({ item, deleteScene }) => {
 
     const getBorderColor = () => {
         const clean = String(status || '').replace(/'/g, '').trim()
-        if (clean === '2') return '#DA9304'
+        if (clean === '2') return '#F68E49'
         if (clean === '3') return '#1B8F65'
         return '#242424'
     }

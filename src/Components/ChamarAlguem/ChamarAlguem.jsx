@@ -140,7 +140,7 @@ const ChamarAlguem = () => {
               <CustomText style={styles.tituloPopUp}>Chamar Alguém</CustomText>
 
               {loading ? (
-                <ActivityIndicator color="#DA9304" />
+                <ActivityIndicator color="#F68E49" />
               ) : (
                 <Dropdown
                   style={styles.dropdown}
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#DA9304",
+    backgroundColor: "#F68E49",
     justifyContent: "center",
     alignItems: "center",
     elevation: 6,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     color: "#F0EADE",
   },
   etiqueta: {
-    backgroundColor: "#DA9304",
+    backgroundColor: "#F68E49",
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     height: 50,
-    backgroundColor: "#DA9304",
+    backgroundColor: "#F68E49",
     borderRadius: 15,
   },
   botaoDesativado: {

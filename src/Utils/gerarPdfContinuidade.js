@@ -67,10 +67,10 @@ const montarHtml = (notas, nomeProjeto) => {
         <meta charset="utf-8" />
         <style>
           body { font-family: Helvetica, Arial, sans-serif; color: #313131; }
-          h1 { color: #DA9304; margin-bottom: 4px; }
+          h1 { color: #F68E49; margin-bottom: 4px; }
           .data { color: #5F5F5F; font-size: 12px; margin-bottom: 20px; }
           .nota {
-            border-left: 6px solid #DA9304;
+            border-left: 6px solid #F68E49;
             background: #F0EADE;
             border-radius: 8px;
             padding: 12px 16px;

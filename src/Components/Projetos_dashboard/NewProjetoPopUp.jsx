@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
         color: "#DAD0B7",
-        borderBottomColor: "#EF5625",
+        borderBottomColor: "#F68E49",
         borderBottomWidth: 1,
         outlineStyle: "none"
     },
@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
     copiarCodigo: { flexDirection: "row", gap: 10, alignSelf: "center" },
     codigo: {
         fontSize: 12,
-        color: "#EF5625",
+        color: "#F68E49",
         letterSpacing: 1.15,
         textAlign: "center",
         fontWeight: "bold",
         paddingBottom: 5,
-        borderBottomColor: "#EF5625",
+        borderBottomColor: "#F68E49",
         borderBottomWidth: 1,
         alignSelf: "center"
     },

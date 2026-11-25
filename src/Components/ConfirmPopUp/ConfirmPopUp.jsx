@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   faixa: {
     height: 36,
-    backgroundColor: "#EF5625",
+    backgroundColor: "#F68E49",
   },
   conteudo: {
     paddingHorizontal: 20,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#5F5F5F",
   },
   botaoSim: {
-    backgroundColor: "#EF5625",
+    backgroundColor: "#F68E49",
   },
   textoBotao: {
     fontSize: 16,

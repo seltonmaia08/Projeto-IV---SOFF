@@ -78,7 +78,7 @@ const AlertaGeral = ({ visivel, visible, title, mensagem, aoFechar, onClose, but
                                 >
                                     <CustomText style={[
                                         styles.textoBotao,
-                                        btn.style === 'destructive' && { color: '#EF5625' },
+                                        btn.style === 'destructive' && { color: '#F68E49' },
                                         btn.style === 'cancel' && { opacity: 0.7 }
                                     ]}>
                                         {btn.text || 'OK'}

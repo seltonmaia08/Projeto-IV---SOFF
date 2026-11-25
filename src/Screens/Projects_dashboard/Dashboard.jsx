@@ -106,7 +106,7 @@ const Dashboard = () => {
 
                 <CustomText style={styles.titulo}>MEUS PROJETOS</CustomText>
 
-                {loading && <ActivityIndicator size="large" color="#EF5625" />}
+                {loading && <ActivityIndicator size="large" color="#F68E49" />}
 
                 {error && <CustomText>Erro ao carregar projetos.</CustomText>}
 

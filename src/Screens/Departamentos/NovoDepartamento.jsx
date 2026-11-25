@@ -195,7 +195,7 @@ const NovoDepartamento = ({
 
                     {/* {departamentoParaEditar && (
                         <TouchableOpacity activeOpacity={0.5} onPress={handleExcluir} disabled={loading} style={{ alignItems: 'center', marginTop: 10 }}>
-                            <CustomText style={{ color: "#EF5625", fontSize: 14 }}>Excluir Departamento</CustomText>
+                            <CustomText style={{ color: "#F68E49", fontSize: 14 }}>Excluir Departamento</CustomText>
                         </TouchableOpacity>
                     )} */}
                 </View>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
         color: "#DAD0B7",
-        borderBottomColor: "#EF5625",
+        borderBottomColor: "#F68E49",
         borderBottomWidth: 1,
         outlineStyle: "none",
     },

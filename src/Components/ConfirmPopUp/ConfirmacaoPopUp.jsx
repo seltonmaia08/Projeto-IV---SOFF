@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 15,
         borderTopWidth: 15,
-        borderTopColor: "#EF5625",
+        borderTopColor: "#F68E49",
         gap: 20
     },
     alerta: {fontSize: 14, color: "#313131", textAlign: "center"},
-    laranja: {color: "#EF5625"},
+    laranja: {color: "#F68E49"},
     botoes: {flexDirection: "row", gap: 30}
 })
 

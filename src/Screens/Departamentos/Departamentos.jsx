@@ -508,7 +508,7 @@ const Departamentos = () => {
       <ScrollView contentContainerStyle={styles.departamentos}>
         {loading ? (
           <View style={{ alignItems: "center", justifyContent: "center", gap: 10, marginTop: 40 }}>
-            <ActivityIndicator size="large" color="#EF5625" />
+            <ActivityIndicator size="large" color="#F68E49" />
             <CustomText>Carregando departamentos...</CustomText>
           </View>
         ) : departamentos.length === 0 ? (
