@@ -192,7 +192,7 @@ const Perfil = ({ route }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity activeOpacity={0.7} style={styles.sair} onPress={logout}>
-                            <CustomText style={styles.textoBotao}>LOGOUT</CustomText>
+                            <CustomText style={[styles.textoBotao, styles.textoSair]}>LOGOUT</CustomText>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -278,6 +278,7 @@ const styles = StyleSheet.create({
         borderRadius: 15, 
         justifyContent: "center",
     },
+    textoSair: { color: "#242424" },
     textoBotao: { fontSize: 14, fontWeight: "bold", textAlign: "center" },
     gapButtons: { gap: 10, width: "100%", alignItems: "center" }
 });

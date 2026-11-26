@@ -113,6 +113,8 @@ const StatusFilmagem = () => {
 
   const cancelarMudanca = () => setStatusPendente(null);
 
+  const corConteudo = statusAtual.id === "gravando" ? "#242424" : "#F0EADE";
+
   return (
     <View style={styles.card}>
       <TouchableOpacity activeOpacity={0.8} onPress={alternarMenu}>
@@ -124,18 +126,18 @@ const StatusFilmagem = () => {
         >
           <View>
             <View style={styles.linhaTitulo}>
-              <CustomText style={styles.titulo}>{statusAtual.nome}</CustomText>
+              <CustomText style={[styles.titulo, { color: corConteudo }]}>{statusAtual.nome}</CustomText>
               {menuAberto ? (
-                <ChevronUp size={22} color="#F0EADE" />
+                <ChevronUp size={22} color={corConteudo} />
               ) : (
-                <ChevronDown size={22} color="#F0EADE" />
+                <ChevronDown size={22} color={corConteudo} />
               )}
             </View>
 
-            <CustomText style={styles.frase}>{statusAtual.frase}</CustomText>
+            <CustomText style={[styles.frase, { color: corConteudo }]}>{statusAtual.frase}</CustomText>
           </View>
 
-          <Icone size={48} color="#F0EADE" strokeWidth={2} />
+          <Icone size={48} color={corConteudo} strokeWidth={2} />
         </LinearGradient>
       </TouchableOpacity>
 

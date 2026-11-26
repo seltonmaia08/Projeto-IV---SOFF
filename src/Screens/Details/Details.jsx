@@ -147,7 +147,7 @@ function Details() {
                         <CustomText style={styles.textoBotao}>Voltar ao Dashboard</CustomText>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.botaoExcluir} activeOpacity={0.5} onPress={() => setExcluirPopUp(true)}>
-                        <CustomText style={styles.textoBotao}>
+                        <CustomText style={[styles.textoBotao, styles.textoBotaoExcluir]}>
                             {isOwner ? "Excluir Projeto" : "Sair do Projeto"}
                         </CustomText>
                     </TouchableOpacity>
@@ -213,7 +213,8 @@ const styles = StyleSheet.create({
     areaBotoes: { position: "absolute", bottom: 130, width: "89%", alignItems: "center", gap: 10, },
     botaoVoltar: { width: "100%", padding: 15, backgroundColor: "#313131", borderRadius: 15 },
     textoBotao: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
-    botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#F68E49", borderRadius: 15 }
+    botaoExcluir: { width: "100%", padding: 15, backgroundColor: "#F68E49", borderRadius: 15 },
+    textoBotaoExcluir: { color: "#242424" }
 });
 
 export default Details;

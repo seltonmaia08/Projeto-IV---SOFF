@@ -27,11 +27,11 @@ const LogOut = ({ style }) => {
             disabled={loading}
         >
             {loading ? (
-                <ActivityIndicator size="small" color="#DAD0B7" />
+                <ActivityIndicator size="small" color="#242424" />
             ) : (
                 <>
                     <CustomText style={styles.text}>LOGOUT</CustomText>
-                    <LogOutIcon size={18} color="#DAD0B7" />
+                    <LogOutIcon size={18} color="#242424" />
                 </>
             )}
         </TouchableOpacity>
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 14,
         fontWeight: "bold",
-        color: "#DAD0B7",
+        color: "#242424",
         textAlign: "center",
         letterSpacing: 1.2
     }

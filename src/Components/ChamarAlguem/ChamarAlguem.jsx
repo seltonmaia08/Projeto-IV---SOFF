@@ -113,7 +113,7 @@ const ChamarAlguem = () => {
         activeOpacity={0.8}
         onPress={() => setEtapa("escolhendo")}
       >
-        <Whistle size={32} color="#FFFFFF" />
+        <Whistle size={32} color="#242424" />
       </TouchableOpacity>
 
       {/* Modal para Escolher Participante */}
@@ -186,11 +186,11 @@ const ChamarAlguem = () => {
                 disabled={!participante || enviando}
               >
                 {enviando ? (
-                  <ActivityIndicator color="#F0EADE" />
+                  <ActivityIndicator color="#242424" />
                 ) : (
                   <>
                     <CustomText style={styles.textoChamar}>CHAMAR</CustomText>
-                    <Whistle size={22} color="#F0EADE" />
+                    <Whistle size={22} color="#242424" />
                   </>
                 )}
               </TouchableOpacity>
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   textoEtiqueta: {
     fontSize: 11,
-    color: "#F0EADE",
+    color: "#242424",
   },
   campoMensagem: {
     height: 90,
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   textoChamar: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#F0EADE",
+    color: "#242424",
     letterSpacing: 2,
   },
 });

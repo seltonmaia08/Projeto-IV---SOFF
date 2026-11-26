@@ -32,7 +32,7 @@ const ConfirmPopUp = ({ visivel, mensagem, aoConfirmar, aoCancelar }) => {
                 onPress={aoConfirmar}
                 style={[styles.botao, styles.botaoSim]}
               >
-                <CustomText style={styles.textoBotao}>SIM</CustomText>
+                <CustomText style={[styles.textoBotao, styles.textoBotaoSim]}>SIM</CustomText>
               </TouchableOpacity>
             </View>
           </View>
@@ -88,6 +88,9 @@ const styles = StyleSheet.create({
   },
   botaoSim: {
     backgroundColor: "#F68E49",
+  },
+  textoBotaoSim: {
+    color: "#242424",
   },
   textoBotao: {
     fontSize: 16,

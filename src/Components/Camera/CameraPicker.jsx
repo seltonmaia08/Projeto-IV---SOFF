@@ -84,7 +84,7 @@ const CameraPicker = ({ images, setImages }) => {
                             style={styles.botaoRemoverFoto}
                             onPress={() => removerFoto(index)}
                         >
-                            <X size={14} color="#FFF" />
+                            <X size={14} color="#242424" />
                         </TouchableOpacity>
                     </View>
                 ))}

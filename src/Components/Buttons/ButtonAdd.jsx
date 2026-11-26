@@ -12,9 +12,9 @@ const ButtonAdd = ({ onPress, isActive }) => {
             >
                 {
                     isActive ?
-                    (<X size={36} color={'#F0EADE'} />)
+                    (<X size={36} color={'#242424'} />)
                     :
-                    (<Plus size={36} color={'#F0EADE'} />)
+                    (<Plus size={36} color={'#242424'} />)
 
                 }
             </TouchableOpacity>
