@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { ActivityIndicator, View } from "react-native";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -6,11 +7,14 @@ import * as SplashScreen from "expo-splash-screen";
 import Dashboard from "../Screens/Projects_dashboard/Dashboard";
 import ProjectStack from "./projectStack";
 import Login from "../Screens/Login/Login";
-import { useAuth } from "../Context/AuthContext";
-import { ActivityIndicator, View } from "react-native";
 import Register from "../Screens/Register/Register";
 import RedefinirSenha from "../Screens/RedefinirSenha/RedefinirSenha";
 import Perfil from "../Screens/Perfil/Perfil";
+import Planos from "../Screens/Perfil/Planos";
+import PlanoPago from "../Screens/Perfil/PlanoPago";
+import PlanoGratuito from "../Screens/Perfil/PlanoGratuito";
+
+import { useAuth } from "../Context/AuthContext";
 
 SplashScreen.preventAutoHideAsync(); // Previne o que a SplashScreen suma antes do carregamento das fontes
 const Stack = createNativeStackNavigator();
@@ -58,6 +62,9 @@ const Routes = () => {
                         <Stack.Screen name="Dashboard" component={Dashboard} />
                         <Stack.Screen name="ProjectStack" component={ProjectStack} />
                         <Stack.Screen name="Perfil" component={Perfil} />
+                        <Stack.Screen name="Planos" component={Planos} />
+                        <Stack.Screen name="PlanoPago" component={PlanoPago} />
+                        <Stack.Screen name="PlanoGratuito" component={PlanoGratuito} />
                     </>
                     :
                     <>

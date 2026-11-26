@@ -19,6 +19,7 @@ const Perfil = ({ route }) => {
     const [editarVisivel, setEditarVisivel] = useState(false);
     const [editarSenhaVisivel, setEditarSenhaVisivel] = useState(false);
     const [popUpSucesso, setPopUpSucesso] = useState(false);
+    const [planoPago, setPlanoPago] = useState(false); // mockado
 
     const [nomeUsuario, setNomeUsuario] = useState(
         user?.user_metadata?.name || user?.user_metadata?.userName || "Usuário"
@@ -187,7 +188,7 @@ const Perfil = ({ route }) => {
                     </View>
 
                     <View style={styles.gapButtons}>
-                        <TouchableOpacity activeOpacity={0.7} style={styles.plano}>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.plano} onPress={() => navegacao.navigate("Planos", {nomeUsuario, emailUsuario, planoPago})}>
                             <CustomText style={styles.textoBotao}>PLANOS E ASSINATURA</CustomText>
                         </TouchableOpacity>
 
