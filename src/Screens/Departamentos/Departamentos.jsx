@@ -15,6 +15,7 @@ import { ProjectContext } from "../../Context/ProjectContext";
 import { supabase } from "../../Utils/Supabase";
 import AlertaGeral from "../../Components/Alerta/AlertaGeral";
 import DepartamentoDetalhe from "./DepartamentoDetalhe";
+import Toast from "../../Components/Toast/Toast";
 
 const Departamentos = () => {
   const { idProject } = useContext(ProjectContext) || {};
@@ -46,7 +47,7 @@ const Departamentos = () => {
 
       const timeoutPromise = (ms) =>
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout ao carregar dados")), ms)
+          setTimeout(() => reject(new Error("Timeout ao carregar dados")), ms),
         );
 
       let { data: deptResult, error: deptError } = await Promise.race([
@@ -127,7 +128,8 @@ const Departamentos = () => {
       if (ownerId) {
         seenUsers.add(ownerId);
         const ownerRow = membrosDoProjeto.find((m) => m.idUser === ownerId);
-        const cargoDono = ownerRow?.cargo || ownerRow?.position || "Proprietário";
+        const cargoDono =
+          ownerRow?.cargo || ownerRow?.position || "Proprietário";
         membrosUnicos.push({
           idProjectMember: ownerId, // Usamos sempre o idUser (UUID) como chave identificadora única
           idUser: ownerId,
@@ -187,7 +189,9 @@ const Departamentos = () => {
             idDepartment: idDept,
             nome: nomeDept,
             membros: userIdsDesteDept.map(
-              (uid) => profilesMap[uid] || (uid === ownerId ? "Proprietário" : "Participante"),
+              (uid) =>
+                profilesMap[uid] ||
+                (uid === ownerId ? "Proprietário" : "Participante"),
             ),
             membrosIds: userIdsDesteDept, // array de idUser dos colaboradores vinculados
           };
@@ -252,7 +256,8 @@ const Departamentos = () => {
           .map((id) => {
             if (typeof id === "string" && id.includes("-")) return id;
             const match = currentMembersList.find(
-              (m) => String(m.idProjectMember) === String(id) || m.idUser === id,
+              (m) =>
+                String(m.idProjectMember) === String(id) || m.idUser === id,
             );
             return match?.idUser || id;
           })
@@ -271,32 +276,29 @@ const Departamentos = () => {
               .eq("idProjectMember", rowWithNull.idProjectMember);
           } else {
             // Caso contrário, insere uma nova associação para manter o participante nos outros departamentos
-            const existingRow = currentMembersList.find((m) => m.idUser === userId);
+            const existingRow = currentMembersList.find(
+              (m) => m.idUser === userId,
+            );
             const userCargo =
               existingRow?.cargo ||
               existingRow?.position ||
               (userId === donoProjetoId ? "Proprietário" : "Participante");
 
-            await supabase
-              .from("ProjectMember")
-              .insert([
-                {
-                  idProject,
-                  idUser: userId,
-                  idDepartment: novoId,
-                  cargo: userCargo,
-                  position: userCargo,
-                },
-              ]);
+            await supabase.from("ProjectMember").insert([
+              {
+                idProject,
+                idUser: userId,
+                idDepartment: novoId,
+                cargo: userCargo,
+                position: userCargo,
+              },
+            ]);
           }
         }
       }
 
       await carregarDepartamentos();
-      AlertaGeral.alert(
-        "Sucesso",
-        `Departamento "${nome}" criado com sucesso!`,
-      );
+      Toast.mostrar(`Departamento "${nome}" criado`);
     } catch (err) {
       console.error("Erro ao criar departamento:", err);
       AlertaGeral.alert("Erro", "Não foi possível criar o departamento.");
@@ -346,7 +348,8 @@ const Departamentos = () => {
 
       // Membros que estavam vinculados a este departamento antes
       const rowsDesteDept = allMembers.filter(
-        (m) => m.idDepartment && String(m.idDepartment) === String(idDepartment),
+        (m) =>
+          m.idDepartment && String(m.idDepartment) === String(idDepartment),
       );
       const userIdsAntes = Array.from(
         new Set(rowsDesteDept.map((m) => m.idUser).filter(Boolean)),
@@ -360,7 +363,8 @@ const Departamentos = () => {
       for (const uid of userIdsParaRemover) {
         const rowsToRemove = rowsDesteDept.filter((r) => r.idUser === uid);
         const userOtherRows = allMembers.filter(
-          (m) => m.idUser === uid && String(m.idDepartment) !== String(idDepartment),
+          (m) =>
+            m.idUser === uid && String(m.idDepartment) !== String(idDepartment),
         );
 
         if (userOtherRows.length > 0) {
@@ -406,25 +410,20 @@ const Departamentos = () => {
             existingRow?.position ||
             (uid === donoProjetoId ? "Proprietário" : "Participante");
 
-          await supabase
-            .from("ProjectMember")
-            .insert([
-              {
-                idProject,
-                idUser: uid,
-                idDepartment,
-                cargo: userCargo,
-                position: userCargo,
-              },
-            ]);
+          await supabase.from("ProjectMember").insert([
+            {
+              idProject,
+              idUser: uid,
+              idDepartment,
+              cargo: userCargo,
+              position: userCargo,
+            },
+          ]);
         }
       }
 
       await carregarDepartamentos();
-      AlertaGeral.alert(
-        "Sucesso",
-        `Departamento "${nome}" atualizado com sucesso!`,
-      );
+      Toast.mostrar(`Departamento "${nome}" atualizado`);
     } catch (err) {
       console.error("Erro ao salvar departamento:", err);
       AlertaGeral.alert("Erro", "Não foi possível salvar as alterações.");
@@ -443,7 +442,8 @@ const Departamentos = () => {
 
       const allMembers = allMembersData || [];
       const rowsDesteDept = allMembers.filter(
-        (m) => m.idDepartment && String(m.idDepartment) === String(idDepartment),
+        (m) =>
+          m.idDepartment && String(m.idDepartment) === String(idDepartment),
       );
 
       for (const row of rowsDesteDept) {
@@ -476,10 +476,7 @@ const Departamentos = () => {
       if (delErr) throw delErr;
 
       await carregarDepartamentos();
-      AlertaGeral.alert(
-        "Sucesso",
-        `Departamento "${nomeDept || ""}" excluído com sucesso!`,
-      );
+      Toast.mostrar(`Departamento "${nomeDept || ""}" excluído`);
     } catch (err) {
       console.error("Erro ao excluir departamento:", err);
       AlertaGeral.alert("Erro", "Não foi possível excluir o departamento.");
@@ -507,17 +504,37 @@ const Departamentos = () => {
       <Top abaName={"Departamentos"} voltar={false} />
       <ScrollView contentContainerStyle={styles.departamentos}>
         {loading ? (
-          <View style={{ alignItems: "center", justifyContent: "center", gap: 10, marginTop: 40 }}>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              marginTop: 40,
+            }}
+          >
             <ActivityIndicator size="large" color="#F68E49" />
             <CustomText>Carregando departamentos...</CustomText>
           </View>
         ) : departamentos.length === 0 ? (
-          <View style={{ alignItems: "center", justifyContent: "center", gap: 10, marginTop: 40, paddingHorizontal: 20 }}>
-            <CustomText style={{ textAlign: "center", fontSize: 16, color: "#DAD0B7" }}>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              marginTop: 40,
+              paddingHorizontal: 20,
+            }}
+          >
+            <CustomText
+              style={{ textAlign: "center", fontSize: 16, color: "#DAD0B7" }}
+            >
               Nenhum departamento cadastrado.
             </CustomText>
-            <CustomText style={{ textAlign: "center", fontSize: 12, color: "#8E8E8E" }}>
-              Toque no botão + abaixo para criar um departamento e vincular membros.
+            <CustomText
+              style={{ textAlign: "center", fontSize: 12, color: "#8E8E8E" }}
+            >
+              Toque no botão + abaixo para criar um departamento e vincular
+              membros.
             </CustomText>
           </View>
         ) : (
@@ -534,7 +551,8 @@ const Departamentos = () => {
                 </CustomText>
                 {cada.membros && cada.membros.length > 0 ? (
                   <CustomText style={styles.subtextoDepart}>
-                    {cada.membros.length} colaborador{cada.membros.length > 1 ? "es" : ""}
+                    {cada.membros.length} colaborador
+                    {cada.membros.length > 1 ? "es" : ""}
                   </CustomText>
                 ) : null}
               </View>

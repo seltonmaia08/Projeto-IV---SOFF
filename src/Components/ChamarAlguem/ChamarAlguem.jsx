@@ -94,7 +94,10 @@ const ChamarAlguem = () => {
 
       if (error) throw error;
 
-      AlertaGeral.alert("Sucesso!", `Chamado enviado para ${participante.label}.`);
+      AlertaGeral.alert(
+        "Sucesso!",
+        `Chamado enviado para ${participante.label}.`,
+      );
       fecharPopUp();
     } catch (err) {
       console.error("Erro ao enviar chamado:", err);
@@ -106,7 +109,7 @@ const ChamarAlguem = () => {
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <>
       {/* Botão flutuante do Apito */}
       <TouchableOpacity
         style={styles.botaoFlutuante}
@@ -157,9 +160,13 @@ const ChamarAlguem = () => {
                   iconColor="#F0EADE"
                   renderItem={(item) => (
                     <View style={styles.itemLista}>
-                      <CustomText style={styles.nomeItem}>{item.label}</CustomText>
+                      <CustomText style={styles.nomeItem}>
+                        {item.label}
+                      </CustomText>
                       <View style={styles.etiqueta}>
-                        <CustomText style={styles.textoEtiqueta}>{item.funcao}</CustomText>
+                        <CustomText style={styles.textoEtiqueta}>
+                          {item.funcao}
+                        </CustomText>
                       </View>
                     </View>
                   )}
@@ -206,7 +213,7 @@ const ChamarAlguem = () => {
         aoConfirmar={confirmarChamado}
         aoCancelar={() => setEtapa("escolhendo")}
       />
-    </View>
+    </>
   );
 };
 
